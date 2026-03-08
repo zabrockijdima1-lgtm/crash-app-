@@ -1,35 +1,165 @@
-// Функція, яка ініціює оплату
-async function buyStars(amount) {
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>StonksGift - Wallet</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0e1219;
+            --card-bg: #1a232f;
+            --accent-yellow: #f0b90b;
+            --text-main: #ffffff;
+            --text-secondary: #8e9fb1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; }
+
+        .app-container { max-width: 400px; margin: 0 auto; width: 100%; flex: 1; padding: 16px; display: flex; flex-direction: column; }
+
+        /* Баланс */
+        .balance-card {
+            background: linear-gradient(135deg, #1a232f 0%, #0e1219 100%);
+            border: 1px solid #31465c;
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .balance-amount { font-size: 36px; font-weight: 800; color: var(--accent-yellow); display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        /* Вибір суми */
+        .section-title { font-size: 14px; color: var(--text-secondary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .presets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .preset-btn {
+            background: var(--card-bg);
+            border: 1px solid #31465c;
+            color: white;
+            padding: 15px;
+            border-radius: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .preset-btn.active { border-color: var(--accent-yellow); background: rgba(240, 185, 11, 0.1); color: var(--accent-yellow); }
+
+        /* Кнопки внизу */
+        .footer-btns { margin-top: auto; display: flex; gap: 12px; padding-bottom: 20px; }
+        .btn {
+            flex: 1;
+            padding: 18px;
+            border-radius: 18px;
+            border: none;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-withdraw { background: #2a3440; color: var(--text-secondary); }
+        .btn-deposit { background: var(--accent-yellow); color: #000; box-shadow: 0 4px 15px rgba(240, 185, 11, 0.2); }
+
+        /* Лоадер */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); display: none;
+            align-items: center; justify-content: center; z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loader"><i class="fa-solid fa-circle-notch fa-spin fa-2x" style="color: var(--accent-yellow);"></i></div>
+
+<div class="app-container">
+    <div class="balance-card">
+        <p style="color: var(--text-secondary); margin-bottom: 5px;">Твій ігровий рахунок</p>
+        <div class="balance-amount">
+            <span id="userBalance">0</span>
+            <i class="fa-solid fa-star" style="font-size: 20px;"></i>
+        </div>
+    </div>
+
+    <div class="section-title">Обери суму зірок</div>
+    <div class="presets-grid">
+        <button class="preset-btn active" onclick="setAmount(50, this)">50</button>
+        <button class="preset-btn" onclick="setAmount(250, this)">250</button>
+        <button class="preset-btn" onclick="setAmount(500, this)">500</button>
+    </div>
+
+    <div class="footer-btns">
+        <button class="btn btn-withdraw" onclick="tg.showAlert('Мінімальний вивід: 500 зірок')">
+            <i class="fa-solid fa-arrow-down"></i> Забрати
+        </button>
+        <button class="btn btn-deposit" id="payBtn" onclick="buyStars()">
+            Поповнити <span id="btnAmount">50</span> ⭐️
+        </button>
+    </div>
+</div>
+
+<script>
     const tg = window.Telegram.WebApp;
-    const userId = tg.initDataUnsafe.user.id;
+    tg.expand();
 
-    // Крок 1: Твій фронтенд просить твій бекенд створити invoice link
-    // ЗАУВАЖЕННЯ: Тут має бути URL твого сервера/бота
-    try {
-        const response = await fetch('https://твій-домен.com/get-invoice', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user_id: userId, amount: amount })
-        });
-        
-        const data = await response.json();
-        const invoiceLink = data.link; // Отримали посилання від бота
+    let selectedAmount = 50;
+    // ЗАМІНИ ЦЮ АДРЕСУ НА АДРЕСУ СВОГО БЕКЕНДУ (наприклад, з ngrok або VPS)
+    const BACKEND_URL = "https://your-backend-api.com"; 
 
-        // Крок 2: Відкриваємо нативне вікно оплати Telegram
-        tg.openInvoice(invoiceLink, function(status) {
-            if (status === 'paid') {
-                tg.showAlert("Оплата успішна! Баланс оновлено.");
-                // Тут можна оновити баланс на екрані
-                updateUserBalanceOnUI();
-            } else if (status === 'cancelled') {
-                tg.showAlert("Оплату скасовано.");
-            } else {
-                tg.showAlert("Помилка оплати.");
-            }
-        });
-
-    } catch (error) {
-        console.error("Помилка:", error);
-        tg.showAlert("Не вдалося створити рахунок.");
+    function setAmount(amt, el) {
+        selectedAmount = amt;
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('btnAmount').innerText = amt;
+        tg.HapticFeedback.selectionChanged();
     }
-}
+
+    async function buyStars() {
+        const userId = tg.initDataUnsafe.user?.id;
+        if (!userId) return tg.showAlert("Помилка авторизації!");
+
+        document.getElementById('loader').style.display = 'flex';
+        tg.HapticFeedback.impactOccurred('medium');
+
+        try {
+            // Крок 1: Запит до твого Python-бота за посиланням
+            const response = await fetch(`${BACKEND_URL}/get-invoice`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId, amount: selectedAmount })
+            });
+
+            if (!response.ok) throw new Error('Помилка сервера');
+            
+            const data = await response.json();
+            const invoiceLink = data.link;
+
+            // Крок 2: Відкриваємо вікно оплати в самому Telegram
+            tg.openInvoice(invoiceLink, function(status) {
+                document.getElementById('loader').style.display = 'none';
+                
+                if (status === 'paid') {
+                    tg.showPopup({
+                        title: 'Успішно!',
+                        message: `Ви купили ${selectedAmount} зірок. Баланс оновиться протягом хвилини.`,
+                        buttons: [{type: 'ok'}]
+                    });
+                } else if (status === 'cancelled') {
+                    tg.showAlert("Оплату скасовано");
+                }
+            });
+
+        } catch (error) {
+            document.getElementById('loader').style.display = 'none';
+            console.error(error);
+            tg.showAlert("Не вдалося створити рахунок. Перевір зв'язок з бекендом.");
+        }
+    }
+</script>
+
+</body>
+</html>
