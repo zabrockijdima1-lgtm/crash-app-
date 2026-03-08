@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -231,7 +232,7 @@
             padding: 4px 12px;
             border: 1px solid #2d3748;
         }
-        .bet-input-row span { color: #a0aec0; font-size: 14px; }
+        .bet-input-row span { color: #a0aec0; font-size: 12px; font-weight: bold; }
         .bet-input-row input {
             flex: 1;
             background: transparent;
@@ -323,10 +324,7 @@
 
     <div id="mainGameContent" style="display: contents;">
         <div class="history-bar" id="historyBar">
-            <span class="history-item x-blue">1.33x</span>
-            <span class="history-item x-green">2.15x</span>
-            <span class="history-item x-red">1.00x</span>
-        </div>
+            </div>
 
         <div class="game-area" id="gameArea">
             <svg class="rocket-svg" id="rocketSvg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -355,9 +353,14 @@
                     <button class="preset-btn" data-bet="10">10</button>
                 </div>
                 <div class="bet-input-row">
-                    <span>💰</span>
+                    <span>BET</span>
                     <input type="number" id="betAmount" min="0.1" step="0.1" value="1.0">
                     <span>TON</span>
+                </div>
+                <div class="bet-input-row">
+                    <span>AUTO</span>
+                    <input type="number" id="autoCashout" min="1.01" step="0.01" value="2.00" placeholder="Вимкнено">
+                    <span>X</span>
                 </div>
             </div>
 
@@ -396,6 +399,7 @@
         const actionBtn = document.getElementById('actionBtn');
         const historyBar = document.getElementById('historyBar');
         const betAmountInput = document.getElementById('betAmount');
+        const autoCashoutInput = document.getElementById('autoCashout');
         const potentialWinSpan = document.getElementById('potentialWin');
         const rocketSvg = document.getElementById('rocketSvg');
 
@@ -428,15 +432,16 @@
 
         function generateCrashPoint() {
             const r = Math.random();
-            if (r < 0.03) return 1.00; // Миттєвий краш
+            if (r < 0.03) return 1.00; 
             return parseFloat((0.99 / (1 - Math.random())).toFixed(2));
         }
 
         function addToHistory(val) {
             const item = document.createElement('span');
-            item.className = `history-item ${val < 2 ? 'x-red' : 'x-green'}`;
+            item.className = `history-item ${val < 2 ? 'x-red' : (val < 10 ? 'x-green' : 'x-yellow')}`;
             item.textContent = val.toFixed(2) + 'x';
             historyBar.prepend(item);
+            if (historyBar.children.length > 10) historyBar.lastChild.remove();
         }
 
         function startRound() {
@@ -453,19 +458,39 @@
                 currentMultiplier += currentMultiplier * 0.005;
                 multDisplay.textContent = currentMultiplier.toFixed(2) + 'x';
 
-                // Анімація ракети
                 const progress = (currentMultiplier - 1) * 20;
                 rocketSvg.style.transform = `translate(${progress}px, -${progress}px) rotate(${progress/2}deg)`;
 
                 if (isPlaying && !hasCashedOut) {
                     potentialWinSpan.classList.remove('hidden');
                     potentialWinSpan.textContent = `💰 ${(currentBet * currentMultiplier).toFixed(2)} TON`;
+
+                    // Логіка Auto Cashout
+                    let autoX = parseFloat(autoCashoutInput.value);
+                    if (!isNaN(autoX) && autoX > 1 && currentMultiplier >= autoX) {
+                        cashOut();
+                    }
                 }
 
                 if (currentMultiplier >= crashPoint) {
                     crash();
                 }
-            , 50);
+            }, 50);
+        }
+
+        function cashOut() {
+            if (!isPlaying || hasCashedOut) return;
+            hasCashedOut = true;
+            const win = currentBet * currentMultiplier;
+            balance += win;
+            statsWins += win;
+            if (currentMultiplier > statsMaxX) statsMaxX = currentMultiplier;
+            xp += 15;
+            
+            tg.HapticFeedback.notificationOccurred('success');
+            actionBtn.disabled = true;
+            actionBtn.innerHTML = 'ВЗЯТО!';
+            updateUI();
         }
 
         function crash() {
@@ -500,7 +525,7 @@
 
             if (!isPlaying) {
                 let amt = parseFloat(betAmountInput.value);
-                if (amt > balance || amt <= 0) return;
+                if (amt > balance || amt <= 0 || isNaN(amt)) return;
                 
                 balance -= amt;
                 currentBet = amt;
@@ -511,18 +536,8 @@
                 actionBtn.innerHTML = 'ЗАБРАТИ';
                 actionBtn.className = 'bet-btn btn-withdraw';
                 updateUI();
-            } else if (!hasCashedOut) {
-                hasCashedOut = true;
-                const win = currentBet * currentMultiplier;
-                balance += win;
-                statsWins += win;
-                if (currentMultiplier > statsMaxX) statsMaxX = currentMultiplier;
-                xp += 15;
-                
-                tg.HapticFeedback.notificationOccurred('success');
-                actionBtn.disabled = true;
-                actionBtn.innerHTML = 'ВЗЯТО!';
-                updateUI();
+            } else {
+                cashOut();
             }
         });
 
@@ -547,6 +562,15 @@
         });
 
         document.getElementById('showBetPanelBtn').onclick = () => document.getElementById('betPanel').classList.toggle('hidden');
+
+        // Пресети
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.onclick = () => {
+                betAmountInput.value = btn.dataset.bet;
+                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active-preset'));
+                btn.classList.add('active-preset');
+            };
+        });
 
         updateUI();
         startRound();
