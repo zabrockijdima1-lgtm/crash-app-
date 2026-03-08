@@ -7,28 +7,46 @@
 <style>
 
 body{
-background:#020c1b;
+background:#020b1d;
 color:white;
 font-family:Arial;
-text-align:center;
 margin:0;
+text-align:center;
 }
 
-h1{
-margin-top:30px;
+.header{
+padding:15px;
+font-size:20px;
+background:#030f25;
 }
 
-#mult{
-font-size:70px;
-margin-top:40px;
+.balance{
+position:absolute;
+right:20px;
+top:15px;
+}
+
+canvas{
+background:#020f2a;
+border-radius:10px;
+margin-top:20px;
+}
+
+.mult{
+font-size:60px;
+margin-top:10px;
+}
+
+.controls{
+margin-top:20px;
 }
 
 button{
-padding:15px 40px;
-font-size:20px;
+padding:12px 30px;
+font-size:18px;
 border:none;
-border-radius:10px;
-margin-top:30px;
+border-radius:8px;
+margin:5px;
 cursor:pointer;
 }
 
@@ -42,10 +60,25 @@ background:#28c76f;
 color:white;
 }
 
-canvas{
-margin-top:30px;
-background:#030e22;
-border-radius:10px;
+.history{
+margin-top:20px;
+}
+
+.box{
+display:inline-block;
+background:#111c3a;
+padding:6px 10px;
+margin:3px;
+border-radius:6px;
+font-size:14px;
+}
+
+.rocket{
+font-size:40px;
+position:absolute;
+left:50px;
+top:200px;
+transition:all 0.2s linear;
 }
 
 </style>
@@ -53,43 +86,66 @@ border-radius:10px;
 
 <body>
 
-<h1>🚀 Crash</h1>
+<div class="header">
+🚀 Crash
+<div class="balance">💰 <span id="bal">100</span></div>
+</div>
 
-<canvas id="chart" width="600" height="250"></canvas>
+<canvas id="chart" width="700" height="300"></canvas>
 
-<div id="mult">1.00x</div>
+<div class="rocket" id="rocket">🚀</div>
 
-<button class="bet" onclick="bet()">BET</button>
+<div class="mult" id="mult">1.00x</div>
+
+<div class="controls">
+
+<input id="bet" value="10" style="padding:10px;width:80px">
+
+<button class="bet" onclick="placeBet()">BET</button>
 <button class="cash" onclick="cashout()">CASHOUT</button>
+
+</div>
+
+<div class="history" id="history"></div>
 
 <script>
 
 let mult=1
-let playing=false
 let crashed=false
-let crashPoint=Math.random()*4+1.5
+let playing=false
+let bet=0
+let balance=100
 
 let ctx=document.getElementById("chart").getContext("2d")
-let x=0
-let y=250
 
-function draw(){
-ctx.lineTo(x,y)
-ctx.strokeStyle="white"
-ctx.stroke()
+let x=0
+let y=300
+
+let crashPoint=Math.random()*4+1.5
+
+function addHistory(val){
+
+let box=document.createElement("div")
+box.className="box"
+box.innerText=val+"x"
+
+document.getElementById("history").prepend(box)
+
 }
 
 function round(){
 
 mult=1
 x=0
-y=250
+y=300
 crashed=false
+playing=false
+
 crashPoint=Math.random()*4+1.5
 
-ctx.clearRect(0,0,600,250)
+ctx.clearRect(0,0,700,300)
 ctx.beginPath()
-ctx.moveTo(0,250)
+ctx.moveTo(0,300)
 
 loop()
 
@@ -106,12 +162,20 @@ document.getElementById("mult").innerText=mult.toFixed(2)+"x"
 x+=3
 y-=mult*0.4
 
-draw()
+ctx.lineTo(x,y)
+ctx.strokeStyle="white"
+ctx.stroke()
+
+document.getElementById("rocket").style.left=(x+40)+"px"
+document.getElementById("rocket").style.top=(y+120)+"px"
 
 if(mult>=crashPoint){
 
 crashed=true
-document.getElementById("mult").innerText="💥 CRASH "+mult.toFixed(2)
+
+document.getElementById("mult").innerText="💥 "+mult.toFixed(2)
+
+addHistory(mult.toFixed(2))
 
 setTimeout(round,2000)
 
@@ -122,12 +186,22 @@ requestAnimationFrame(loop)
 
 }
 
-function bet(){
+function placeBet(){
 
 if(playing)return
 
+bet=parseFloat(document.getElementById("bet").value)
+
+if(bet>balance){
+alert("Недостатньо коштів")
+return
+}
+
+balance-=bet
+
+document.getElementById("bal").innerText=balance
+
 playing=true
-alert("Ставка прийнята")
 
 }
 
@@ -136,9 +210,15 @@ function cashout(){
 if(!playing)return
 if(crashed)return
 
-playing=false
+let win=bet*mult
+
+balance+=win
+
+document.getElementById("bal").innerText=Math.floor(balance)
 
 alert("Ви забрали "+mult.toFixed(2)+"x")
+
+playing=false
 
 }
 
