@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StonksGift - Pro Crash</title>
+    <title>StonksGift - Rocket Crash</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -24,7 +24,7 @@
         /* Header */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-card); border-bottom: 1px solid #2d3748; }
         .user-block { display: flex; align-items: center; gap: 10px; }
-        .user-avatar { width: 38px; height: 38px; background: linear-gradient(45deg, #4a5568, #718096); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #4a5568; }
+        .user-avatar { width: 38px; height: 38px; background: linear-gradient(45deg, #0088cc, #4a5568); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #4a5568; }
         .balance-group { display: flex; gap: 8px; }
         .bal-box { background: #0b0e14; padding: 6px 12px; border-radius: 10px; border: 1px solid #2d3748; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
         .stars { border-color: var(--gold); color: var(--gold); }
@@ -42,7 +42,7 @@
         #gameCanvas { position: absolute; width: 100%; height: 100%; }
         
         .multiplier-wrapper { z-index: 10; text-align: center; pointer-events: none; }
-        .multiplier-display { font-size: 64px; font-weight: 900; text-shadow: 0 0 30px rgba(0, 136, 204, 0.4); transition: color 0.2s; }
+        .multiplier-display { font-size: 64px; font-weight: 900; text-shadow: 0 0 30px rgba(0, 136, 204, 0.4); }
         
         .rocket-container {
             position: absolute; bottom: 50px; left: 50px; width: 80px; height: 80px;
@@ -65,11 +65,8 @@
         .btn-cash { background: linear-gradient(135deg, #00c853, #008a39); color: white; box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3); }
         .btn-wait { background: #2d3748; color: #718096; cursor: not-allowed; }
 
-        /* Players */
-        .players-list { margin-top: 15px; height: 100px; overflow-y: auto; border-top: 1px solid rgba(255,255,255,0.05); }
+        .players-list { margin-top: 15px; height: 80px; overflow-y: auto; border-top: 1px solid rgba(255,255,255,0.05); }
         .player-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
-
-        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -77,9 +74,9 @@
 <div class="app-container">
     <div class="header">
         <div class="user-block">
-            <div class="user-avatar" id="uAvatar">D</div>
+            <div class="user-avatar">D</div>
             <div class="user-info">
-                <div class="user-name" id="uName">DIMON</div>
+                <div class="user-name">DIMON</div>
                 <div style="font-size: 10px; color: #a0aec0;">LEVEL 1</div>
             </div>
         </div>
@@ -103,7 +100,7 @@
     </div>
 
     <div class="controls">
-        <div class="round-status" id="status">ЗАВАНТАЖЕННЯ...</div>
+        <div class="round-status" id="status">ОЧІКУВАННЯ...</div>
         
         <div class="bet-input-row">
             <input type="number" id="betInput" value="1.0" step="0.1" min="0.1">
@@ -121,12 +118,9 @@
 <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
-    tg.ready();
 
-    // Settings & State
     let balance = 100.0;
     let currentBet = 0;
-    let isWaitingNext = false; 
     let hasCashedOut = false;
     let gameActive = false;
     let multiplier = 1.0;
@@ -145,17 +139,13 @@
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
     }
-    window.addEventListener('resize', resize);
+    window.onresize = resize;
     resize();
-
-    // --- GAME LOGIC ---
 
     function prepareRound() {
         gameActive = false;
         multiplier = 1.0;
         hasCashedOut = false;
-        
-        // Скидаємо вигляд
         multEl.innerText = "1.00x";
         multEl.style.color = "#fff";
         potentialWinEl.innerText = "";
@@ -176,8 +166,6 @@
     function launchRocket() {
         gameActive = true;
         crashPoint = generateCrashPoint();
-        console.log("Round Crash Point:", crashPoint);
-        
         statusEl.innerText = "У ПОЛЬОТІ!";
         updateUI();
 
@@ -185,13 +173,10 @@
 
         function gameLoop(currentTime) {
             if (!gameActive) return;
-
             const elapsed = (currentTime - startTime) / 1000;
-            // Експоненціальне зростання (0.06 - швидкість)
             multiplier = Math.pow(Math.E, 0.07 * elapsed);
             
             multEl.innerText = multiplier.toFixed(2) + "x";
-            
             drawGraph(elapsed);
             moveRocket(elapsed);
 
@@ -205,35 +190,28 @@
                 animationId = requestAnimationFrame(gameLoop);
             }
         }
-
         animationId = requestAnimationFrame(gameLoop);
     }
 
     function doCrash() {
         gameActive = false;
         cancelAnimationFrame(animationId);
-
         multEl.innerText = "💥 " + multiplier.toFixed(2) + "x";
         multEl.style.color = "var(--accent-red)";
         statusEl.innerText = "КРАШ!";
         potentialWinEl.innerText = "";
-        
         addHistory(multiplier);
         tg.HapticFeedback.notificationOccurred('error');
-
         currentBet = 0;
         updateUI();
-
-        setTimeout(prepareRound, 3000); 
+        setTimeout(prepareRound, 3000);
     }
 
     function generateCrashPoint() {
         const r = Math.random();
-        if (r < 0.03) return 1.00; // Миттєвий краш 3%
+        if (r < 0.03) return 1.00;
         return Math.max(1.01, parseFloat((0.99 / (1 - r)).toFixed(2)));
     }
-
-    // --- ANIMATIONS ---
 
     function resetRocket() {
         rocket.style.transform = `translate(0px, 0px) rotate(0deg)`;
@@ -241,7 +219,6 @@
     }
 
     function moveRocket(t) {
-        // Обмежуємо політ межами екрану
         const x = Math.min(t * 45, canvas.width - 100);
         const y = Math.min(Math.pow(t, 1.6) * 8, canvas.height - 100);
         rocket.style.transform = `translate(${x}px, ${-y}px) rotate(${-y/12}deg)`;
@@ -249,61 +226,33 @@
 
     function drawGraph(t) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
         const startX = 50;
         const startY = canvas.height - 50;
-        
         ctx.beginPath();
         ctx.strokeStyle = '#0088cc';
         ctx.lineWidth = 5;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        
         ctx.moveTo(startX, startY);
-        
         for(let i = 0; i <= t; i += 0.05) {
             let dx = startX + i * 45;
             let dy = startY - Math.pow(i, 1.6) * 8;
-            if (dx > canvas.width - 50 || dy < 50) break;
             ctx.lineTo(dx, dy);
         }
-        
         ctx.stroke();
-
-        // Заповнення градієнтом
-        const currentX = startX + t * 45;
-        const currentY = startY - Math.pow(t, 1.6) * 8;
-        
-        ctx.lineTo(Math.min(currentX, canvas.width), startY);
-        ctx.lineTo(startX, startY);
-        ctx.closePath();
-        
-        let grad = ctx.createLinearGradient(0, startY - 200, 0, startY);
-        grad.addColorStop(0, 'rgba(0, 136, 204, 0.25)');
-        grad.addColorStop(1, 'transparent');
-        ctx.fillStyle = grad;
-        ctx.fill();
     }
-
-    // --- UI CONTROLS ---
 
     function updateUI() {
         document.getElementById('balVal').innerText = balance.toFixed(2);
-        
         if (gameActive) {
             if (currentBet > 0 && !hasCashedOut) {
                 mainBtn.innerText = "ЗАБРАТИ";
                 mainBtn.className = "main-btn btn-cash";
-                mainBtn.disabled = false;
             } else {
                 mainBtn.innerText = "ГРА ЙДЕ...";
                 mainBtn.className = "main-btn btn-wait";
-                mainBtn.disabled = true;
             }
         } else {
             mainBtn.innerText = "ПОСТАВИТИ";
             mainBtn.className = "main-btn btn-bet";
-            mainBtn.disabled = false;
         }
     }
 
@@ -315,19 +264,11 @@
                 currentBet = val;
                 tg.HapticFeedback.impactOccurred('medium');
                 updateUI();
-                statusEl.innerText = "СТАВКА ПРИЙНЯТА!";
-            } else {
-                tg.showAlert("Недостатньо коштів!");
             }
         } else if (gameActive && currentBet > 0 && !hasCashedOut) {
-            // CASH OUT
-            let win = currentBet * multiplier;
-            balance += win;
+            balance += currentBet * multiplier;
             hasCashedOut = true;
-            
             tg.HapticFeedback.notificationOccurred('success');
-            statusEl.innerText = `ВИГРАШ: ${win.toFixed(2)} TON`;
-            
             updateUI();
         }
     };
@@ -336,15 +277,11 @@
         const hist = document.getElementById('history');
         const item = document.createElement('div');
         item.className = 'history-item';
-        item.style.color = val >= 2 ? 'var(--accent-green)' : (val <= 1.2 ? 'var(--accent-red)' : '#fff');
+        item.style.color = val >= 2 ? 'var(--accent-green)' : 'var(--accent-red)';
         item.innerText = val.toFixed(2) + 'x';
         hist.prepend(item);
-        
-        // Видаляємо старі записи, щоб не перевантажувати DOM
-        if (hist.children.length > 15) hist.removeChild(hist.lastChild);
     }
 
-    // Запуск першого раунду
     prepareRound();
 </script>
 </body>
