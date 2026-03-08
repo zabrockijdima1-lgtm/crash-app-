@@ -1549,7 +1549,7 @@
 
     confirmationOverlay.classList.add('hidden');
 
-    const response = await fetch("http://176.117.76.153:8000/stars_invoice", {
+    const response = await fetch("http://127.0.0.1:8000/stars_invoice", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -1559,6 +1559,14 @@
             amount: selectedAmount
         })
     });
+
+    const data = await response.json();
+
+    if (data.invoice_link) {
+        tg.openInvoice(data.invoice_link);
+    }
+
+   });
 
     const data = await response.json();
 
@@ -1636,4 +1644,3 @@
 </script>
 </body>
 </html>
-
