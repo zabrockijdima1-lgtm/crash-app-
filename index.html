@@ -1475,26 +1475,45 @@
         switchScreen('crash');
     });
 
-    payBtn.addEventListener('click', () => {
-        if (selectedAmount <= 0) {
-            tg.showAlert('❌ Введіть суму поповнення');
-            return;
-        }
-        
-        if (selectedMethod === 'stars') {
-            payWithStars(selectedAmount);
-        } else if (selectedMethod === 'ton') {
-            payWithTON(selectedAmount);
+    
+        payBtn.addEventListener('click', async () => {
+
+    if (selectedAmount <= 0) {
+        tg.showAlert('❌ Введіть суму');
+        return;
+    }
+
+    if (selectedMethod !== 'stars') {
+        tg.showAlert('Цей спосіб поки недоступний');
+        return;
+    }
+
+    try {
+
+        const res = await fetch("https://YOUR_DOMAIN/stars_invoice", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user_id: tg.initDataUnsafe.user.id,
+                amount: selectedAmount
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.invoice_link) {
+            tg.openInvoice(data.invoice_link);
         } else {
-            // Для Crypto та Gifts - імітація
-            setTimeout(() => {
-                balance += selectedAmount;
-                updateBalanceDisplay();
-                tg.showAlert(`💰 Поповнення через ${selectedMethod}: +${selectedAmount} (тестовий режим)`);
-                switchScreen('crash');
-            }, 1000);
+            tg.showAlert("❌ Помилка створення інвойсу");
         }
-    });
+
+    } catch (e) {
+        tg.showAlert("❌ Сервер недоступний");
+    }
+
+});
 
     // Game loop
     function gameTick() {
