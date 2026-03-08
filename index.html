@@ -3,119 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StonksGift - Crash Stars</title>
+    <title>StonksGift - Pro Crash</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #0b0e14; color: #fff; overflow: hidden; height: 100vh; }
         
-        .app-container {
-            max-width: 600px; margin: 0 auto; height: 100vh;
-            display: flex; flex-direction: column; background-color: #11151c; position: relative;
-        }
+        .app-container { max-width: 600px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; background-color: #11151c; position: relative; }
 
-        /* HEADER */
-        .header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 16px; background-color: #1a202c; border-bottom: 1px solid #2d3748;
-        }
-        .user-block { display: flex; align-items: center; gap: 10px; }
-        .user-avatar { width: 40px; height: 40px; background-color: #718096; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; border: 1px solid #4a5568; }
-        .user-info { display: flex; flex-direction: column; }
-        .user-name { font-weight: 700; font-size: 14px; }
-        .user-level { font-size: 11px; color: #a0aec0; }
-        
-        .balance-block { 
-            display: flex; align-items: center; gap: 8px; background-color: #0b0e14; 
-            padding: 6px 12px; border-radius: 10px; border: 1px solid #2d3748; cursor: pointer; 
-            transition: transform 0.1s;
-        }
-        .balance-block:active { transform: scale(0.95); }
-        .balance-value { font-weight: 700; font-size: 14px; color: #fff; }
-        .balance-icon { color: #f6ad55; font-size: 14px; } /* Star icon */
+        /* Шапка */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background-color: #1a202c; border-bottom: 1px solid #2d3748; }
+        .user-block { display: flex; align-items: center; gap: 8px; }
+        .user-avatar { width: 35px; height: 35px; background: #4a5568; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .balance-pill { background: #0b0e14; padding: 6px 12px; border-radius: 20px; border: 1px solid #2d3748; display: flex; align-items: center; gap: 6px; }
 
-        /* HISTORY */
-        .history-bar {
-            display: flex; gap: 6px; padding: 10px 16px; 
-            background-color: #11151c; overflow-x: auto; border-bottom: 1px solid #1a202c;
-        }
-        .history-bar::-webkit-scrollbar { display: none; }
-        .history-item { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; white-space: nowrap; }
-        .x-blue { background-color: rgba(66, 153, 225, 0.15); color: #63b3ed; }
-        .x-green { background-color: rgba(72, 187, 120, 0.15); color: #68d391; }
-        .x-yellow { background-color: rgba(236, 201, 75, 0.15); color: #faf089; }
-        .x-red { background-color: rgba(245, 101, 101, 0.15); color: #fc8181; }
+        /* Історія */
+        .history-bar { display: flex; gap: 6px; padding: 10px 16px; background: #11151c; overflow-x: auto; border-bottom: 1px solid #1a202c; }
+        .history-item { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.05); }
 
-        /* GAME AREA */
-        .game-area {
-            flex-grow: 1; display: flex; justify-content: center; align-items: center;
-            position: relative; background-color: #0d1117;
-            background-image: linear-gradient(#1a202c 1px, transparent 1px), linear-gradient(90deg, #1a202c 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-        .multiplier-display {
-            font-size: 64px; font-weight: 800; color: #fff;
-            text-shadow: 0 0 40px rgba(66, 153, 225, 0.6); position: relative; z-index: 10;
-        }
-        .rocket-svg {
-            position: absolute; width: 140px; opacity: 0.9;
-            filter: drop-shadow(0 0 20px #4299e1);
-            transition: transform 0.1s linear;
-        }
+        /* ГРАФІК ТА РАКЕТА */
+        .game-area { flex: 1.5; position: relative; background: #0d1117; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        .rocket-container { position: absolute; bottom: 20%; left: 10%; transition: all 0.1s linear; z-index: 5; }
+        .rocket-img { width: 100px; filter: drop-shadow(0 0 15px #4299e1); }
+        .multiplier { font-size: 60px; font-weight: 900; color: #fff; z-index: 10; margin-top: 40px; }
 
-        /* BET AREA */
-        .bet-area {
-            padding: 20px; background-color: #1a202c; border-top: 1px solid #2d3748;
-            border-radius: 24px 24px 0 0; display: flex; flex-direction: column; gap: 12px;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
-        }
-        .next-round-text { text-align: center; color: #a0aec0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .bet-input-row {
-            display: flex; background: #0b0e14; border-radius: 12px; border: 1px solid #2d3748; padding: 4px;
-        }
-        .bet-input-row input {
-            flex: 1; background: transparent; border: none; color: #fff; padding: 10px; font-size: 16px; font-weight: 700; outline: none;
-        }
-        .bet-input-row button {
-            background: #2d3748; color: #fff; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; margin-left: 4px;
-        }
+        /* СПИСОК ГРАВЦІВ (LIVE BETS) */
+        .players-list { flex: 1; background: #0b0e14; border-top: 1px solid #1a202c; overflow-y: auto; padding: 10px 16px; }
+        .player-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #1a202c; font-size: 13px; animation: fadeIn 0.3s ease; }
+        .p-name { color: #a0aec0; }
+        .p-bet { font-weight: bold; }
+        .p-win { color: #48bb78; font-weight: bold; }
+        .p-status-wait { color: #718096; font-style: italic; }
 
-        .bet-buttons-row { display: flex; gap: 10px; }
-        .bet-btn { 
-            flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; 
-            padding: 18px; border-radius: 14px; border: none; font-size: 16px; font-weight: 700; 
-            cursor: pointer; transition: 0.1s; 
-        }
-        .bet-btn:active { transform: scale(0.96); }
-        .btn-left { background-color: #11151c; color: #63b3ed; border: 1px solid #2d3748; }
-        .btn-main { background: linear-gradient(135deg, #4299e1, #3182ce); color: #fff; flex: 1.5; }
-        .btn-withdraw { background: linear-gradient(135deg, #f6ad55, #ed8936); color: #fff; }
+        /* ПАНЕЛЬ СТАВКИ */
+        .bet-panel { padding: 16px; background: #1a202c; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; gap: 10px; }
+        .input-box { background: #0b0e14; border-radius: 12px; display: flex; align-items: center; padding: 5px 15px; border: 1px solid #2d3748; }
+        .input-box input { flex: 1; background: none; border: none; color: white; padding: 10px; font-weight: bold; outline: none; }
+        .action-btn { width: 100%; padding: 18px; border-radius: 14px; border: none; font-size: 18px; font-weight: 800; cursor: pointer; color: white; background: linear-gradient(135deg, #4299e1, #3182ce); }
+        .action-btn.withdraw { background: linear-gradient(135deg, #f6ad55, #ed8936); }
 
-        /* NAVBAR */
-        .navbar {
-            display: flex; background-color: #1a202c; border-top: 1px solid #2d3748;
-            padding: 8px 0; width: 100%; justify-content: space-around;
-        }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #a0aec0; font-size: 10px; cursor: pointer; transition: 0.2s; }
-        .nav-item.active { color: #fff; }
-        .nav-icon { font-size: 20px; }
-
-        /* MODAL FOR STARS */
-        .modal {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 100; display: none;
-            justify-content: center; align-items: center;
-        }
-        .modal-content {
-            background: #1a202c; padding: 25px; border-radius: 20px; width: 85%;
-            text-align: center; border: 1px solid #2d3748;
-        }
-        .star-option {
-            background: #2d3748; padding: 15px; border-radius: 12px; margin: 10px 0;
-            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -123,212 +51,145 @@
 <div class="app-container">
     <div class="header">
         <div class="user-block">
-            <div class="user-avatar" id="userAvatar">Д</div>
-            <div class="user-info">
-                <span class="user-name" id="userName">Користувач</span>
-                <span class="user-level">Level 1</span>
-            </div>
+            <div class="user-avatar" id="uAv">U</div>
+            <span class="user-name" id="uName">Гість</span>
         </div>
-        <div class="balance-block" onclick="showStarsModal()">
-            <span class="balance-value" id="balanceText">100.00</span>
-            <i class="fa-solid fa-star balance-icon"></i>
+        <div class="balance-pill" onclick="tg.showAlert('Поповнення Stars...')">
+            <span id="uBal">500.00</span>
+            <i class="fa-solid fa-star" style="color:#f6ad55"></i>
         </div>
     </div>
 
-    <div class="history-bar" id="historyBar">
-        <span class="history-item x-blue">x1.33</span>
-        <span class="history-item x-green">x2.15</span>
-        <span class="history-item x-red">x1.00</span>
-    </div>
+    <div class="history-bar" id="hBar"></div>
 
     <div class="game-area">
-        <img src="https://cdn-icons-png.flaticon.com/512/1066/1066371.png" class="rocket-svg" id="rocketImg">
-        <div class="multiplier-display" id="multiplier">1.00x</div>
+        <div class="rocket-container" id="rocket">
+            <img src="https://cdn-icons-png.flaticon.com/512/1066/1066371.png" class="rocket-img">
+        </div>
+        <div class="multiplier" id="mult">1.00x</div>
     </div>
 
-    <div class="bet-area">
-        <div class="next-round-text">Ваша ставка (Stars)</div>
-        <div class="bet-input-row">
-            <input type="number" id="betAmount" value="10" min="1">
-            <button onclick="multiplyBet(2)">x2</button>
-            <button onclick="multiplyBet(0.5)">1/2</button>
+    <div class="players-list" id="pList">
+        <div style="font-size: 10px; color: #4a5568; margin-bottom: 5px; text-transform: uppercase;">Гравці онлайн</div>
         </div>
-        <div class="bet-buttons-row">
-            <button class="bet-btn btn-left" onclick="tg.showAlert('Функція подарунків скоро!')">
-                <i class="fa-solid fa-gift"></i>
-            </button>
-            <button class="bet-btn btn-main" id="actionBtn">
-                <i class="fa-solid fa-gem"></i> ПОСТАВИТИ
-            </button>
-        </div>
-    </div>
 
-    <div class="navbar">
-        <div class="nav-item"><i class="fa-solid fa-box-archive nav-icon"></i>Інвентар</div>
-        <div class="nav-item active"><i class="fa-solid fa-rocket nav-icon"></i>Краш</div>
-        <div class="nav-item"><i class="fa-solid fa-gift nav-icon"></i>Кейси</div>
-        <div class="nav-item" onclick="tg.showAlert('Профіль скоро!')"><i class="fa-solid fa-user nav-icon"></i>Профіль</div>
-    </div>
-
-    <div class="modal" id="starsModal" onclick="this.style.display='none'">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <h3>Поповнити Stars ⭐️</h3>
-            <div class="star-option" onclick="buyStars(50)"><span>50 Stars</span> <b>₴45</b></div>
-            <div class="star-option" onclick="buyStars(100)"><span>100 Stars</span> <b>₴89</b></div>
-            <div class="star-option" onclick="buyStars(500)"><span>500 Stars</span> <b>₴449</b></div>
-            <button class="bet-btn btn-left" style="width:100%; margin-top:10px" onclick="document.getElementById('starsModal').style.display='none'">Закрити</button>
+    <div class="bet-panel">
+        <div class="input-box">
+            <span style="font-size: 12px; color:#4a5568">СТАВКА:</span>
+            <input type="number" id="betVal" value="10">
+            <button onclick="document.getElementById('betVal').value *= 2" style="background:#2d3748; border:none; color:white; padding:5px 10px; border-radius:6px; margin-left:5px">x2</button>
         </div>
+        <button class="action-btn" id="actBtn">ПОСТАВИТИ</button>
     </div>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
-    tg.ready();
 
-    // GAME STATE
-    let balance = 100.00;
+    let balance = 500.00;
     let isPlaying = false;
     let isCrashed = false;
-    let currentMultiplier = 1.00;
+    let currentX = 1.00;
     let crashPoint = 0;
     let gameLoop;
 
-    const multDisplay = document.getElementById('multiplier');
-    const actionBtn = document.getElementById('actionBtn');
-    const rocket = document.getElementById('rocketImg');
-    const balanceText = document.getElementById('balanceText');
-
-    // SETUP USER
-    if (tg.initDataUnsafe.user) {
-        const user = tg.initDataUnsafe.user;
-        document.getElementById('userName').textContent = user.first_name;
-        document.getElementById('userAvatar').textContent = user.first_name[0].toUpperCase();
+    // Дані юзера
+    if(tg.initDataUnsafe.user) {
+        document.getElementById('uName').innerText = tg.initDataUnsafe.user.first_name;
+        document.getElementById('uAv').innerText = tg.initDataUnsafe.user.first_name[0];
     }
 
-    function multiplyBet(factor) {
-        const input = document.getElementById('betAmount');
-        input.value = Math.max(1, Math.floor(input.value * factor));
-    }
-
-    function showStarsModal() {
-        document.getElementById('starsModal').style.display = 'flex';
-    }
-
-    function buyStars(amount) {
-        tg.showConfirm(`Купити ${amount} зірок?`, (ok) => {
-            if(ok) {
-                // Виклик інвойсу Telegram Stars (потребує налаштованого бота)
-                tg.openInvoice("https://t.me/stars_invoice_example", function(status) {
-                    if(status == 'paid') {
-                        balance += amount;
-                        balanceText.textContent = balance.toFixed(2);
-                        tg.showAlert("Оплата успішна!");
-                    }
-                });
-            }
-        });
-    }
-
-    function generateCrashPoint() {
-        const seed = Math.random();
-        if (seed < 0.04) return 1.00; // 4% шанс моментального крашу
-        return (0.98 / (1 - seed)).toFixed(2);
-    }
-
-    function updateGame() {
-        if (!isPlaying || isCrashed) return;
-
-        currentMultiplier += 0.01 + (currentMultiplier * 0.0035);
-        multDisplay.textContent = currentMultiplier.toFixed(2) + 'x';
+    // Імітація інших гравців
+    const botNames = ["@max_ton", "@crypto_boss", "@lucky_guy", "@ton_expert", "@dimas_top"];
+    function updateBots() {
+        const list = document.getElementById('pList');
+        if(list.children.length > 6) list.removeChild(list.lastChild);
         
-        // РАКЕТА ЛЕТИТЬ
-        let offset = (currentMultiplier - 1) * 30;
-        rocket.style.transform = `translate(${offset}px, -${offset}px)`;
+        const name = botNames[Math.floor(Math.random()*botNames.length)];
+        const bet = (Math.random()*50 + 5).toFixed(0);
+        
+        const row = document.createElement('div');
+        row.className = 'player-row';
+        row.innerHTML = `
+            <span class="p-name">${name}</span>
+            <span class="p-bet">${bet} ⭐️</span>
+            <span class="p-status-wait" id="bot-${Date.now()}">у грі...</span>
+        `;
+        list.prepend(row);
+    }
+    setInterval(() => { if(!isPlaying) updateBots() }, 3000);
 
-        if (currentMultiplier >= crashPoint) {
-            doCrash();
-        }
+    function startRound() {
+        const bet = parseFloat(document.getElementById('betVal').value);
+        if(balance < bet) return tg.showAlert("Не вистачає Stars!");
+
+        balance -= bet;
+        document.getElementById('uBal').innerText = balance.toFixed(2);
+        
+        isPlaying = true;
+        isCrashed = false;
+        currentX = 1.00;
+        crashPoint = (0.98 / (1 - Math.random())).toFixed(2);
+        if(Math.random() < 0.05) crashPoint = 1.00; // Моментальний краш
+
+        document.getElementById('actBtn').innerText = "ЗАБРАТИ";
+        document.getElementById('actBtn').classList.add('withdraw');
+
+        gameLoop = setInterval(() => {
+            currentX += 0.01 + (currentX * 0.004);
+            document.getElementById('mult').innerText = currentX.toFixed(2) + 'x';
+            
+            // Рух ракети
+            const move = (currentX - 1) * 35;
+            document.getElementById('rocket').style.transform = `translate(${move}px, -${move}px)`;
+
+            if(currentX >= crashPoint) crash();
+        }, 100);
     }
 
-    function doCrash() {
-        isCrashed = true;
+    function crash() {
         clearInterval(gameLoop);
+        isCrashed = true;
         tg.HapticFeedback.notificationOccurred('error');
+        document.getElementById('mult').style.color = "#f56565";
+        document.getElementById('mult').innerText = "💥 " + currentX.toFixed(2) + "x";
         
-        multDisplay.style.color = '#fc8181';
-        multDisplay.textContent = '💥 ' + currentMultiplier.toFixed(2) + 'x';
+        const h = document.getElementById('hBar');
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerText = currentX.toFixed(2) + 'x';
+        item.style.color = currentX >= 2 ? '#48bb78' : '#f56565';
+        h.prepend(item);
 
-        addToHistory(currentMultiplier.toFixed(2));
-        resetRound();
+        setTimeout(reset, 3000);
     }
 
-    function resetRound() {
+    function reset() {
         isPlaying = false;
-        actionBtn.disabled = true;
-        actionBtn.innerHTML = 'ЗАЧЕКАЙТЕ...';
-        actionBtn.className = 'bet-btn btn-left';
-
-        setTimeout(() => {
-            currentMultiplier = 1.00;
-            multDisplay.textContent = '1.00x';
-            multDisplay.style.color = 'white';
-            rocket.style.transform = 'translate(0,0)';
-            isCrashed = false;
-            actionBtn.disabled = false;
-            actionBtn.innerHTML = '<i class="fa-solid fa-gem"></i> ПОСТАВИТИ';
-            actionBtn.className = 'bet-btn btn-main';
-        }, 4000);
+        document.getElementById('mult').innerText = "1.00x";
+        document.getElementById('mult').style.color = "white";
+        document.getElementById('rocket').style.transform = "translate(0,0)";
+        document.getElementById('actBtn').innerText = "ПОСТАВИТИ";
+        document.getElementById('actBtn').classList.remove('withdraw');
+        document.getElementById('actBtn').disabled = false;
     }
 
-    function addToHistory(val) {
-        const bar = document.getElementById('historyBar');
-        const item = document.createElement('span');
-        let color = 'x-blue';
-        if (val >= 2) color = 'x-green';
-        if (val >= 10) color = 'x-yellow';
-        if (val <= 1.1) color = 'x-red';
-
-        item.className = `history-item ${color}`;
-        item.textContent = val + 'x';
-        bar.prepend(item);
-        if (bar.children.length > 8) bar.removeChild(bar.lastChild);
-    }
-
-    // ГОЛОВНА КНОПКА
-    actionBtn.addEventListener('click', () => {
-        const bet = parseFloat(document.getElementById('betAmount').value);
-
-        if (!isPlaying && !isCrashed) {
-            if (balance < bet) return tg.showAlert("Мало зірок! Поповніть баланс.");
-            
-            balance -= bet;
-            balanceText.textContent = balance.toFixed(2);
-            
-            isPlaying = true;
-            crashPoint = parseFloat(generateCrashPoint());
-            tg.HapticFeedback.impactOccurred('medium');
-
-            actionBtn.innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> ЗАБРАТИ';
-            actionBtn.className = 'bet-btn btn-withdraw';
-            
-            gameLoop = setInterval(updateGame, 100);
-
-        } else if (isPlaying && !isCrashed) {
-            // ЗАБРАТИ ВИГРАШ
-            const win = bet * currentMultiplier;
+    document.getElementById('actBtn').onclick = function() {
+        if(!isPlaying) {
+            startRound();
+        } else {
+            // Гравець забирає
+            const bet = parseFloat(document.getElementById('betVal').value);
+            const win = bet * currentX;
             balance += win;
-            balanceText.textContent = balance.toFixed(2);
-            
+            document.getElementById('uBal').innerText = balance.toFixed(2);
+            tg.showAlert(`Ви виграли ${win.toFixed(2)} ⭐️!`);
             tg.HapticFeedback.notificationOccurred('success');
-            tg.showAlert(`✅ Ви забрали ${win.toFixed(2)} Stars!`);
-            
-            isPlaying = false;
-            actionBtn.disabled = true;
-            actionBtn.style.opacity = '0.5';
+            this.disabled = true;
+            this.innerText = "ЧЕКАЄМО КРАШУ...";
         }
-    });
-
+    }
 </script>
 </body>
 </html>
