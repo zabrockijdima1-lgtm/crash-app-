@@ -444,6 +444,7 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 8px;
+            margin-bottom: 8px;
         }
         
         .auto-btn {
@@ -463,6 +464,32 @@
             color: #0e1219;
             border-color: #f0b90b;
             transform: scale(1.05);
+        }
+        
+        .auto-off-btn {
+            width: 100%;
+            background: #2a3440;
+            border: 1px solid #fc8181;
+            color: #fc8181;
+            padding: 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            margin-top: 8px;
+        }
+        
+        .auto-off-btn:hover {
+            background: #fc8181;
+            color: #0e1219;
+        }
+        
+        .auto-off-btn.active {
+            background: #fc8181;
+            color: #0e1219;
+            border-color: #fc8181;
         }
         
         .place-bet-btn {
@@ -649,6 +676,22 @@
             font-size: 20px;
             margin-bottom: 2px;
         }
+        
+        /* Індикатор автовиводу */
+        .auto-indicator {
+            background: #1a232f;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 11px;
+            color: #f0b90b;
+            border: 1px solid #f0b90b;
+            margin-left: 8px;
+        }
+        
+        .auto-indicator.off {
+            color: #fc8181;
+            border-color: #fc8181;
+        }
     </style>
 </head>
 <body>
@@ -757,6 +800,7 @@
                         <button class="auto-btn" data-mult="3">x3</button>
                         <button class="auto-btn" data-mult="5">x5</button>
                     </div>
+                    <button class="auto-off-btn" id="autoOffBtn">🔴 ВИМКНУТИ АВТОВИВІД</button>
                 </div>
 
                 <button class="place-bet-btn" id="confirmBetBtn">Поставити ставку</button>
@@ -765,7 +809,10 @@
 
         <!-- Bet Area -->
         <div class="bet-area">
-            <div class="info-text" id="roundStatus">ВИ МОЖЕТЕ ПОСТАВИТИ СТАВКУ НА НАСТУПНИЙ РАУНД</div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="info-text" id="roundStatus">ВИ МОЖЕТЕ ПОСТАВИТИ СТАВКУ НА НАСТУПНИЙ РАУНД</div>
+                <div class="auto-indicator hidden" id="autoIndicator">⚡ x1.5</div>
+            </div>
 
             <div class="bet-buttons">
                 <button class="bet-action-btn secondary" id="showBetPanelBtn">
@@ -872,7 +919,9 @@
     const maxBetBtn = document.getElementById('maxBetBtn');
     const quickBetBtn = document.getElementById('quickBetBtn');
     const autoBtns = document.querySelectorAll('.auto-btn');
+    const autoOffBtn = document.getElementById('autoOffBtn');
     const quickBetBtns = document.querySelectorAll('.quick-bet-btn');
+    const autoIndicator = document.getElementById('autoIndicator');
     const navItems = document.querySelectorAll('.nav-item');
     const screens = {
         crash: document.getElementById('crashScreen'),
@@ -890,19 +939,28 @@
         { name: 'Восставший Рыцарь', bet: 0.11, multiplier: 3.52, avatar: 'В' }
     ];
 
+    // Функція оновлення індикатора автовиводу
+    function updateAutoIndicator() {
+        if (autoWithdrawMultiplier) {
+            autoIndicator.textContent = `⚡ x${autoWithdrawMultiplier}`;
+            autoIndicator.classList.remove('hidden', 'off');
+        } else {
+            autoIndicator.textContent = '🔴 ВИМКНЕНО';
+            autoIndicator.classList.add('off');
+            autoIndicator.classList.remove('hidden');
+        }
+    }
+
     // Функція перемикання екранів
     function switchScreen(screenId) {
-        // Ховаємо всі екрани
         Object.values(screens).forEach(screen => {
             screen.classList.remove('active');
         });
         
-        // Показуємо вибраний екран
         if (screens[screenId]) {
             screens[screenId].classList.add('active');
         }
         
-        // Оновлюємо активний пункт меню
         navItems.forEach(item => {
             item.classList.remove('active');
             if (item.dataset.screen === screenId) {
@@ -936,7 +994,6 @@
         
         tg.HapticFeedback.notificationOccurred('error');
         
-        // Додаємо краш в історію
         const historyBar = document.getElementById('historyBar');
         const chip = document.createElement('span');
         chip.className = 'history-chip';
@@ -946,21 +1003,15 @@
             historyBar.removeChild(historyBar.lastChild);
         }
 
-        // Показуємо краш
         multiplierEl.style.color = '#fc8181';
         multiplierEl.style.textShadow = '0 0 40px rgba(245, 101, 101, 0.8)';
         multiplierEl.textContent = '💥 ' + currentMultiplier.toFixed(2) + 'x';
         
-        // Ракета червоніє
         rocketContainer.classList.add('rocket-crashed');
-        
-        // Ховаємо потенційний виграш
         potentialWin.classList.add('hidden');
         
-        // Оновлюємо статус
         roundStatus.textContent = 'РАКЕТА ВПАЛА. НОВИЙ РАУНД ЗА 5 СЕК...';
         
-        // Запускаємо новий раунд через 5 секунд
         setTimeout(() => {
             startNewRound();
         }, 5000);
@@ -977,15 +1028,12 @@
         multiplierEl.style.textShadow = '0 0 40px rgba(66, 153, 225, 0.6)';
         multiplierEl.textContent = '1.00x';
         
-        // Ракета знову синя
         rocketContainer.classList.remove('rocket-crashed');
         
         roundStatus.textContent = 'ВИ МОЖЕТЕ ПОСТАВИТИ СТАВКУ НА НАСТУПНИЙ РАУНД';
         
-        // Скидаємо позицію ракети
         rocketContainer.style.transform = 'translate(0, 0) rotate(0deg)';
         
-        // Оновлюємо множники гравців
         players.forEach(p => {
             p.multiplier = 1.00;
         });
@@ -1024,13 +1072,23 @@
         });
     });
 
-    // Автовивід
+    // Автовивід - вибір множника
     autoBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             autoBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             autoWithdrawMultiplier = parseFloat(btn.dataset.mult);
+            autoOffBtn.classList.remove('active');
+            updateAutoIndicator();
         });
+    });
+
+    // Кнопка вимкнення автовиводу
+    autoOffBtn.addEventListener('click', () => {
+        autoBtns.forEach(b => b.classList.remove('active'));
+        autoOffBtn.classList.add('active');
+        autoWithdrawMultiplier = null;
+        updateAutoIndicator();
     });
 
     // Швидка ставка
@@ -1090,40 +1148,30 @@
         tg.close();
     });
 
-    // Ігровий цикл з плавною анімацією
+    // Ігровий цикл
     function gameTick() {
         if (!gameActive || isCrashed) return;
 
-        // Випадковий краш
         if (Math.random() < 0.015 && currentMultiplier > 1.5) {
             crash();
             return;
         }
 
-        // Збільшуємо множник плавно
         currentMultiplier += 0.008 + (currentMultiplier * 0.0015);
         multiplierEl.textContent = currentMultiplier.toFixed(2) + 'x';
         
-        // Плавний рух ракети
         rocketPos += 0.8;
         const gameArea = document.getElementById('gameArea');
         const maxWidth = gameArea.clientWidth - 100;
         const maxHeight = gameArea.clientHeight - 100;
         
-        // Використовуємо easing для більш природного руху
-        const easeInOut = (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-        const progress = Math.min(rocketPos / 150, 1);
-        const easedProgress = easeInOut(progress);
-        
         const x = Math.min(rocketPos * 2.5, maxWidth);
         const y = Math.max(30, maxHeight - rocketPos * 1.8);
-        
-        // Плавне обертання
         const rotation = 15 + Math.sin(rocketPos * 0.1) * 5 + rocketPos * 0.3;
         
         rocketContainer.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
         
-        // Автовивід
+        // Автовивід (тільки якщо не вимкнено)
         if (autoWithdrawMultiplier && currentMultiplier >= autoWithdrawMultiplier && currentBet > 0) {
             const win = currentBet * currentMultiplier;
             balance += win;
@@ -1131,30 +1179,26 @@
             potentialWin.classList.add('hidden');
             currentBet = 0;
             tg.showAlert(`✅ Автовивід спрацював! Виграш: ${win.toFixed(2)} TON`);
-            autoWithdrawMultiplier = null;
+            // Не скидаємо autoWithdrawMultiplier, щоб можна було використати в наступній ставці
         }
         
-        // Оновлюємо множники гравців
         players.forEach(p => {
             p.multiplier = currentMultiplier;
         });
         
-        // Оновлюємо потенційний виграш
         if (!potentialWin.classList.contains('hidden') && currentBet > 0) {
             const win = currentBet * currentMultiplier;
             potentialWin.textContent = `💰 ${win.toFixed(2)} TON`;
         }
         
-        // Оновлюємо список гравців
         renderPlayers();
     }
 
-    // Запускаємо гру
     startNewRound();
-    gameLoop = setInterval(gameTick, 50); // 50ms для більш плавної анімації
+    gameLoop = setInterval(gameTick, 50);
     renderPlayers();
+    updateAutoIndicator();
 
-    // Очищення при закритті
     window.addEventListener('beforeunload', () => {
         if (gameLoop) clearInterval(gameLoop);
     });
