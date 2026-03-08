@@ -1546,19 +1546,27 @@
     });
 
     confirmPay.addEventListener('click', async () => {
-        confirmationOverlay.classList.add('hidden');
-        
-        // Тут має бути реальна оплата через Telegram Stars
-        // Для тесту імітуємо успішну оплату
-        tg.HapticFeedback.notificationOccurred('success');
-        
-        const bonus = Math.floor(selectedAmount * 0.1);
-        stars += selectedAmount + bonus;
-        updateBalanceDisplay();
-        
-        tg.showAlert(`✅ Оплата пройшла успішно! Ви отримали ${selectedAmount} зірок + ${bonus} бонусних!`);
-        switchScreen('crash');
+
+    confirmationOverlay.classList.add('hidden');
+
+    const response = await fetch("http://176.117.76.153:8000/stars_invoice", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user_id: tg.initDataUnsafe.user.id,
+            amount: selectedAmount
+        })
     });
+
+    const data = await response.json();
+
+    if (data.invoice_link) {
+        tg.openInvoice(data.invoice_link);
+    }
+
+});
 
     // Free cases
     openFreeCase.addEventListener('click', () => {
@@ -1628,3 +1636,4 @@
 </script>
 </body>
 </html>
+
