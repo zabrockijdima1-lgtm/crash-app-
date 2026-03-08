@@ -3,51 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StonksGift - Crash</title>
+    <title>StonksGift - Crash Stars</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #0b0e14; color: #fff; overflow: hidden; height: 100vh; }
         
-        /* Основний контейнер */
         .app-container {
-            max-width: 600px;
-            margin: 0 auto;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-color: #11151c;
-            position: relative;
+            max-width: 600px; margin: 0 auto; height: 100vh;
+            display: flex; flex-direction: column; background-color: #11151c; position: relative;
         }
 
-        /* Шапка (Header) */
+        /* HEADER */
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 16px;
-            background-color: #1a202c;
-            border-bottom: 1px solid #2d3748;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 16px; background-color: #1a202c; border-bottom: 1px solid #2d3748;
         }
         .user-block { display: flex; align-items: center; gap: 10px; }
-        .user-avatar { width: 40px; height: 40px; background-color: #718096; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
+        .user-avatar { width: 40px; height: 40px; background-color: #718096; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; border: 1px solid #4a5568; }
         .user-info { display: flex; flex-direction: column; }
         .user-name { font-weight: 700; font-size: 14px; }
         .user-level { font-size: 11px; color: #a0aec0; }
         
-        .balance-block { display: flex; align-items: center; gap: 6px; background-color: #0b0e14; padding: 6px 12px; border-radius: 8px; border: 1px solid #2d3748; cursor: pointer; }
+        .balance-block { 
+            display: flex; align-items: center; gap: 8px; background-color: #0b0e14; 
+            padding: 6px 12px; border-radius: 10px; border: 1px solid #2d3748; cursor: pointer; 
+            transition: transform 0.1s;
+        }
+        .balance-block:active { transform: scale(0.95); }
         .balance-value { font-weight: 700; font-size: 14px; color: #fff; }
-        .balance-icon { width: 14px; height: 14px; background-color: #0088cc; border-radius: 50%; } /* TON icon */
+        .balance-icon { color: #f6ad55; font-size: 14px; } /* Star icon */
 
-        /* Історія іксів */
+        /* HISTORY */
         .history-bar {
-            display: flex;
-            gap: 6px;
-            padding: 10px 16px;
-            background-color: #11151c;
-            overflow-x: auto;
-            border-bottom: 1px solid #1a202c;
+            display: flex; gap: 6px; padding: 10px 16px; 
+            background-color: #11151c; overflow-x: auto; border-bottom: 1px solid #1a202c;
         }
         .history-bar::-webkit-scrollbar { display: none; }
         .history-item { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; white-space: nowrap; }
@@ -56,71 +47,75 @@
         .x-yellow { background-color: rgba(236, 201, 75, 0.15); color: #faf089; }
         .x-red { background-color: rgba(245, 101, 101, 0.15); color: #fc8181; }
 
-        /* Графік та Ракета */
+        /* GAME AREA */
         .game-area {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            background-color: #0d1117;
+            flex-grow: 1; display: flex; justify-content: center; align-items: center;
+            position: relative; background-color: #0d1117;
             background-image: linear-gradient(#1a202c 1px, transparent 1px), linear-gradient(90deg, #1a202c 1px, transparent 1px);
             background-size: 40px 40px;
         }
         .multiplier-display {
-            font-size: 64px;
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 0 0 40px rgba(66, 153, 225, 0.6);
-            position: relative;
-            z-index: 10;
+            font-size: 64px; font-weight: 800; color: #fff;
+            text-shadow: 0 0 40px rgba(66, 153, 225, 0.6); position: relative; z-index: 10;
         }
         .rocket-svg {
-            position: absolute;
-            width: 150px;
-            opacity: 0.8;
+            position: absolute; width: 140px; opacity: 0.9;
             filter: drop-shadow(0 0 20px #4299e1);
+            transition: transform 0.1s linear;
         }
 
-        /* Кнопки ставок */
+        /* BET AREA */
         .bet-area {
-            padding: 16px;
-            background-color: #1a202c;
-            border-top: 1px solid #2d3748;
-            border-radius: 20px 20px 0 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            padding: 20px; background-color: #1a202c; border-top: 1px solid #2d3748;
+            border-radius: 24px 24px 0 0; display: flex; flex-direction: column; gap: 12px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
         }
         .next-round-text { text-align: center; color: #a0aec0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
         
+        .bet-input-row {
+            display: flex; background: #0b0e14; border-radius: 12px; border: 1px solid #2d3748; padding: 4px;
+        }
+        .bet-input-row input {
+            flex: 1; background: transparent; border: none; color: #fff; padding: 10px; font-size: 16px; font-weight: 700; outline: none;
+        }
+        .bet-input-row button {
+            background: #2d3748; color: #fff; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; margin-left: 4px;
+        }
+
         .bet-buttons-row { display: flex; gap: 10px; }
-        .bet-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 18px; border-radius: 12px; border: none; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.1s; }
-        .bet-btn:active { transform: scale(0.97); }
-        
+        .bet-btn { 
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; 
+            padding: 18px; border-radius: 14px; border: none; font-size: 16px; font-weight: 700; 
+            cursor: pointer; transition: 0.1s; 
+        }
+        .bet-btn:active { transform: scale(0.96); }
         .btn-left { background-color: #11151c; color: #63b3ed; border: 1px solid #2d3748; }
         .btn-main { background: linear-gradient(135deg, #4299e1, #3182ce); color: #fff; flex: 1.5; }
-        
-        /* Кнопка "Забрати" */
         .btn-withdraw { background: linear-gradient(135deg, #f6ad55, #ed8936); color: #fff; }
 
-        /* Меню (Navbar) */
+        /* NAVBAR */
         .navbar {
-            display: flex;
-            background-color: #1a202c;
-            border-top: 1px solid #2d3748;
-            padding: 6px 0;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
+            display: flex; background-color: #1a202c; border-top: 1px solid #2d3748;
+            padding: 8px 0; width: 100%; justify-content: space-around;
         }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #a0aec0; text-decoration: none; font-size: 11px; padding: 10px 0; position: relative; cursor: pointer; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #a0aec0; font-size: 10px; cursor: pointer; transition: 0.2s; }
         .nav-item.active { color: #fff; }
-        .nav-item.active::after { content: ''; position: absolute; top: -7px; left: 25%; width: 50%; height: 2px; background-color: #4299e1; }
         .nav-icon { font-size: 20px; }
 
-        .hidden { display: none; }
+        /* MODAL FOR STARS */
+        .modal {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 100; display: none;
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #1a202c; padding: 25px; border-radius: 20px; width: 85%;
+            text-align: center; border: 1px solid #2d3748;
+        }
+        .star-option {
+            background: #2d3748; padding: 15px; border-radius: 12px; margin: 10px 0;
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -130,13 +125,13 @@
         <div class="user-block">
             <div class="user-avatar" id="userAvatar">Д</div>
             <div class="user-info">
-                <span class="user-name" id="userName">Діма | BIO</span>
+                <span class="user-name" id="userName">Користувач</span>
                 <span class="user-level">Level 1</span>
             </div>
         </div>
-        <div class="balance-block" onclick="tg.showAlert('Функція поповнення в розробці.')">
-            <span class="balance-value">0.00 <span style="font-size: 11px; opacity: 0.7;">TON</span></span>
-            <div class="balance-icon"></div>
+        <div class="balance-block" onclick="showStarsModal()">
+            <span class="balance-value" id="balanceText">100.00</span>
+            <i class="fa-solid fa-star balance-icon"></i>
         </div>
     </div>
 
@@ -144,103 +139,113 @@
         <span class="history-item x-blue">x1.33</span>
         <span class="history-item x-green">x2.15</span>
         <span class="history-item x-red">x1.00</span>
-        <span class="history-item x-blue">x1.94</span>
-        <span class="history-item x-yellow">x3.11</span>
-        <span class="history-item x-red">x1.05</span>
-        <span class="history-item x-blue">x1.76</span>
     </div>
 
     <div class="game-area">
-        <svg class="rocket-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L9.5 7L4.5 9.5L9.5 12L12 17L14.5 12L19.5 9.5L14.5 7L12 2Z" fill="#63B3ED" fill-opacity="0.3"/>
-            <path d="M11.9998 2V12M11.9998 12L14.1208 14.121M11.9998 12V22M11.9998 12L9.8787 14.121M14.1208 14.121C14.7318 14.732 15.0378 15.54 15.0378 16.348C15.0378 17.156 14.7318 17.964 14.1208 18.575M9.8787 14.121C9.2677 14.732 8.9617 15.54 8.9617 16.348C8.9617 17.156 9.2677 17.964 9.8787 18.575" stroke="#63B3ED" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M18.575 9.8787C17.964 9.2677 17.156 8.9617 16.348 8.9617C15.54 8.9617 14.732 9.2677 14.121 9.8787M18.575 14.121C19.186 14.732 19.492 15.54 19.492 16.348C19.492 17.156 19.186 17.964 18.575 18.575" stroke="#63B3ED" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M5.425 9.8787C6.036 9.2677 6.844 8.9617 7.652 8.9617C8.46 8.9617 9.268 9.2677 9.879 9.8787M5.425 14.121C4.814 14.732 4.508 15.54 4.508 16.348C4.508 17.156 4.814 17.964 5.425 18.575" stroke="#63B3ED" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <img src="https://cdn-icons-png.flaticon.com/512/1066/1066371.png" class="rocket-svg" id="rocketImg">
         <div class="multiplier-display" id="multiplier">1.00x</div>
     </div>
 
     <div class="bet-area">
-        <div class="next-round-text">Ви можете поставити ставку на наступний раунд</div>
+        <div class="next-round-text">Ваша ставка (Stars)</div>
+        <div class="bet-input-row">
+            <input type="number" id="betAmount" value="10" min="1">
+            <button onclick="multiplyBet(2)">x2</button>
+            <button onclick="multiplyBet(0.5)">1/2</button>
+        </div>
         <div class="bet-buttons-row">
-            <button class="bet-btn btn-left">
+            <button class="bet-btn btn-left" onclick="tg.showAlert('Функція подарунків скоро!')">
                 <i class="fa-solid fa-gift"></i>
-                Ставка
             </button>
             <button class="bet-btn btn-main" id="actionBtn">
-                <i class="fa-solid fa-gem"></i>
-                Поставити
+                <i class="fa-solid fa-gem"></i> ПОСТАВИТИ
             </button>
         </div>
     </div>
 
     <div class="navbar">
-        <div class="nav-item">
-            <i class="fa-solid fa-box-archive nav-icon"></i>
-            Інвентар
-        </div>
-        <div class="nav-item">
-            <i class="fa-solid fa-hammer nav-icon"></i>
-            Крафт
-        </div>
-        <div class="nav-item active">
-            <i class="fa-solid fa-rocket nav-icon"></i>
-            Краш
-        </div>
-        <div class="nav-item">
-            <i class="fa-solid fa-gift nav-icon"></i>
-            Кейси
-        </div>
-        <div class="nav-item">
-            <i class="fa-solid fa-user nav-icon"></i>
-            Профіль
+        <div class="nav-item"><i class="fa-solid fa-box-archive nav-icon"></i>Інвентар</div>
+        <div class="nav-item active"><i class="fa-solid fa-rocket nav-icon"></i>Краш</div>
+        <div class="nav-item"><i class="fa-solid fa-gift nav-icon"></i>Кейси</div>
+        <div class="nav-item" onclick="tg.showAlert('Профіль скоро!')"><i class="fa-solid fa-user nav-icon"></i>Профіль</div>
+    </div>
+
+    <div class="modal" id="starsModal" onclick="this.style.display='none'">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h3>Поповнити Stars ⭐️</h3>
+            <div class="star-option" onclick="buyStars(50)"><span>50 Stars</span> <b>₴45</b></div>
+            <div class="star-option" onclick="buyStars(100)"><span>100 Stars</span> <b>₴89</b></div>
+            <div class="star-option" onclick="buyStars(500)"><span>500 Stars</span> <b>₴449</b></div>
+            <button class="bet-btn btn-left" style="width:100%; margin-top:10px" onclick="document.getElementById('starsModal').style.display='none'">Закрити</button>
         </div>
     </div>
 </div>
 
 <script>
     const tg = window.Telegram.WebApp;
-    tg.expand(); // Розгорнути на весь екран
+    tg.expand();
     tg.ready();
 
-    // Елементи UI
-    const multDisplay = document.getElementById('multiplier');
-    const actionBtn = document.getElementById('actionBtn');
-    const historyBar = document.getElementById('historyBar');
-
-    // Налаштування користувача (автоматично з Telegram)
-    if (tg.initDataUnsafe.user) {
-        const user = tg.initDataUnsafe.user;
-        document.getElementById('userName').textContent = `${user.first_name} ${user.last_name || ''}`;
-        document.getElementById('userAvatar').textContent = user.first_name[0].toUpperCase();
-    }
-
-    // Стан гри
+    // GAME STATE
+    let balance = 100.00;
     let isPlaying = false;
     let isCrashed = false;
     let currentMultiplier = 1.00;
     let crashPoint = 0;
     let gameLoop;
 
-    // --- Математика Шансів (Чесна логіка, Casino Edge 5%) ---
+    const multDisplay = document.getElementById('multiplier');
+    const actionBtn = document.getElementById('actionBtn');
+    const rocket = document.getElementById('rocketImg');
+    const balanceText = document.getElementById('balanceText');
+
+    // SETUP USER
+    if (tg.initDataUnsafe.user) {
+        const user = tg.initDataUnsafe.user;
+        document.getElementById('userName').textContent = user.first_name;
+        document.getElementById('userAvatar').textContent = user.first_name[0].toUpperCase();
+    }
+
+    function multiplyBet(factor) {
+        const input = document.getElementById('betAmount');
+        input.value = Math.max(1, Math.floor(input.value * factor));
+    }
+
+    function showStarsModal() {
+        document.getElementById('starsModal').style.display = 'flex';
+    }
+
+    function buyStars(amount) {
+        tg.showConfirm(`Купити ${amount} зірок?`, (ok) => {
+            if(ok) {
+                // Виклик інвойсу Telegram Stars (потребує налаштованого бота)
+                tg.openInvoice("https://t.me/stars_invoice_example", function(status) {
+                    if(status == 'paid') {
+                        balance += amount;
+                        balanceText.textContent = balance.toFixed(2);
+                        tg.showAlert("Оплата успішна!");
+                    }
+                });
+            }
+        });
+    }
+
     function generateCrashPoint() {
         const seed = Math.random();
-        // 5% шанс моментального крашу на 1.00x (твій прибуток)
-        if (seed < 0.05) return 1.00;
-        
-        // Формула кривої: 98 / (100 - X). Надає правильну криву ймовірностей.
+        if (seed < 0.04) return 1.00; // 4% шанс моментального крашу
         return (0.98 / (1 - seed)).toFixed(2);
     }
 
-    // --- Основний цикл гри ---
     function updateGame() {
         if (!isPlaying || isCrashed) return;
 
-        // Повільне прискорення (кожні 100мс)
-        currentMultiplier += 0.01 + (currentMultiplier * 0.003); 
+        currentMultiplier += 0.01 + (currentMultiplier * 0.0035);
         multDisplay.textContent = currentMultiplier.toFixed(2) + 'x';
         
-        // Перевірка на краш
+        // РАКЕТА ЛЕТИТЬ
+        let offset = (currentMultiplier - 1) * 30;
+        rocket.style.transform = `translate(${offset}px, -${offset}px)`;
+
         if (currentMultiplier >= crashPoint) {
             doCrash();
         }
@@ -249,11 +254,9 @@
     function doCrash() {
         isCrashed = true;
         clearInterval(gameLoop);
+        tg.HapticFeedback.notificationOccurred('error');
         
-        // Візуалізація крашу
-        tg.HapticFeedback.notificationOccurred('error'); // Могутня вібрація
-        multDisplay.style.color = '#fc8181'; // Червоний
-        multDisplay.style.textShadow = '0 0 40px rgba(245, 101, 101, 0.8)';
+        multDisplay.style.color = '#fc8181';
         multDisplay.textContent = '💥 ' + currentMultiplier.toFixed(2) + 'x';
 
         addToHistory(currentMultiplier.toFixed(2));
@@ -262,81 +265,70 @@
 
     function resetRound() {
         isPlaying = false;
-        
-        // Повертаємо кнопку в початковий стан
-        actionBtn.innerHTML = '<i class="fa-gem"></i> Поставити';
-        actionBtn.className = 'bet-btn btn-main';
-        actionBtn.disabled = true; // Заборона ставки під час паузи
+        actionBtn.disabled = true;
+        actionBtn.innerHTML = 'ЗАЧЕКАЙТЕ...';
+        actionBtn.className = 'bet-btn btn-left';
 
-        // Пауза перед наступним раундом
         setTimeout(() => {
-            if (!isPlaying) {
-                currentMultiplier = 1.00;
-                multDisplay.textContent = '1.00x';
-                multDisplay.style.color = 'white';
-                multDisplay.style.textShadow = '0 0 40px rgba(66, 153, 225, 0.6)';
-                isCrashed = false;
-                actionBtn.disabled = false;
-            }
+            currentMultiplier = 1.00;
+            multDisplay.textContent = '1.00x';
+            multDisplay.style.color = 'white';
+            rocket.style.transform = 'translate(0,0)';
+            isCrashed = false;
+            actionBtn.disabled = false;
+            actionBtn.innerHTML = '<i class="fa-solid fa-gem"></i> ПОСТАВИТИ';
+            actionBtn.className = 'bet-btn btn-main';
         }, 4000);
     }
 
-    // Додавання ікса в історію з кольоровим кодуванням (як на фото)
     function addToHistory(val) {
+        const bar = document.getElementById('historyBar');
         const item = document.createElement('span');
-        let colorClass = 'x-blue';
-        if (val >= 2) colorClass = 'x-green';
-        if (val >= 3) colorClass = 'x-yellow';
-        if (val < 1.2) colorClass = 'x-red'; // Дуже низький краш
+        let color = 'x-blue';
+        if (val >= 2) color = 'x-green';
+        if (val >= 10) color = 'x-yellow';
+        if (val <= 1.1) color = 'x-red';
 
-        item.className = `history-item ${colorClass}`;
+        item.className = `history-item ${color}`;
         item.textContent = val + 'x';
-        
-        // Додаємо на початок і видаляємо старі, якщо їх забагато
-        historyBar.prepend(item);
-        if (historyBar.children.length > 10) {
-            historyBar.removeChild(historyBar.lastChild);
-        }
+        bar.prepend(item);
+        if (bar.children.length > 8) bar.removeChild(bar.lastChild);
     }
 
-    // --- Обробка натискання кнопки ---
+    // ГОЛОВНА КНОПКА
     actionBtn.addEventListener('click', () => {
+        const bet = parseFloat(document.getElementById('betAmount').value);
+
         if (!isPlaying && !isCrashed) {
-            // Дія: "Поставити ставку"
+            if (balance < bet) return tg.showAlert("Мало зірок! Поповніть баланс.");
+            
+            balance -= bet;
+            balanceText.textContent = balance.toFixed(2);
+            
             isPlaying = true;
             crashPoint = parseFloat(generateCrashPoint());
-            tg.HapticFeedback.impactOccurred('medium'); // Легка вібрація
+            tg.HapticFeedback.impactOccurred('medium');
 
-            // Зміна кнопки на "Забрати"
-            actionBtn.innerHTML = '<i class="fa-money-bill-wave"></i> ЗАБРАТИ';
-            actionBtn.className = 'bet-btn btn-main btn-withdraw';
+            actionBtn.innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> ЗАБРАТИ';
+            actionBtn.className = 'bet-btn btn-withdraw';
             
-            // Запуск циклу гри (кожні 100мс)
             gameLoop = setInterval(updateGame, 100);
 
         } else if (isPlaying && !isCrashed) {
-            // Дія: "Забрати виграш"
-            tg.HapticFeedback.notificationOccurred('success'); // Вібрація успіху
-            tg.showAlert(`✅ Ви забрали на ${currentMultiplier.toFixed(2)}x!`);
+            // ЗАБРАТИ ВИГРАШ
+            const win = bet * currentMultiplier;
+            balance += win;
+            balanceText.textContent = balance.toFixed(2);
+            
+            tg.HapticFeedback.notificationOccurred('success');
+            tg.showAlert(`✅ Ви забрали ${win.toFixed(2)} Stars!`);
             
             isPlaying = false;
-            // Гра продовжується візуально, але гравець вже не бере участь
-            actionBtn.disabled = true; 
+            actionBtn.disabled = true;
             actionBtn.style.opacity = '0.5';
         }
     });
 
-    // Навігація (імітація)
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function() {
-            document.querySelector('.nav-item.active').classList.remove('active');
-            this.classList.add('active');
-            tg.HapticFeedback.selectionChanged();
-        });
-    });
-
 </script>
-
 </body>
 </html>
-
