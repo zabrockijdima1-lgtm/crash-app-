@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+
+body{
+background:#0b0f1c;
+color:white;
+text-align:center;
+font-family:sans-serif;
+}
+
+#mult{
+font-size:60px;
+margin-top:100px;
+}
+
+button{
+padding:15px 40px;
+font-size:20px;
+background:#2ea6ff;
+border:none;
+border-radius:10px;
+color:white;
+}
+
+</style>
+
+</head>
+<body>
+
+<h2>🚀 Crash</h2>
+
+<div id="mult">1.00x</div>
+
+<button onclick="bet()">BET</button>
+
+<script>
+
+let mult = 1.0
+let running = false
+
+function bet(){
+
+if(running) return
+
+running = true
+mult = 1
+
+let crash = Math.random()*5 + 1
+
+let interval = setInterval(()=>{
+
+mult += 0.03
+
+document.getElementById("mult").innerText = mult.toFixed(2) + "x"
+
+if(mult >= crash){
+
+clearInterval(interval)
+
+document.getElementById("mult").innerText =
+"💥 CRASH " + crash.toFixed(2)
+
+running = false
+
+}
+
+},50)
+
+}
+
+</script>
+
+</body>
+</html>
