@@ -1,35 +1,34 @@
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StonksGift - Crash</title>
+    <title>StonksGift - Official Crash</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
+        :root {
+            --bg-main: #0b0e14;
+            --bg-secondary: #11151c;
+            --bg-accent: #1a202c;
+            --ton-blue: #0088cc;
+            --gold: #fbbf24;
+            --green: #68d391;
+            --red: #fc8181;
+            --text-gray: #a0aec0;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body {
-            background-color: #0e1219;
-            color: #fff;
-            overflow: hidden;
-            height: 100vh;
-        }
+        body { background-color: var(--bg-main); color: #fff; overflow: hidden; height: 100vh; }
         
         .app-container {
-            max-width: 400px;
+            max-width: 600px;
             margin: 0 auto;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            background-color: #0e1219;
+            background-color: var(--bg-secondary);
             position: relative;
         }
 
@@ -38,857 +37,180 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 12px;
-            background-color: #0e1219;
-            border-bottom: 1px solid #1e2630;
+            padding: 12px 16px;
+            background-color: var(--bg-accent);
+            border-bottom: 1px solid #2d3748;
+            z-index: 100;
         }
+        .user-block { display: flex; align-items: center; gap: 10px; }
+        .user-avatar { width: 38px; height: 38px; background: linear-gradient(45deg, #4a5568, #718096); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #4a5568; }
+        .user-info { display: flex; flex-direction: column; }
+        .user-name { font-weight: 700; font-size: 13px; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .user-level { font-size: 10px; color: var(--text-gray); }
         
-        .user-block {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .balances { display: flex; gap: 8px; }
+        .balance-item { 
+            display: flex; align-items: center; gap: 5px; background: var(--bg-main); 
+            padding: 6px 10px; border-radius: 10px; border: 1px solid #2d3748; font-size: 13px; font-weight: 700;
         }
-        
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(145deg, #2a3440, #1a222c);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 16px;
-            color: #8e9fb1;
-            border: 1px solid #31465c;
-        }
-        
-        .user-info {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .user-name {
-            font-weight: 600;
-            font-size: 14px;
-            color: #fff;
-        }
-        
-        .user-level {
-            font-size: 10px;
-            color: #6b7f98;
-        }
-        
-        .balance-block {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background-color: #0e1219;
-            padding: 4px 8px;
-            border-radius: 6px;
-            border: 1px solid #31465c;
-        }
-        
-        .balance-value {
-            font-weight: 600;
-            font-size: 13px;
-            color: #f0b90b;
-        }
-        
-        .balance-icon {
-            width: 16px;
-            height: 16px;
-            background: linear-gradient(135deg, #f0b90b, #d4a50a);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: #0e1219;
-        }
+        .bal-ton { border-color: var(--ton-blue); }
+        .bal-stars { border-color: var(--gold); color: var(--gold); }
 
-        /* Закрити кнопка (як на фото) */
-        .close-btn {
-            color: #8e9fb1;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 4px;
-        }
-
-        /* History Bar */
+        /* History */
         .history-bar {
-            display: flex;
-            gap: 4px;
-            padding: 8px 12px;
-            overflow-x: auto;
-            border-bottom: 1px solid #1e2630;
+            display: flex; gap: 6px; padding: 8px 16px; background: var(--bg-secondary);
+            overflow-x: auto; border-bottom: 1px solid #1a202c; scrollbar-width: none;
         }
+        .history-bar::-webkit-scrollbar { display: none; }
+        .history-item { padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; white-space: nowrap; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateX(-10px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         
-        .history-bar::-webkit-scrollbar {
-            display: none;
+        .x-low { background: rgba(252, 129, 129, 0.15); color: var(--red); }
+        .x-mid { background: rgba(104, 211, 145, 0.15); color: var(--green); }
+        .x-high { background: rgba(251, 191, 36, 0.15); color: var(--gold); }
+
+        /* Game Area */
+        .game-area {
+            flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative; background: radial-gradient(circle at center, #1a202c 0%, #0d1117 100%);
+            overflow: hidden;
         }
-        
-        .history-item {
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-            background-color: #1e2630;
-            color: #b3c6e2;
+        .grid-bg {
+            position: absolute; width: 200%; height: 200%;
+            background-image: linear-gradient(#1a202c 1px, transparent 1px), linear-gradient(90deg, #1a202c 1px, transparent 1px);
+            background-size: 40px 40px; transform: perspective(500px) rotateX(60deg);
+            top: -50%; opacity: 0.3;
         }
 
-        /* Основний ігровий екран */
-        .game-screen {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 16px 12px;
-            overflow-y: auto;
+        .multiplier-display {
+            font-size: 72px; font-weight: 900; z-index: 10; text-align: center;
+            transition: transform 0.1s; text-shadow: 0 0 30px rgba(255,255,255,0.1);
+        }
+        .win-toast {
+            position: absolute; top: 20%; background: var(--green); color: #000;
+            padding: 5px 15px; border-radius: 20px; font-weight: 800; font-size: 14px;
+            animation: bounce 0.5s infinite alternate; z-index: 20;
+        }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-5px); } }
+
+        .rocket-box {
+            position: absolute; bottom: 20%; left: 20%; width: 80px; height: 80px;
+            transition: all 0.1s linear; z-index: 5;
+        }
+        .rocket-img { width: 100%; filter: drop-shadow(0 0 15px var(--ton-blue)); }
+
+        /* Bet Area */
+        .bet-section {
+            background: var(--bg-accent); padding: 16px; border-radius: 24px 24px 0 0;
+            box-shadow: 0 -10px 20px rgba(0,0,0,0.3);
+        }
+        .round-info { text-align: center; font-size: 11px; color: var(--text-gray); margin-bottom: 12px; letter-spacing: 1px; }
+
+        .input-group {
+            background: var(--bg-main); border: 1px solid #2d3748; border-radius: 12px;
+            display: flex; align-items: center; padding: 4px 12px; margin-bottom: 12px;
+        }
+        .input-group input {
+            flex: 1; background: transparent; border: none; color: #fff;
+            padding: 12px; font-size: 18px; font-weight: 700; outline: none;
         }
 
-        /* Інвентар порожній (як на фото) */
-        .empty-inventory {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            height: 100%;
-            padding: 20px;
+        .presets { display: flex; gap: 8px; margin-bottom: 16px; }
+        .p-btn { 
+            flex: 1; background: var(--bg-main); border: 1px solid #2d3748; color: var(--text-gray);
+            padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;
         }
-        
-        .empty-icon {
-            width: 80px;
-            height: 80px;
-            background: #1a232f;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            color: #3f536e;
-            font-size: 32px;
-        }
-        
-        .empty-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #fff;
-        }
-        
-        .empty-text {
-            font-size: 13px;
-            color: #6b7f98;
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-        
-        .empty-link {
-            color: #3b82f6;
-            font-size: 13px;
-            margin-bottom: 16px;
-        }
-        
-        .exchange-btn {
-            background: linear-gradient(135deg, #f0b90b, #d4a50a);
-            border: none;
-            color: #0e1219;
-            font-weight: 700;
-            font-size: 14px;
-            padding: 14px 24px;
-            border-radius: 30px;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 16px;
-        }
+        .p-btn.active { border-color: var(--ton-blue); color: #fff; background: rgba(0, 136, 204, 0.1); }
 
-        /* Крафт екран */
-        .craft-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+        .main-btn {
+            width: 100%; padding: 20px; border-radius: 16px; border: none;
+            font-size: 18px; font-weight: 800; cursor: pointer; transition: 0.2s;
+            text-transform: uppercase; letter-spacing: 1px;
         }
-        
-        .craft-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #fff;
-        }
-        
-        .craft-items {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .craft-item {
-            background-color: #1a232f;
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .item-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .item-icon {
-            width: 48px;
-            height: 48px;
-            background: #253040;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #f0b90b;
-            font-size: 20px;
-        }
-        
-        .item-name {
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .item-desc {
-            font-size: 12px;
-            color: #6b7f98;
-        }
-        
-        .upgrade-btn {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            border: none;
-            color: white;
-            font-weight: 600;
-            font-size: 12px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-        }
+        .btn-bet { background: linear-gradient(135deg, #0088cc, #006699); color: white; }
+        .btn-cashout { background: linear-gradient(135deg, #f6ad55, #ed8936); color: white; box-shadow: 0 0 20px rgba(237, 137, 54, 0.4); }
+        .main-btn:disabled { opacity: 0.5; filter: grayscale(1); }
 
-        /* Crash екран */
-        .multiplier-section {
-            text-align: center;
-            margin: 20px 0;
-            position: relative;
+        /* Players List */
+        .players-box { margin-top: 15px; max-height: 120px; overflow-y: auto; }
+        .player-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px;
         }
-        
-        .multiplier {
-            font-size: 72px;
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-            line-height: 1;
-        }
-        
-        .multiplier-label {
-            font-size: 14px;
-            color: #6b7f98;
-            margin-top: 8px;
-        }
+        .p-name { display: flex; align-items: center; gap: 6px; color: var(--text-gray); }
+        .p-status-win { color: var(--green); font-weight: 700; }
 
-        /* Панель ставки */
-        .bet-panel {
-            background: #1a232f;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-        
-        .bet-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        
-        .bet-title {
-            font-weight: 600;
-            color: #fff;
-        }
-        
-        .bet-close {
-            color: #6b7f98;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        
-        .bet-input-container {
-            background: #0e1219;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
-        
-        .bet-input-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            color: #6b7f98;
-            font-size: 12px;
-        }
-        
-        .bet-input-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .bet-input-row input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 24px;
-            font-weight: 600;
-            outline: none;
-        }
-        
-        .bet-max {
-            background: #253040;
-            border: 1px solid #31465c;
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 12px;
-            color: #f0b90b;
-            cursor: pointer;
-        }
-        
-        .bet-limit {
-            font-size: 11px;
-            color: #6b7f98;
-            margin-top: 4px;
-        }
-        
-        .bet-quick-btns {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        
-        .quick-btn {
-            flex: 1;
-            background: #253040;
-            border: 1px solid #31465c;
-            border-radius: 20px;
-            padding: 8px 0;
-            font-size: 12px;
-            font-weight: 600;
-            color: #b3c6e2;
-            cursor: pointer;
-        }
-        
-        .auto-withdraw {
-            background: #0e1219;
-            border-radius: 12px;
-            padding: 12px;
-        }
-        
-        .auto-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            color: #6b7f98;
-            font-size: 12px;
-        }
-        
-        .auto-btns {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .auto-btn {
-            flex: 1;
-            background: #253040;
-            border: 1px solid #31465c;
-            border-radius: 20px;
-            padding: 6px 0;
-            font-size: 12px;
-            font-weight: 600;
-            color: #b3c6e2;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        /* Депозит екран */
-        .deposit-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .deposit-bonus {
-            background: linear-gradient(135deg, #f0b90b, #d4a50a);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .bonus-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: #0e1219;
-        }
-        
-        .bonus-desc {
-            font-size: 12px;
-            color: #0e1219;
-            opacity: 0.8;
-        }
-        
-        .payment-methods {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .payment-method {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            background: #1a232f;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        
-        .payment-method.active {
-            background: linear-gradient(135deg, #f0b90b, #d4a50a);
-            color: #0e1219;
-        }
-        
-        .deposit-amount {
-            background: #1a232f;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .amount-input {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        
-        .amount-input input {
-            flex: 1;
-            background: #0e1219;
-            border: 1px solid #31465c;
-            border-radius: 8px;
-            padding: 12px;
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-        }
-        
-        .min-amount {
-            font-size: 11px;
-            color: #6b7f98;
-        }
-        
-        .deposit-buttons {
-            display: flex;
-            gap: 12px;
-        }
-        
-        .deposit-btn {
-            flex: 1;
-            padding: 14px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-        }
-        
-        .cancel-btn {
-            background: #253040;
-            color: #b3c6e2;
-        }
-        
-        .confirm-btn {
-            background: linear-gradient(135deg, #f0b90b, #d4a50a);
-            color: #0e1219;
-            font-weight: 700;
-        }
-
-        /* Реферальний екран */
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .profile-avatar {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(145deg, #2a3440, #1a222c);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            border: 2px solid #31465c;
-        }
-        
-        .profile-info h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        
-        .profile-username {
-            font-size: 13px;
-            color: #6b7f98;
-            margin-bottom: 4px;
-        }
-        
-        .connect-btn {
-            background: #3b82f6;
-            border: none;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        
-        .deposit-link {
-            color: #f0b90b;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            cursor: pointer;
-        }
-        
-        .referral-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        
-        .stat-card {
-            background: #1a232f;
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        
-        .stat-label {
-            font-size: 11px;
-            color: #6b7f98;
-        }
-        
-        .referral-level {
-            background: #1a232f;
-            border-radius: 12px;
-            padding: 16px;
-        }
-        
-        .level-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        
-        .level-title {
-            font-weight: 600;
-        }
-        
-        .level-percent {
-            color: #f0b90b;
-            font-weight: 600;
-        }
-        
-        .level-link {
-            color: #3b82f6;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        /* Navbar */
         .navbar {
-            display: flex;
-            background-color: #0e1219;
-            border-top: 1px solid #1e2630;
-            padding: 4px 0;
+            display: flex; background: var(--bg-accent); border-top: 1px solid #2d3748; padding: 10px 0;
         }
-        
-        .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            color: #6b7f98;
-            font-size: 10px;
-            padding: 8px 0;
-            cursor: pointer;
-        }
-        
-        .nav-item.active {
-            color: #f0b90b;
-        }
-        
-        .nav-icon {
-            font-size: 20px;
-        }
+        .nav-item { flex: 1; text-align: center; color: var(--text-gray); font-size: 20px; opacity: 0.6; }
+        .nav-item.active { color: var(--ton-blue); opacity: 1; }
 
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- Header -->
     <div class="header">
         <div class="user-block">
-            <div class="user-avatar" id="userAvatar">Д</div>
+            <div class="user-avatar" id="uAvat">?</div>
             <div class="user-info">
-                <div class="user-name" id="userName">Діма | BIO</div>
-                <div class="user-level">Level 1</div>
+                <span class="user-name" id="uName">Loading...</span>
+                <span class="user-level">LVL 1 Провідець</span>
             </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-            <div class="balance-block">
-                <span class="balance-value" id="balanceValue">0.02</span>
-                <div class="balance-icon">⭐</div>
+        <div class="balances">
+            <div class="balance-item bal-stars">
+                <i class="fa-solid fa-star"></i> <span id="starsCount">0</span>
             </div>
-            <div class="close-btn">
-                <i class="fa-solid fa-xmark"></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- History Bar -->
-    <div class="history-bar" id="historyBar">
-        <span class="history-item">05.00</span>
-        <span class="history-item">02.15</span>
-        <span class="history-item">01.94</span>
-        <span class="history-item">03.33</span>
-        <span class="history-item">01.76</span>
-        <span class="history-item">02.50</span>
-    </div>
-
-    <!-- Основний контент (Crash екран) -->
-    <div class="game-screen" id="mainContent">
-        <div class="multiplier-section">
-            <div class="multiplier" id="multiplier">1.00x</div>
-            <div class="multiplier-label">поточний множник</div>
-        </div>
-
-        <!-- Панель ставки (як на першому фото) -->
-        <div class="bet-panel" id="betPanel">
-            <div class="bet-header">
-                <span class="bet-title">Ставка TON</span>
-                <span class="bet-close" id="closeBetPanel">
-                    <i class="fa-solid fa-xmark"></i>
-                </span>
-            </div>
-            
-            <div class="bet-input-container">
-                <div class="bet-input-header">
-                    <span>Сума ставки</span>
-                    <span>Баланс: 0.02 TON</span>
-                </div>
-                <div class="bet-input-row">
-                    <input type="number" id="betAmount" min="0.1" step="0.1" value="1.00">
-                    <span class="bet-max">MAX</span>
-                </div>
-                <div class="bet-limit">МАКС. СТАВКА: 200 TON</div>
-            </div>
-
-            <div class="bet-quick-btns">
-                <button class="quick-btn">+1</button>
-                <button class="quick-btn">+5</button>
-                <button class="quick-btn">+10</button>
-                <button class="quick-btn">+50</button>
-            </div>
-
-            <div class="auto-withdraw">
-                <div class="auto-header">
-                    <span>Автовивід</span>
-                    <span>Автовивід</span>
-                </div>
-                <div class="auto-btns">
-                    <button class="auto-btn">x1.5</button>
-                    <button class="auto-btn">x2</button>
-                    <button class="auto-btn">x5</button>
-                    <button class="auto-btn">x10</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Кнопка Поставити -->
-        <button class="exchange-btn" id="placeBetBtn" style="margin-top: 12px;">Поставити</button>
-    </div>
-
-    <!-- Депозит екран (3-тє фото) -->
-    <div class="game-screen hidden" id="depositScreen">
-        <div class="deposit-header">
-            <div class="multiplier" style="font-size: 48px;">2.63x</div>
-            <div style="flex: 1;">
-                <div style="background: #1a232f; border-radius: 8px; padding: 8px; text-align: center; color: #f0b90b;">+10%</div>
-                <div style="background: #1a232f; border-radius: 8px; padding: 8px; text-align: center; color: #f0b90b; margin-top: 4px;">+10%</div>
-            </div>
-        </div>
-
-        <div class="deposit-bonus">
-            <div class="bonus-title">Бонус +10%</div>
-            <div class="bonus-desc">на сьогоднішнє поповнення</div>
-        </div>
-
-        <div class="payment-methods">
-            <div class="payment-method active">Stars</div>
-            <div class="payment-method">TON</div>
-            <div class="payment-method">Crypto</div>
-            <div class="payment-method">Gifts</div>
-        </div>
-
-        <div class="deposit-amount">
-            <div class="amount-input">
-                <input type="number" id="depositAmount" value="0.1" step="0.1" min="0.1">
-                <span style="color: #f0b90b;">TON</span>
-            </div>
-            <div class="min-amount">МИН. СУМА: 0.1 TON</div>
-        </div>
-
-        <div class="deposit-buttons">
-            <button class="deposit-btn cancel-btn" id="cancelDeposit">Скасувати</button>
-            <button class="deposit-btn confirm-btn" id="confirmDeposit">Поповнити</button>
-        </div>
-    </div>
-
-    <!-- Реферальний екран (4-те фото) -->
-    <div class="game-screen hidden" id="referralScreen">
-        <div class="profile-header">
-            <div class="profile-avatar">Д</div>
-            <div class="profile-info">
-                <h3>Діма | BIO</h3>
-                <div class="profile-username">DIMASKSJD</div>
-                <button class="connect-btn">Підключити</button>
-            </div>
-        </div>
-
-        <div class="deposit-link">↑ Поповнення</div>
-        <div class="deposit-link">Реферали</div>
-
-        <div class="referral-level">
-            <div class="level-header">
-                <span class="level-title">Рівень 1</span>
-                <span class="level-percent">5% від прибутку</span>
-            </div>
-            <div class="level-link">Рівні реферальної системи →</div>
-        </div>
-
-        <div class="referral-stats">
-            <div class="stat-card">
-                <div class="stat-value">7</div>
-                <div class="stat-label">Усього рефералів</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">0.1</div>
-                <div class="stat-label">Активність рефералів</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">0</div>
-                <div class="stat-label">Усього зароблено</div>
+            <div class="balance-item bal-ton">
+                <div style="width:12px;height:12px;background:#0088cc;border-radius:50%"></div> 
+                <span id="tonCount">10.00</span>
             </div>
         </div>
     </div>
 
-    <!-- Інвентар (5-те фото) -->
-    <div class="game-screen hidden" id="inventoryScreen">
-        <div class="empty-inventory">
-            <div class="empty-icon">
-                <i class="fa-regular fa-box"></i>
-            </div>
-            <div class="empty-title">Ваш інвентар порожній</div>
-            <div class="empty-text">Є подарунки на акаунті?</div>
-            <div class="empty-text">Додайте їх через бота та отримайте ТОН!</div>
-            <div class="empty-text" style="margin-top: 16px;">- Відкрийте бота кнопкою нижче або за нікнеймом: @STONKSGIFTS</div>
-            <div class="empty-text">- Надішліть свій подарунок боту можна відправити будь-яку кількість подарунків</div>
-            <div class="empty-text">- Обмінюйте миттєво Отримуйте ТОН на баланс</div>
-            <button class="exchange-btn">Обмінняти подарунок на ТОН</button>
+    <div class="history-bar" id="history">
         </div>
-    </div>
 
-    <!-- Крафт (6-те фото) -->
-    <div class="game-screen hidden" id="craftScreen">
-        <div class="craft-header">
-            <span class="craft-title">Виберіть бажаний предмет</span>
-        </div>
+    <div class="game-area">
+        <div class="grid-bg"></div>
+        <div class="win-toast hidden" id="winToast">ВИГРАШ!</div>
+        <div class="multiplier-display" id="mult">1.00x</div>
         
-        <div class="craft-items">
-            <div class="craft-item">
-                <div class="item-info">
-                    <div class="item-icon">
-                        <i class="fa-solid fa-gem"></i>
-                    </div>
-                    <div>
-                        <div class="item-name">Предмети для крафту</div>
-                        <div class="item-desc">+ бонус</div>
-                    </div>
-                </div>
-                <button class="upgrade-btn">АПҐРЕЙД</button>
-            </div>
-            
-            <div class="craft-item">
-                <div class="item-info">
-                    <div class="item-icon">
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-                    <div>
-                        <div class="item-name">Рідкісний предмет</div>
-                        <div class="item-desc">+20% до виграшу</div>
-                    </div>
-                </div>
-                <button class="upgrade-btn">АПҐРЕЙД</button>
-            </div>
+        <div class="rocket-box" id="rocket">
+            <img src="https://cdn-icons-png.flaticon.com/512/1041/1041928.png" class="rocket-img" alt="rocket">
         </div>
     </div>
 
-    <!-- Navbar -->
+    <div class="bet-section">
+        <div class="round-info" id="statusLine">ОЧІКУВАННЯ СТАВОК...</div>
+        
+        <div class="presets">
+            <button class="p-btn active" onclick="setBet(1)">1 TON</button>
+            <button class="p-btn" onclick="setBet(2)">2 TON</button>
+            <button class="p-btn" onclick="setBet(5)">5 TON</button>
+            <button class="p-btn" onclick="setBet(10)">10 TON</button>
+        </div>
+
+        <div class="input-group">
+            <input type="number" id="betInput" value="1.0" step="0.1" min="0.1">
+            <span style="font-weight:800; color:var(--ton-blue)">TON</span>
+        </div>
+
+        <button class="main-btn btn-bet" id="mainBtn">ПОСТАВИТИ</button>
+
+        <div class="players-box" id="playersList">
+            </div>
+    </div>
+
     <div class="navbar">
-        <div class="nav-item" data-screen="inventory">
-            <i class="fa-regular fa-rectangle-list nav-icon"></i>
-            <span>Інвентар</span>
-        </div>
-        <div class="nav-item" data-screen="craft">
-            <i class="fa-solid fa-hammer nav-icon"></i>
-            <span>Крафт</span>
-        </div>
-        <div class="nav-item active" data-screen="crash">
-            <i class="fa-solid fa-rocket nav-icon"></i>
-            <span>Краш</span>
-        </div>
-        <div class="nav-item" data-screen="cases">
-            <i class="fa-regular fa-gem nav-icon"></i>
-            <span>Кейси</span>
-        </div>
-        <div class="nav-item" data-screen="profile">
-            <i class="fa-regular fa-user nav-icon"></i>
-            <span>Профіль</span>
-        </div>
+        <div class="nav-item"><i class="fa-solid fa-house"></i></div>
+        <div class="nav-item"><i class="fa-solid fa-chart-line"></i></div>
+        <div class="nav-item active"><i class="fa-solid fa-rocket"></i></div>
+        <div class="nav-item"><i class="fa-solid fa-gift"></i></div>
+        <div class="nav-item"><i class="fa-solid fa-user"></i></div>
     </div>
 </div>
 
@@ -897,158 +219,179 @@
     tg.expand();
     tg.ready();
 
-    // Дані користувача
-    let balance = 0.02;
-    let stars = 0;
-    let currentScreen = 'crash';
+    // Data
+    let balance = 25.0;
+    let currentMult = 1.0;
+    let isPlaying = false; // Чи зробив користувач ставку
+    let isFlying = false;  // Чи йде зараз раунд
+    let hasCashedOut = false;
+    let gameLoop;
+    let betAmount = 1.0;
 
-    // Елементи
-    const screens = {
-        crash: document.getElementById('mainContent'),
-        deposit: document.getElementById('depositScreen'),
-        referral: document.getElementById('referralScreen'),
-        inventory: document.getElementById('inventoryScreen'),
-        craft: document.getElementById('craftScreen')
+    // Elements
+    const multEl = document.getElementById('mult');
+    const mainBtn = document.getElementById('mainBtn');
+    const rocket = document.getElementById('rocket');
+    const tonEl = document.getElementById('tonCount');
+    const statusEl = document.getElementById('statusLine');
+    const historyEl = document.getElementById('history');
+
+    // Init User
+    if(tg.initDataUnsafe.user) {
+        document.getElementById('uName').innerText = tg.initDataUnsafe.user.first_name;
+        document.getElementById('uAvat').innerText = tg.initDataUnsafe.user.first_name[0];
+    }
+
+    function updateBalance() {
+        tonEl.innerText = balance.toFixed(2);
+    }
+
+    function setBet(val) {
+        document.getElementById('betInput').value = val.toFixed(1);
+        betAmount = val;
+        document.querySelectorAll('.p-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        tg.HapticFeedback.selectionChanged();
+    }
+
+    // Logic
+    mainBtn.onclick = () => {
+        if (!isFlying && !isPlaying) {
+            // Place Bet
+            betAmount = parseFloat(document.getElementById('betInput').value);
+            if (betAmount > balance) {
+                tg.showAlert("Недостатньо TON на балансі!");
+                return;
+            }
+            balance -= betAmount;
+            isPlaying = true;
+            updateBalance();
+            mainBtn.disabled = true;
+            statusEl.innerText = "СТАВКУ ПРИЙНЯТО! ОЧІКУЙТЕ ЗЛЬОТУ...";
+            tg.HapticFeedback.impactOccurred('medium');
+            
+            // Start game if not started
+            if(!isFlying) setTimeout(startRound, 2000);
+
+        } else if (isFlying && isPlaying && !hasCashedOut) {
+            // Cashout
+            cashOut();
+        }
     };
 
-    const navItems = document.querySelectorAll('.nav-item');
-    const balanceSpan = document.getElementById('balanceValue');
-    const betPanel = document.getElementById('betPanel');
-    const closeBetPanel = document.getElementById('closeBetPanel');
-    const placeBetBtn = document.getElementById('placeBetBtn');
-    const cancelDeposit = document.getElementById('cancelDeposit');
-    const confirmDeposit = document.getElementById('confirmDeposit');
-
-    // Оновлення балансу
-    function updateBalance() {
-        balanceSpan.textContent = balance.toFixed(2);
-    }
-
-    // Перемикання екранів
-    function switchScreen(screenId) {
-        Object.values(screens).forEach(screen => {
-            if (screen) screen.classList.add('hidden');
-        });
+    function startRound() {
+        isFlying = true;
+        hasCashedOut = false;
+        currentMult = 1.0;
+        const crashPoint = generateCrashPoint();
         
-        if (screenId === 'crash') {
-            screens.crash.classList.remove('hidden');
-        } else if (screenId === 'deposit') {
-            screens.deposit.classList.remove('hidden');
-        } else if (screenId === 'profile') {
-            screens.referral.classList.remove('hidden');
-        } else if (screenId === 'inventory') {
-            screens.inventory.classList.remove('hidden');
-        } else if (screenId === 'craft') {
-            screens.craft.classList.remove('hidden');
-        } else if (screenId === 'cases') {
-            // Поки що показуємо краш
-            screens.crash.classList.remove('hidden');
-            tg.showAlert('Кейси в розробці');
-        }
+        mainBtn.disabled = false;
+        mainBtn.innerText = "ЗАБРАТИ";
+        mainBtn.className = "main-btn btn-cashout";
+        statusEl.innerText = "РАКЕТА ЛЕТИТЬ...";
 
-        navItems.forEach(item => {
-            item.classList.remove('active');
-            if (item.dataset.screen === screenId) {
-                item.classList.add('active');
-            }
-        });
-
-        currentScreen = screenId;
-    }
-
-    // Telegram дані
-    if (tg.initDataUnsafe.user) {
-        const user = tg.initDataUnsafe.user;
-        document.getElementById('userName').textContent = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-        document.getElementById('userAvatar').textContent = user.first_name.charAt(0).toUpperCase();
-    }
-
-    // Закриття панелі ставок
-    closeBetPanel.addEventListener('click', () => {
-        betPanel.classList.add('hidden');
-    });
-
-    // Поставити ставку
-    placeBetBtn.addEventListener('click', () => {
-        const betAmount = parseFloat(document.getElementById('betAmount').value) || 1;
-        if (betAmount > balance) {
-            tg.showAlert('❌ Недостатньо коштів!');
-            return;
-        }
-        tg.HapticFeedback.impactOccurred('medium');
-        tg.showAlert(`✅ Ставка ${betAmount} TON прийнята!`);
-    });
-
-    // Депозит
-    confirmDeposit.addEventListener('click', () => {
-        const amount = parseFloat(document.getElementById('depositAmount').value) || 0.1;
-        balance += amount;
-        updateBalance();
-        tg.showAlert(`✅ Баланс поповнено на ${amount} TON`);
-        switchScreen('crash');
-    });
-
-    cancelDeposit.addEventListener('click', () => {
-        switchScreen('crash');
-    });
-
-    // Навігація
-    navItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const screen = item.dataset.screen;
-            tg.HapticFeedback.selectionChanged();
+        gameLoop = setInterval(() => {
+            currentMult += 0.01 * (currentMult / 1.5);
+            multEl.innerText = currentMult.toFixed(2) + 'x';
             
-            if (screen === 'profile') {
-                switchScreen('profile');
-            } else if (screen === 'deposit') {
-                switchScreen('deposit');
-            } else {
-                switchScreen(screen);
+            // Анімація ракети
+            let pos = (currentMult - 1) * 15;
+            rocket.style.bottom = (20 + pos) + '%';
+            rocket.style.left = (20 + pos / 2) + '%';
+            rocket.style.transform = `scale(${1 + pos/100}) rotate(-${pos/4}deg)`;
+
+            if (currentMult >= crashPoint) {
+                doCrash(crashPoint);
             }
+        }, 80);
+    }
+
+    function cashOut() {
+        const win = betAmount * currentMult;
+        balance += win;
+        hasCashedOut = true;
+        updateBalance();
+        
+        document.getElementById('winToast').classList.remove('hidden');
+        document.getElementById('winToast').innerText = `+${win.toFixed(2)} TON`;
+        
+        tg.HapticFeedback.notificationOccurred('success');
+        mainBtn.disabled = true;
+        mainBtn.innerText = "ВЖЕ ЗАБРАНО";
+        
+        setTimeout(() => document.getElementById('winToast').classList.add('hidden'), 2000);
+    }
+
+    function doCrash(point) {
+        clearInterval(gameLoop);
+        isFlying = false;
+        isPlaying = false;
+        
+        tg.HapticFeedback.notificationOccurred('error');
+        multEl.style.color = 'var(--red)';
+        multEl.innerText = "💥 " + point.toFixed(2) + "x";
+        
+        statusEl.innerText = "КРАШ! ПІДГОТОВКА ДО НАСТУПНОГО...";
+        
+        addHistory(point);
+
+        setTimeout(() => {
+            resetUI();
+        }, 3500);
+    }
+
+    function resetUI() {
+        currentMult = 1.0;
+        multEl.innerText = "1.00x";
+        multEl.style.color = "#fff";
+        rocket.style.bottom = '20%';
+        rocket.style.left = '20%';
+        rocket.style.transform = 'scale(1) rotate(0deg)';
+        
+        mainBtn.disabled = false;
+        mainBtn.innerText = "ПОСТАВИТИ";
+        mainBtn.className = "main-btn btn-bet";
+        statusEl.innerText = "ОЧІКУВАННЯ СТАВОК...";
+    }
+
+    function addHistory(val) {
+        const div = document.createElement('div');
+        let type = 'x-low';
+        if(val >= 2) type = 'x-mid';
+        if(val >= 10) type = 'x-high';
+        
+        div.className = `history-item ${type}`;
+        div.innerText = val.toFixed(2) + 'x';
+        historyEl.prepend(div);
+    }
+
+    function generateCrashPoint() {
+        const rand = Math.random();
+        if (rand < 0.1) return 1.0; // Instant crash
+        return parseFloat((0.98 / (1 - rand)).toFixed(2));
+    }
+
+    // Симуляція гравців
+    function simPlayers() {
+        const list = document.getElementById('playersList');
+        const names = ["Max_TON", "KriptoBro", "DogeKing", "Elena", "Anonym", "TON_Master"];
+        list.innerHTML = '';
+        names.forEach(n => {
+            const bet = (Math.random() * 3 + 0.1).toFixed(1);
+            list.innerHTML += `
+                <div class="player-row">
+                    <span class="p-name"><i class="fa-solid fa-user"></i> ${n}</span>
+                    <span class="p-status-win">${bet} TON</span>
+                </div>
+            `;
         });
-    });
-
-    // Клік на баланс - депозит
-    document.querySelector('.balance-block').addEventListener('click', () => {
-        switchScreen('deposit');
-    });
-
-    // Швидкі кнопки ставок
-    document.querySelectorAll('.quick-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const input = document.getElementById('betAmount');
-            let value = parseFloat(input.value) || 1;
-            const add = parseFloat(e.target.textContent.replace('+', ''));
-            input.value = (value + add).toFixed(2);
-        });
-    });
-
-    // MAX кнопка
-    document.querySelector('.bet-max').addEventListener('click', () => {
-        document.getElementById('betAmount').value = '200.00';
-    });
-
-    // Автовивід
-    document.querySelectorAll('.auto-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.auto-btn').forEach(b => b.style.background = '#253040');
-            btn.style.background = '#3b82f6';
-        });
-    });
+    }
 
     updateBalance();
+    simPlayers();
+    setInterval(simPlayers, 10000);
 
-    // Симуляція росту множника (для демо)
-    let multiplier = 1.00;
-    const multiplierEl = document.getElementById('multiplier');
-    setInterval(() => {
-        if (currentScreen === 'crash' && Math.random() > 0.7) {
-            multiplier = 1.00;
-        } else if (currentScreen === 'crash') {
-            multiplier += 0.01;
-        }
-        multiplierEl.textContent = multiplier.toFixed(2) + 'x';
-    }, 100);
 </script>
 </body>
 </html>
+
