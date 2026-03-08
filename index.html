@@ -1,88 +1,271 @@
-let multiplier = 1.00
-let crashPoint = Math.random()*4+1.5
-let running = true
-let playing = false
-let bet = 0
-let balance = 100
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>StonksGift - Crash Game</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #0a0f1e; color: white; overflow: hidden; }
+        
+        .game-container {
+            max-width: 500px;
+            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #12192b;
+        }
 
-const multiplierElement = document.getElementById("multiplier")
+        /* Шапка */
+        .header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-bottom: 1px solid #2d3748;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-function startRound(){
+        .balance-box {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #4CAF50;
+            color: #4CAF50;
+            font-weight: bold;
+        }
 
-multiplier = 1
-crashPoint = Math.random()*4+1.5
-running = true
-playing = false
+        /* Зона ракети */
+        .rocket-zone {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            min-height: 300px;
+        }
 
-gameLoop()
+        #multiplier {
+            font-size: 64px;
+            font-weight: 800;
+            text-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+            transition: color 0.2s;
+        }
 
-}
+        .rocket-img {
+            font-size: 80px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px #667eea);
+        }
 
-function gameLoop(){
+        /* Кнопка ставки */
+        .bet-controls {
+            padding: 20px;
+            background: #1e293b;
+            border-radius: 30px 30px 0 0;
+        }
 
-if(!running) return
+        .main-button {
+            width: 100%;
+            padding: 20px;
+            border-radius: 20px;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
 
-multiplier += 0.02
+        .btn-bet { background: linear-gradient(135deg, #4CAF50, #2e7d32); }
+        .btn-withdraw { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .main-button:active { transform: scale(0.96); }
 
-multiplierElement.textContent = multiplier.toFixed(2)+"x"
+        /* Історія */
+        .history {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            overflow-x: auto;
+            background: #0f172a;
+        }
 
-if(multiplier >= crashPoint){
+        .history-item {
+            padding: 4px 10px;
+            background: #1e293b;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
 
-running = false
+        .x-low { color: #f44336; }
+        .x-high { color: #4CAF50; }
 
-multiplierElement.textContent = "💥 "+multiplier.toFixed(2)+"x"
-multiplierElement.style.color = "#ff4444"
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
 
-setTimeout(startRound,3000)
+<div class="game-container">
+    <div class="header">
+        <div>
+            <div style="font-size: 18px; font-weight: 800;">StonksGift</div>
+            <div id="username" style="font-size: 12px; opacity: 0.6;">Гравець</div>
+        </div>
+        <div class="balance-box">
+            ⭐️ <span id="balance">100.00</span>
+        </div>
+    </div>
 
-return
-}
+    <div class="history" id="historyBox">
+        </div>
 
-requestAnimationFrame(gameLoop)
+    <div class="rocket-zone">
+        <div class="rocket-img" id="rocketIcon">🚀</div>
+        <div id="multiplier">1.00x</div>
+    </div>
 
-}
+    <div class="bet-controls">
+        <div style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+            <span>Ставка: 10 ⭐️</span>
+            <span id="potential-win" style="color: #4CAF50;">+0.00</span>
+        </div>
+        
+        <button id="actionBtn" class="main-button btn-bet">ПОСТАВИТИ СТАВКУ</button>
+    </div>
+</div>
 
-function placeBet(amount){
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+    tg.ready();
 
-if(playing) return
+    // Елементи
+    const multDisplay = document.getElementById('multiplier');
+    const actionBtn = document.getElementById('actionBtn');
+    const balanceDisplay = document.getElementById('balance');
+    const potWinDisplay = document.getElementById('potential-win');
+    const historyBox = document.getElementById('historyBox');
+    const rocketIcon = document.getElementById('rocketIcon');
 
-if(balance < amount){
-alert("Недостатньо коштів")
-return
-}
+    // Стан гри
+    let balance = 100.00;
+    let currentMultiplier = 1.00;
+    let isPlaying = false;
+    let isCrashed = false;
+    let gameLoop;
+    let currentBet = 10;
 
-bet = amount
-balance -= amount
-playing = true
+    // Ініціалізація користувача
+    if (tg.initDataUnsafe.user) {
+        document.getElementById('username').textContent = tg.initDataUnsafe.user.first_name;
+    }
 
-alert("Ставка "+amount+" TON")
+    // Шанси (Математика)
+    function getCrashPoint() {
+        const seed = Math.random();
+        if (seed < 0.05) return 1.00; // 5% миттєвий краш
+        return (0.98 / (1 - seed)).toFixed(2);
+    }
 
-}
+    function updateGame() {
+        if (!isPlaying || isCrashed) return;
 
-function cashout(){
+        currentMultiplier += 0.01 + (currentMultiplier * 0.003);
+        multDisplay.textContent = currentMultiplier.toFixed(2) + 'x';
+        
+        // Потенційний виграш
+        const win = (currentBet * currentMultiplier).toFixed(2);
+        potWinDisplay.textContent = `+${win}`;
 
-if(!playing) return
-if(!running) return
+        // Перевірка на краш
+        if (currentMultiplier >= crashPoint) {
+            doCrash();
+        }
+    }
 
-let win = bet * multiplier
+    function doCrash() {
+        isCrashed = true;
+        clearInterval(gameLoop);
+        
+        tg.HapticFeedback.notificationOccurred('error');
+        multDisplay.style.color = '#f44336';
+        multDisplay.textContent = '💥 ' + currentMultiplier.toFixed(2) + 'x';
+        rocketIcon.textContent = '🔥';
 
-balance += win
-playing = false
+        addToHistory(currentMultiplier.toFixed(2));
+        resetUI();
+    }
 
-alert("Ви забрали "+multiplier.toFixed(2)+"x")
+    function resetUI() {
+        isPlaying = false;
+        actionBtn.textContent = 'ПОСТАВИТИ СТАВКУ';
+        actionBtn.className = 'main-button btn-bet';
+        potWinDisplay.textContent = '+0.00';
+        
+        setTimeout(() => {
+            if (!isPlaying) {
+                currentMultiplier = 1.00;
+                multDisplay.textContent = '1.00x';
+                multDisplay.style.color = 'white';
+                rocketIcon.textContent = '🚀';
+                isCrashed = false;
+            }
+        }, 3000);
+    }
 
-}
+    function addToHistory(val) {
+        const item = document.createElement('div');
+        item.className = `history-item ${val < 2 ? 'x-low' : 'x-high'}`;
+        item.textContent = val + 'x';
+        historyBox.prepend(item);
+    }
 
-document.querySelectorAll(".additional-item").forEach(item=>{
+    // Обробка натискання кнопки
+    actionBtn.addEventListener('click', () => {
+        if (!isPlaying && !isCrashed) {
+            // СТАВКА
+            if (balance < currentBet) {
+                tg.showAlert("Недостатньо зірок!");
+                return;
+            }
+            
+            balance -= currentBet;
+            balanceDisplay.textContent = balance.toFixed(2);
+            
+            isPlaying = true;
+            crashPoint = parseFloat(getCrashPoint());
+            
+            actionBtn.textContent = 'ЗАБРАТИ';
+            actionBtn.className = 'main-button btn-withdraw';
+            
+            gameLoop = setInterval(updateGame, 100);
+            tg.HapticFeedback.impactOccurred('medium');
 
-item.addEventListener("click",()=>{
+        } else if (isPlaying && !isCrashed) {
+            // ЗАБРАТИ ГРОШІ
+            const win = currentBet * currentMultiplier;
+            balance += win;
+            balanceDisplay.textContent = balance.toFixed(2);
+            
+            tg.HapticFeedback.notificationOccurred('success');
+            tg.showAlert(`Ви виграли ${win.toFixed(2)} ⭐️!`);
+            
+            isPlaying = false; 
+            // Гра продовжується візуально до крашу, але гравець вже забрав
+            actionBtn.disabled = true;
+            actionBtn.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                actionBtn.disabled = false;
+                actionBtn.style.opacity = '1';
+            }, 2000);
+        }
+    });
+</script>
 
-let value = parseFloat(item.textContent)
-
-placeBet(value)
-
-})
-
-})
-
-startRound()
+</body>
+</html>
