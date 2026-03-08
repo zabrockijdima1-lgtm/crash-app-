@@ -1,623 +1,88 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StonksGift - Краш гра</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .game-container {
-            max-width: 500px;
-            width: 100%;
-            background: white;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-            animation: slideUp 0.5s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Шапка */
-        .header {
-            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
-            padding: 25px 20px;
-            color: white;
-        }
-
-        .header h1 {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .header h1::before {
-            content: "#";
-            opacity: 0.8;
-            margin-right: 5px;
-        }
-
-        .user-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .user-name {
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .user-level {
-            background: rgba(255,255,255,0.2);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            backdrop-filter: blur(5px);
-        }
-
-        /* Історія ставок */
-        .history-section {
-            padding: 20px;
-            background: #f8f9ff;
-        }
-
-        .section-title {
-            color: #333;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .bets-history {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .history-item {
-            background: white;
-            padding: 8px;
-            border-radius: 12px;
-            text-align: center;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
-        }
-
-        .history-item:hover {
-            transform: scale(1.05);
-        }
-
-        .history-item.x-low { color: #4CAF50; }
-        .history-item.x-medium { color: #FF9800; }
-        .history-item.x-high { color: #f44336; }
-        .history-item.x-epic { 
-            color: #9C27B0;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .next-round {
-            text-align: center;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 15px;
-            color: white;
-            font-weight: 600;
-            letter-spacing: 1px;
-            margin-top: 10px;
-            animation: glow 2s infinite;
-        }
-
-        @keyframes glow {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-
-        /* Розділювач */
-        .divider {
-            height: 10px;
-            background: linear-gradient(90deg, transparent, #ddd, transparent);
-            margin: 10px 0;
-        }
-
-        /* Ставки гравців */
-        .bets-section {
-            padding: 20px;
-        }
-
-        .bets-title {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .bet-item {
-            background: #f5f5f5;
-            border-radius: 20px;
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-
-        .bet-item:hover {
-            border-color: #667eea;
-            transform: translateX(5px);
-            background: white;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
-        }
-
-        .player-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .player-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .player-bet {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .bet-amount {
-            background: #667eea;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .bet-multiplier {
-            color: #4CAF50;
-            font-weight: 700;
-            font-size: 18px;
-        }
-
-        .multiplier-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            animation: spin 10s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Додаткові ставки */
-        .additional-bets {
-            margin-top: 20px;
-            padding: 15px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 20px;
-        }
-
-        .additional-title {
-            color: #666;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        .additional-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .additional-item {
-            background: white;
-            padding: 12px;
-            border-radius: 15px;
-            text-align: center;
-            font-weight: 700;
-            color: #333;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-        }
-
-        .additional-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-            background: #667eea;
-            color: white;
-        }
-
-        /* Ракета */
-        .rocket-section {
-            padding: 20px;
-            background: #0a0f1e;
-            border-radius: 30px 30px 0 0;
-        }
-
-        .rocket-container {
-            background: #1a1f2f;
-            border-radius: 50px;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .rocket {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            animation: fly 0.3s infinite alternate;
-        }
-
-        @keyframes fly {
-            from { transform: translateY(0); }
-            to { transform: translateY(-5px); }
-        }
-
-        .rocket-icon {
-            font-size: 40px;
-            filter: drop-shadow(0 0 10px #ff6b6b);
-            animation: shake 0.1s infinite;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(5deg); }
-            75% { transform: rotate(-5deg); }
-        }
-
-        .multiplier-display {
-            font-size: 48px;
-            font-weight: 800;
-            color: #4CAF50;
-            text-shadow: 0 0 20px #4CAF50;
-            animation: glow 1s infinite;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-            margin-top: 15px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 30%;
-            background: linear-gradient(90deg, #4CAF50, #FFC107, #f44336);
-            border-radius: 3px;
-            animation: progress 2s infinite;
-        }
-
-        @keyframes progress {
-            0% { width: 20%; }
-            50% { width: 80%; }
-            100% { width: 20%; }
-        }
-
-        /* Нижнє меню */
-        .bottom-menu {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            background: white;
-            border-top: 2px solid #f0f0f0;
-            padding: 10px 0;
-        }
-
-        .menu-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            padding: 10px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #666;
-            font-size: 12px;
-        }
-
-        .menu-item:hover {
-            color: #667eea;
-            transform: translateY(-5px);
-        }
-
-        .menu-item.active {
-            color: #667eea;
-            position: relative;
-        }
-
-        .menu-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 20%;
-            width: 60%;
-            height: 3px;
-            background: #667eea;
-            border-radius: 3px;
-        }
-
-        .menu-icon {
-            font-size: 24px;
-        }
-
-        /* Telegram бейдж */
-        .telegram-badge {
-            text-align: center;
-            padding: 15px;
-            background: #f8f9ff;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .telegram-link {
-            color: #0088cc;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 8px 20px;
-            border-radius: 30px;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-        }
-
-        .telegram-link:hover {
-            background: #0088cc;
-            color: white;
-            transform: scale(1.05);
-        }
-
-        /* Анімація крашу */
-        @keyframes crash {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.5; }
-            100% { transform: scale(0); opacity: 0; }
-        }
-
-        .crash-effect {
-            animation: crash 0.5s forwards;
-        }
-    </style>
-</head>
-<body>
-    <div class="game-container">
-        <!-- Шапка -->
-        <div class="header">
-            <h1>StonksGift</h1>
-            <div class="user-info">
-                <span class="user-name">Діма | BIO</span>
-                <span class="user-level">Level 1</span>
-            </div>
-        </div>
-
-        <!-- Історія ставок -->
-        <div class="history-section">
-            <div class="section-title">Історія ставок</div>
-            <div class="bets-history">
-                <div class="history-item x-low">x1.33</div>
-                <div class="history-item x-low">x1.20</div>
-                <div class="history-item x-low">x1.84</div>
-                <div class="history-item x-low">x1.05</div>
-                <div class="history-item x-low">x1.07</div>
-                <div class="history-item x-low">x1.20</div>
-                <div class="history-item x-high">x4.57</div>
-                <div class="history-item x-low">x1.21</div>
-                <div class="history-item x-medium">x2.15</div>
-                <div class="history-item x-low">x1.00</div>
-                <div class="history-item x-medium">x3.11</div>
-                <div class="history-item x-medium">x2.55</div>
-                <div class="history-item x-medium">x2.20</div>
-                <div class="history-item x-low">x1.10</div>
-                <div class="history-item x-low">x1.63</div>
-                <div class="history-item x-low">x1.76</div>
-                <div class="history-item x-low">x1.12</div>
-                <div class="history-item x-epic">x5.46</div>
-                <div class="history-item x-low">x1.94</div>
-                <div class="history-item x-low">x1.33</div>
-            </div>
-
-            <div class="next-round">
-                ⚡️ ВИ МОЖЕТЕ ПОСТАВИТИ СТАВКУ НА НАСТУПНИЙ РАУНД
-            </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- Ставки гравців -->
-        <div class="bets-section">
-            <div class="bets-title">Ставка</div>
-            
-            <!-- Перший гравець -->
-            <div class="bet-item">
-                <div class="player-info">
-                    <span class="player-name">Виталя Бутерин</span>
-                    <div class="player-bet">
-                        <span class="bet-amount">1,00 TON</span>
-                        <span class="bet-multiplier">x1.11</span>
-                    </div>
-                </div>
-                <div class="multiplier-icon">🚀</div>
-            </div>
-
-            <!-- Другий гравець -->
-            <div class="bet-item">
-                <div class="player-info">
-                    <span class="player-name">Ronni fav arm</span>
-                    <div class="player-bet">
-                        <span class="bet-amount">0,15 TON</span>
-                        <span class="bet-multiplier">x1.11</span>
-                    </div>
-                </div>
-                <div class="multiplier-icon">🎯</div>
-            </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- Додаткові ставки -->
-        <div class="bets-section">
-            <div class="bets-title">Ставка</div>
-            <div class="additional-grid">
-                <div class="additional-item">1,11 TON</div>
-                <div class="additional-item">0,17 TON</div>
-                <div class="additional-item">0,11</div>
-            </div>
-        </div>
-
-        <!-- Ракета -->
-        <div class="rocket-section">
-            <div class="rocket-container">
-                <div class="rocket">
-                    <span class="rocket-icon">🚀</span>
-                    <span class="multiplier-display" id="multiplier">1.11x</span>
-                    <span class="rocket-icon">✨</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Нижнє меню -->
-        <div class="bottom-menu">
-            <button class="menu-item">
-                <span class="menu-icon">📦</span>
-                <span>Інвентар</span>
-            </button>
-            <button class="menu-item">
-                <span class="menu-icon">🔧</span>
-                <span>Крафт</span>
-            </button>
-            <button class="menu-item active">
-                <span class="menu-icon">🎮</span>
-                <span>Краш</span>
-            </button>
-            <button class="menu-item">
-                <span class="menu-icon">🎁</span>
-                <span>Кейси</span>
-            </button>
-            <button class="menu-item">
-                <span class="menu-icon">👤</span>
-                <span>Профиль</span>
-            </button>
-        </div>
-
-        <!-- Telegram посилання -->
-        <div class="telegram-badge">
-            <a href="https://t.me/StonksGiftBot" class="telegram-link" target="_blank">
-                📱 @StonksGiftBot
-            </a>
-        </div>
-    </div>
-
-    <script>
-        // Анімація множника (ракета летить)
-        let multiplier = 1.11;
-        const multiplierElement = document.getElementById('multiplier');
-        
-        function updateMultiplier() {
-            // Ракета летить випадково
-            multiplier += (Math.random() * 0.3);
-            
-            // Імітація крашу
-            if (multiplier > 5.0 && Math.random() < 0.1) {
-                // Краш!
-                multiplierElement.style.color = '#f44336';
-                multiplierElement.style.animation = 'crash 0.5s';
-                multiplierElement.textContent = `💥 ${multiplier.toFixed(2)}x`;
-                
-                setTimeout(() => {
-                    multiplier = 1.11;
-                    multiplierElement.style.color = '#4CAF50';
-                    multiplierElement.style.animation = 'glow 1s infinite';
-                }, 2000);
-            } else {
-                multiplierElement.textContent = `${multiplier.toFixed(2)}x`;
-            }
-        }
-
-        // Оновлюємо кожні 300ms
-        setInterval(updateMultiplier, 300);
-
-        // Додаємо випадкові кліки на ставки
-        document.querySelectorAll('.bet-item, .additional-item').forEach(item => {
-            item.addEventListener('click', function() {
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 200);
-                
-                // Показуємо повідомлення
-                alert('✅ Ставка прийнята!');
-            });
-        });
-
-        // Анімація меню
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        // Ефект набору висоти
-        setInterval(() => {
-            const rocket = document.querySelector('.rocket-icon:first-child');
-            rocket.style.transform = `translateY(${Math.random() * 10 - 5}px)`;
-        }, 100);
-    </script>
-</body>
-</html>
+let multiplier = 1.00
+let crashPoint = Math.random()*4+1.5
+let running = true
+let playing = false
+let bet = 0
+let balance = 100
+
+const multiplierElement = document.getElementById("multiplier")
+
+function startRound(){
+
+multiplier = 1
+crashPoint = Math.random()*4+1.5
+running = true
+playing = false
+
+gameLoop()
+
+}
+
+function gameLoop(){
+
+if(!running) return
+
+multiplier += 0.02
+
+multiplierElement.textContent = multiplier.toFixed(2)+"x"
+
+if(multiplier >= crashPoint){
+
+running = false
+
+multiplierElement.textContent = "💥 "+multiplier.toFixed(2)+"x"
+multiplierElement.style.color = "#ff4444"
+
+setTimeout(startRound,3000)
+
+return
+}
+
+requestAnimationFrame(gameLoop)
+
+}
+
+function placeBet(amount){
+
+if(playing) return
+
+if(balance < amount){
+alert("Недостатньо коштів")
+return
+}
+
+bet = amount
+balance -= amount
+playing = true
+
+alert("Ставка "+amount+" TON")
+
+}
+
+function cashout(){
+
+if(!playing) return
+if(!running) return
+
+let win = bet * multiplier
+
+balance += win
+playing = false
+
+alert("Ви забрали "+multiplier.toFixed(2)+"x")
+
+}
+
+document.querySelectorAll(".additional-item").forEach(item=>{
+
+item.addEventListener("click",()=>{
+
+let value = parseFloat(item.textContent)
+
+placeBet(value)
+
+})
+
+})
+
+startRound()
