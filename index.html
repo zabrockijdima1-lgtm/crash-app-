@@ -165,7 +165,7 @@
         }
 
         .game-area {
-            flex: 2;
+            flex: 1.5;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -177,14 +177,14 @@
                 linear-gradient(90deg, #1a202c 1px, transparent 1px);
             background-size: 30px 30px;
             overflow: hidden;
-            min-height: 320px;
+            min-height: 280px;
         }
 
-        /* Ракета завжди видна */
+        /* Ракета - завжди видна */
         .rocket-container {
             position: absolute;
-            bottom: 20px;
-            left: 20px;
+            bottom: 10px;
+            left: 10px;
             z-index: 20;
             filter: drop-shadow(0 0 20px #4299e1);
             transition: transform 0.05s linear;
@@ -194,8 +194,8 @@
         }
         
         .rocket-svg {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
         }
         
         .rocket-svg svg {
@@ -222,8 +222,8 @@
             bottom: -15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 25px;
-            height: 40px;
+            width: 20px;
+            height: 35px;
             background: linear-gradient(to bottom, #ffaa00, #ff5500, #ff0000);
             border-radius: 50% 50% 30% 30%;
             animation: flameFlicker 0.1s infinite alternate;
@@ -243,13 +243,13 @@
             z-index: 30;
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(5px);
-            padding: 12px 20px;
+            padding: 10px 16px;
             border-radius: 40px;
             border: 2px solid rgba(240, 185, 11, 0.5);
         }
         
         .multiplier-display {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 800;
             color: #fff;
             text-shadow: 0 0 20px rgba(240, 185, 11, 0.8);
@@ -268,6 +268,26 @@
             color: #68d391;
             border: 1px solid #68d391;
             z-index: 30;
+        }
+
+        .timer-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 40;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            padding: 20px 30px;
+            border-radius: 60px;
+            border: 2px solid #f0b90b;
+        }
+        
+        .timer-display {
+            font-size: 48px;
+            font-weight: 800;
+            color: #f0b90b;
+            text-shadow: 0 0 30px rgba(240, 185, 11, 0.8);
         }
 
         .bet-area {
@@ -318,6 +338,11 @@
         .bet-action-btn.withdraw {
             background: linear-gradient(135deg, #f687b3, #ed64a6);
             color: #fff;
+        }
+        
+        .bet-action-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
         }
 
         .bet-panel-overlay {
@@ -907,10 +932,15 @@
 
             <!-- Потенційний виграш -->
             <div class="potential-win hidden" id="potentialWin">💰 0 ⭐</div>
+
+            <!-- Таймер 5 секунд -->
+            <div class="timer-container hidden" id="timerContainer">
+                <div class="timer-display" id="timerDisplay">5</div>
+            </div>
         </div>
 
         <div class="bet-area">
-            <div class="info-text" id="roundStatus">ВИ МОЖЕТЕ ПОСТАВИТИ СТАВКУ НА НАСТУПНИЙ РАУНД</div>
+            <div class="info-text" id="roundStatus">СТАВКИ НА 5 СЕКУНД</div>
 
             <div class="bet-buttons">
                 <button class="bet-action-btn secondary" id="showBetPanelBtn">
@@ -1095,13 +1125,16 @@
     // Дані користувача
     let balance = 100;
     let currentMultiplier = 1.00;
-    let gameActive = true;
+    let gameActive = false; // Спочатку неактивна
     let isCrashed = false;
     let gameLoop = null;
     let rocketPos = 0;
     let currentBet = 0;
     let isPlaying = false;
     let autoWithdrawMultiplier = null;
+    let countdown = 5;
+    let countdownInterval = null;
+    let canPlaceBet = true; // Чи можна ставити ставки
 
     // Список гравців - тільки реальні
     let players = [];
@@ -1118,6 +1151,8 @@
     const withdrawBtn = document.getElementById('withdrawBtn');
     const balanceBlock = document.getElementById('balanceBlock');
     const closeBtn = document.getElementById('closeBtn');
+    const timerContainer = document.getElementById('timerContainer');
+    const timerDisplay = document.getElementById('timerDisplay');
     const navItems = document.querySelectorAll('.nav-item');
     const screens = {
         crash: document.getElementById('crashScreen'),
@@ -1173,7 +1208,6 @@
     }
 
     function addPlayerBet(name, bet) {
-        // Додаємо тільки реальних гравців (тих хто поставив)
         players.unshift({
             name: name,
             bet: bet,
@@ -1191,6 +1225,44 @@
             player.withdrawn = true;
             renderPlayers();
         }
+    }
+
+    // Функція запуску таймера 5 секунд
+    function startCountdown() {
+        canPlaceBet = true;
+        countdown = 5;
+        timerContainer.classList.remove('hidden');
+        timerDisplay.textContent = countdown;
+        
+        if (countdownInterval) clearInterval(countdownInterval);
+        
+        countdownInterval = setInterval(() => {
+            countdown--;
+            timerDisplay.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                timerContainer.classList.add('hidden');
+                canPlaceBet = false;
+                startGame();
+            }
+        }, 1000);
+    }
+
+    // Функція запуску гри
+    function startGame() {
+        gameActive = true;
+        isCrashed = false;
+        currentMultiplier = 1.00;
+        rocketPos = 0;
+        
+        multiplierEl.style.color = '#fff';
+        multiplierEl.textContent = '1.00x';
+        
+        rocketContainer.classList.remove('rocket-crashed');
+        rocketContainer.style.transform = 'translate(0, 0) rotate(0deg)';
+        
+        roundStatus.textContent = 'ГРА ТРИВАЄ';
     }
 
     function crash() {
@@ -1229,35 +1301,8 @@
             withdrawBtn.classList.add('hidden');
         }
         
-        // Новий раунд через 2 секунди (без таймера)
-        setTimeout(() => {
-            startNewRound();
-        }, 2000);
-    }
-
-    function startNewRound() {
-        isCrashed = false;
-        gameActive = true;
-        currentMultiplier = 1.00;
-        rocketPos = 0;
-        
-        multiplierEl.style.color = '#fff';
-        multiplierEl.textContent = '1.00x';
-        
-        rocketContainer.classList.remove('rocket-crashed');
-        rocketContainer.style.transform = 'translate(0, 0) rotate(0deg)';
-        
-        roundStatus.textContent = 'ВИ МОЖЕТЕ ПОСТАВИТИ СТАВКУ НА НАСТУПНИЙ РАУНД';
-        
-        showBetPanelBtn.classList.remove('hidden');
-        
-        // Оновлюємо множники гравців
-        players.forEach(p => {
-            if (!p.withdrawn) {
-                p.multiplier = currentMultiplier;
-            }
-        });
-        renderPlayers();
+        // Запускаємо таймер на новий раунд
+        startCountdown();
     }
 
     function switchScreen(screenId) {
@@ -1363,6 +1408,10 @@
 
     // Bet panel
     showBetPanelBtn.addEventListener('click', () => {
+        if (!canPlaceBet) {
+            tg.showAlert('❌ Ставки приймаються тільки під час таймера!');
+            return;
+        }
         betPanelOverlay.classList.remove('hidden');
         tg.HapticFeedback?.impactOccurred('light');
     });
@@ -1398,8 +1447,9 @@
 
     // Confirm bet
     confirmBetBtn.addEventListener('click', () => {
-        if (!gameActive || isCrashed) {
-            tg.showAlert('❌ Зачекайте нового раунду!');
+        if (!canPlaceBet) {
+            tg.showAlert('❌ Ставки приймаються тільки під час таймера!');
+            betPanelOverlay.classList.add('hidden');
             return;
         }
         
@@ -1442,7 +1492,7 @@
         
         potentialWin.classList.add('hidden');
         withdrawBtn.classList.add('hidden');
-        showBetPanelBtn.classList.remove('hidden');
+        showBetPanelBtn.classList.add('hidden'); // Ховаємо кнопку ставки під час гри
         
         tg.HapticFeedback?.notificationOccurred('success');
         tg.showAlert(`✅ Ви забрали ${winAmount} ⭐!`);
@@ -1518,8 +1568,8 @@
         
         rocketPos += 0.5;
         const gameArea = document.getElementById('gameArea');
-        const maxWidth = gameArea.clientWidth - 120;
-        const maxHeight = gameArea.clientHeight - 120;
+        const maxWidth = gameArea.clientWidth - 100;
+        const maxHeight = gameArea.clientHeight - 100;
         
         const x = Math.min(rocketPos * 2, maxWidth);
         const y = Math.max(30, maxHeight - rocketPos * 1.5);
@@ -1537,7 +1587,7 @@
             updateBalanceDisplay();
             potentialWin.classList.add('hidden');
             withdrawBtn.classList.add('hidden');
-            showBetPanelBtn.classList.remove('hidden');
+            showBetPanelBtn.classList.add('hidden');
             tg.showAlert(`✅ Автовивід спрацював! Виграш: ${winAmount} ⭐`);
             autoWithdrawMultiplier = null;
         }
@@ -1556,16 +1606,16 @@
         renderPlayers();
     }
 
-    // Initialize
-    startNewRound();
+    // Initialize - запускаємо перший таймер
+    startCountdown();
     gameLoop = setInterval(gameTick, 50);
     renderPlayers();
     updateBalanceDisplay();
 
     window.addEventListener('beforeunload', () => {
         if (gameLoop) clearInterval(gameLoop);
+        if (countdownInterval) clearInterval(countdownInterval);
     });
 </script>
 </body>
 </html>
-
