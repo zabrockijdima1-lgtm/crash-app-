@@ -840,7 +840,18 @@
         .screen.active {
             display: flex;
         }
-        
+        button {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.bet-action-btn {
+    pointer-events: auto;
+}
+
+.nav-item {
+    pointer-events: auto;
+}
         .hidden {
             display: none !important;
         }
@@ -1107,9 +1118,26 @@
 </div>
 
 <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    tg.ready();
+    let tg = window.Telegram?.WebApp;
+
+if (!tg) {
+    tg = {
+        showAlert: (t) => alert(t),
+        HapticFeedback: {
+            impactOccurred: () => {},
+            notificationOccurred: () => {},
+            selectionChanged: () => {}
+        },
+        showPopup: () => {},
+        openInvoice: () => {},
+        close: () => {},
+        expand: () => {},
+        ready: () => {}
+    };
+}
+
+tg.expand();
+tg.ready();
 
     // Дані користувача
     let balance = 77.55;
@@ -1313,11 +1341,14 @@
     }
 
     // Telegram data
-    if (tg.initDataUnsafe.user) {
-        const user = tg.initDataUnsafe.user;
-        document.getElementById('userName').textContent = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-        document.getElementById('userAvatar').textContent = user.first_name.charAt(0).toUpperCase();
-    }
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+    const user = tg.initDataUnsafe.user;
+    document.getElementById('userName').textContent =
+        user.first_name + (user.last_name ? ' ' + user.last_name : '');
+
+    document.getElementById('userAvatar').textContent =
+        user.first_name.charAt(0).toUpperCase();
+}
 
     // Bet panel
     showBetPanelBtn.addEventListener('click', () => {
@@ -1495,6 +1526,7 @@
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
+                    user_id: tg.initDataUnsafe.user.id,
                     amount: selectedAmount
                 })
             });
@@ -1583,4 +1615,3 @@
 </script>
 </body>
 </html>
-
