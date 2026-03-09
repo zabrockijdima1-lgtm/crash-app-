@@ -4,206 +4,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StonksGift - Красива Ракета</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>StonksGift Crash Pro</title>
     <style>
-        /* Базові стилі (темна тема) */
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        body { background-color: #0e1219; color: #fff; overflow: hidden; height: 100vh; }
-        
-        .app-container {
-            max-width: 400px; margin: 0 auto; height: 100vh;
-            display: flex; flex-direction: column; position: relative;
+        body {
+            margin: 0;
+            background-color: #05080f; /* Глибокий темний фон */
+            color: white;
+            font-family: sans-serif;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
 
-        /* Ігрова зона */
-        .game-area {
-            flex: 1; display: flex; justify-content: center; align-items: center;
-            position: relative; background-color: #0d1117; overflow: hidden;
-            background-image: linear-gradient(#1a202c 1px, transparent 1px), linear-gradient(90deg, #1a202c 1px, transparent 1px);
-            background-size: 40px 40px;
+        /* Контейнер гри */
+        .game-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            background: radial-gradient(circle at center, #0a101d 0%, #05080f 100%);
         }
 
-        /* Множник (число) */
-        .multiplier-display {
-            font-size: 64px; font-weight: 800; color: #fff; z-index: 10;
-            text-shadow: 0 0 30px rgba(66, 153, 225, 0.5); /* Блакитне світіння */
+        /* Полотно для графіка та шлейфу */
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
         }
 
-        /* =========================================
-           СТИЛІ ТА АНІМАЦІЯ КРАСИВОЇ РАКЕТИ
-           ========================================= */
-        
-        .rocket-camera-wrapper {
+        /* Множник по центру */
+        .multiplier {
             position: absolute;
-            bottom: 10%; /* Початкова позиція */
-            left: 10%;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 60px;
+            font-weight: 800;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            z-index: 10;
+        }
+
+        /* Стилізована ракета */
+        #rocket {
+            position: absolute;
+            width: 70px;
+            height: 70px;
             z-index: 20;
-            /* Плавний рух по траєкторії польоту */
-            transition: transform 0.1s linear; 
+            filter: drop-shadow(0 0 15px #3b82f6); /* Синє неонове світіння */
+            pointer-events: none;
+            transition: transform 0.05s linear;
         }
 
-        .rocket-vibration-mover {
-            /* АНІМАЦІЯ 1: Легка вібрація корпусу (тряска) */
-            animation: rocketVibrate 0.1s infinite alternate;
+        .controls {
+            padding: 20px;
+            background: #0e1219;
+            border-top: 1px solid #1e2630;
+            text-align: center;
         }
 
-        .rocket-styled-svg {
-            width: 80px; /* Розмір ракети */
-            height: 80px;
-            transform: rotate(-45deg); /* Нахил для польоту вгору-вправо */
-            /* Блакитне світіння навколо ракети */
-            filter: drop-shadow(0 0 15px rgba(66, 153, 225, 0.8));
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
         }
-
-        /* Стилізація кольорів всередині SVG польоту */
-        .rocket-styled-svg .main-body { fill: #e2e8f0; } /* Світло-сірий корпус */
-        .rocket-styled-svg .window { fill: #4299e1; stroke: #fff; stroke-width: 1px; } /* Блакитне вікно */
-        .rocket-styled-svg .fins { fill: #2b6cb0; } /* Темно-сині плавники */
-        
-        /* АНІМАЦІЯ 2: Пульсація вогню (полум'я двигуна) */
-        .rocket-styled-svg .flame {
-            fill: #ed8936; /* Помаранчевий вогонь */
-            transform-origin: center top; /* Росте від двигуна */
-            animation: flamePulse 0.15s infinite alternate;
-        }
-
-        /* Стан CRASHED (червона ракета) */
-        .rocket-crashed .rocket-styled-svg {
-            filter: drop-shadow(0 0 20px #fc8181); /* Червоне світіння */
-        }
-        .rocket-crashed .rocket-styled-svg .main-body { fill: #fc8181; opacity: 0.7; }
-        .rocket-crashed .rocket-styled-svg .flame { display: none; } /* Гасимо вогонь */
-        .rocket-vibration-mover.stop-vibration { animation: none; } /* Зупиняємо тряску */
-
-        /* Опис анімацій (Keyframes) */
-        
-        @keyframes rocketVibrate {
-            0% { transform: translate(0, 0); }
-            50% { transform: translate(1px, -1px); }
-            100% { transform: translate(-1px, 1px); }
-        }
-
-        @keyframes flamePulse {
-            0% { transform: scaleY(1) opacity(0.8); fill: #ed8936; }
-            100% { transform: scaleY(1.3) opacity(1); fill: #f6ad55; } /* Стає довшим і світлішим */
-        }
-
-        /* Інтерфейс (кнопки) */
-        .bet-area { padding: 16px; background: #0e1219; border-top: 1px solid #1e2630; }
-        .bet-btn {
-            width: 100%; padding: 15px; border-radius: 25px; border: none;
-            font-weight: bold; font-size: 16px; cursor: pointer;
-            background: linear-gradient(135deg, #f0b90b, #d4a50a); color: #000;
-        }
-        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="game-area">
-        <div class="multiplier-display" id="multiplier">1.00x</div>
+<div class="game-container" id="container">
+    <div class="multiplier" id="mult">1.00x</div>
+    
+    <svg id="rocket" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 4L42 18V44L32 54L22 44V18L32 4Z" fill="#3b82f6" fill-opacity="0.9"/>
+        <path d="M32 4L36 12H28L32 4Z" fill="#93c5fd"/>
+        <circle cx="32" cy="28" r="4" fill="#05080f"/>
+        <path d="M22 40L14 48V52L22 44V40Z" fill="#2563eb"/>
+        <path d="M42 40L50 48V52L42 44V40Z" fill="#2563eb"/>
+        <path id="flame" d="M32 54L36 62L32 64L28 62L32 54Z" fill="#fbbf24">
+            <animate attributeName="opacity" values="1;0.5;1" dur="0.1s" repeatCount="indefinite" />
+        </path>
+    </svg>
 
-        <div class="rocket-camera-wrapper" id="rocketMainContainer">
-            <div class="rocket-vibration-mover" id="rocketVibrator">
-                <svg class="rocket-styled-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                    <path class="flame" d="M32 56C32 56 26 44 26 38C26 32 28.6863 30 32 30C35.3137 30 38 32 38 38C38 44 32 56 32 56Z"/>
-                    <path class="fins" d="M16 40L32 48L48 40L32 32L16 40Z"/>
-                    <path class="fins" d="M32 48V60L16 40L32 48Z"/>
-                    <path class="fins" d="M32 48V60L48 40L32 48Z"/>
-                    <path class="main-body" d="M32 4C18 16 18 36 18 40L32 48L46 40C46 36 46 16 32 4Z"/>
-                    <path class="fins" d="M32 4C26 9.33333 22.6667 16 22 20H42C41.3333 16 38 9.33333 32 4Z"/>
-                    <circle class="window" cx="32" cy="24" r="5"/>
-                </svg>
-            </div>
-        </div>
-    </div>
+    <canvas id="gameCanvas"></canvas>
+</div>
 
-    <div class="bet-area">
-        <button class="bet-btn" id="btnAction" onclick="simulateCrash()">ІМІТУВАТИ КРАШ (для тесту)</button>
-    </div>
+<div class="controls">
+    <button onclick="resetGame()">НОВИЙ РАУНД</button>
 </div>
 
 <script>
-    const rocketMain = document.getElementById('rocketMainContainer');
-    const rocketVibrator = document.getElementById('rocketVibrator');
-    const multText = document.getElementById('multiplier');
-    const btn = document.getElementById('btnAction');
-    
-    let currentMultiplier = 1.00;
-    let gameInterval;
-    let isCrashed = false;
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const rocket = document.getElementById('rocket');
+    const multDisplay = document.getElementById('mult');
+    const container = document.getElementById('container');
 
-    // Функція польоту (запускається при старті)
-    function startFlying() {
-        isCrashed = false;
-        currentMultiplier = 1.00;
-        multText.innerText = "1.00x";
-        multText.style.color = "#fff";
-        
-        // Скидаємо стилі крашу
-        rocketMain.classList.remove('rocket-crashed');
-        rocketVibrator.classList.remove('stop-vibration');
-        rocketMain.style.transform = `translate(0, 0)`; // Ракета повертається в кут
-        
-        btn.innerText = "ІМІТУВАТИ КРАШ (для тесту)";
-        btn.style.background = "linear-gradient(135deg, #f0b90b, #d4a50a)";
+    let width, height;
+    let points = []; // Точки для малювання лінії
+    let startTime;
+    let animationFrame;
+    let crashed = false;
 
-        let startTime = Date.now();
-
-        // Цикл гри (оновлення кожні 50мс)
-        gameInterval = setInterval(() => {
-            let elapsed = (Date.now() - startTime) / 1000;
-            
-            // Розрахунок множника
-            currentMultiplier = Math.pow(1.1, elapsed * 3);
-            multText.innerText = currentMultiplier.toFixed(2) + "x";
-            
-            // РОЗРАХУНОК РУХУ РАКЕТИ (вгору і вправо)
-            let xPos = elapsed * 15; // Швидкість по горизонталі
-            let yPos = Math.pow(elapsed, 1.3) * 10; // Прискорення по вертикалі
-            
-            // Обмеження, щоб не вилетіла за екран
-            xPos = Math.min(xPos, 200);
-            yPos = Math.min(yPos, 300);
-
-            // Застосовуємо рух
-            rocketMain.style.transform = `translate(${xPos}px, -${yPos}px)`;
-
-        }, 50);
+    function resize() {
+        width = canvas.width = container.clientWidth;
+        height = canvas.height = container.clientHeight;
     }
 
-    // Функція Крашу (червона ракета, зупинка)
-    function simulateCrash() {
-        if (isCrashed) {
-            startFlying(); // Якщо вже впала, то по кліку запускаємо знову
-            return;
+    window.addEventListener('resize', resize);
+    resize();
+
+    function animate() {
+        if (crashed) return;
+
+        const elapsed = (Date.now() - startTime) / 1000;
+        const multiplier = Math.pow(1.07, elapsed * 5);
+        
+        multDisplay.innerText = multiplier.toFixed(2) + "x";
+
+        // Координати ракети (крива як на фото)
+        const x = 50 + (elapsed * 40); 
+        const y = height - 50 - (Math.pow(elapsed, 1.5) * 15);
+
+        // Додаємо точку в масив для шлейфу
+        points.push({x, y});
+
+        // Очищення екрану
+        ctx.clearRect(0, 0, width, height);
+
+        // Малюємо сітку (слабку)
+        ctx.strokeStyle = '#1a202c';
+        ctx.lineWidth = 1;
+        for(let i=0; i<width; i+=50) {
+            ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
+        }
+        for(let i=0; i<height; i+=50) {
+            ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(width, i); ctx.stroke();
         }
 
-        clearInterval(gameInterval); // Зупиняємо ріст множника
-        isCrashed = true;
+        // Малюємо білий шлейф (лінію)
+        ctx.beginPath();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = 'white';
         
-        multText.innerText = "CRASHED!";
-        multText.style.color = "#fc8181"; // Червоний колір тексту
-        
-        // Активуємо CSS-стилі крашу для ракети
-        rocketMain.classList.add('rocket-crashed');
-        rocketVibrator.classList.add('stop-vibration'); // Зупиняємо тряску
+        if (points.length > 0) {
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.stroke();
+        }
+        ctx.shadowBlur = 0; // Скидаємо тінь для інших елементів
 
-        btn.innerText = "ПОЧАТИ НОВИЙ РАУНД";
-        btn.style.background = "#1e2630";
-        btn.style.color = "#fff";
+        // Оновлюємо позицію SVG ракети
+        rocket.style.left = `${x - 35}px`;
+        rocket.style.top = `${y - 35}px`;
+        rocket.style.transform = `rotate(${45 - elapsed * 2}deg)`;
+
+        // Рандомний краш для тесту
+        if (multiplier > 5.5) {
+            doCrash();
+        } else {
+            animationFrame = requestAnimationFrame(animate);
+        }
     }
 
-    // Запускаємо політ при завантаженні
-    startFlying();
+    function doCrash() {
+        crashed = true;
+        multDisplay.style.color = '#ef4444';
+        multDisplay.innerText = "CRASHED!";
+        rocket.style.filter = 'grayscale(1) drop-shadow(0 0 10px red)';
+    }
+
+    function resetGame() {
+        cancelAnimationFrame(animationFrame);
+        points = [];
+        crashed = false;
+        startTime = Date.now();
+        multDisplay.style.color = 'white';
+        rocket.style.filter = 'drop-shadow(0 0 15px #3b82f6)';
+        animate();
+    }
+
+    resetGame();
 </script>
 
 </body>
