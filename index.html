@@ -1,402 +1,209 @@
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StonksGift - Гра Краш</title>
+    <title>StonksGift - Красива Ракета</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Базові стилі */
+        /* Базові стилі (темна тема) */
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 0; padding: 0; box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
         
-        body {
-            background-color: #0e1219;
-            color: #fff;
-            overflow: hidden;
-            height: 100vh;
-        }
+        body { background-color: #0e1219; color: #fff; overflow: hidden; height: 100vh; }
         
         .app-container {
-            max-width: 400px;
-            margin: 0 auto;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-color: #0e1219;
-            position: relative;
+            max-width: 400px; margin: 0 auto; height: 100vh;
+            display: flex; flex-direction: column; position: relative;
         }
 
-        /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            background-color: #0e1219;
-            border-bottom: 1px solid #1e2630;
-            z-index: 100;
-        }
-        
-        .user-block {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(145deg, #2a3440, #1a222c);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 16px;
-            color: #8e9fb1;
-            border: 1px solid #31465c;
-        }
-        
-        .balance-block {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background-color: #0e1219;
-            padding: 4px 8px;
-            border-radius: 6px;
-            border: 1px solid #31465c;
-            cursor: pointer;
-        }
-        
-        .balance-value {
-            font-weight: 600;
-            font-size: 13px;
-            color: #f0b90b;
-        }
-
-        /* Game Screens */
-        .screen {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-            overflow-y: auto;
-            padding-bottom: 70px;
-        }
-        
-        .screen.active {
-            display: flex;
-        }
-
-        /* Crash Game Area */
+        /* Ігрова зона */
         .game-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            background-color: #0d1117;
-            background-image: 
-                linear-gradient(#1a202c 1px, transparent 1px),
-                linear-gradient(90deg, #1a202c 1px, transparent 1px);
+            flex: 1; display: flex; justify-content: center; align-items: center;
+            position: relative; background-color: #0d1117; overflow: hidden;
+            background-image: linear-gradient(#1a202c 1px, transparent 1px), linear-gradient(90deg, #1a202c 1px, transparent 1px);
             background-size: 40px 40px;
-            overflow: hidden;
         }
 
-        .multiplier-container {
-            text-align: center;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
-            padding: 20px 40px;
-            border-radius: 60px;
-            border: 1px solid rgba(240, 185, 11, 0.3);
-        }
-        
+        /* Множник (число) */
         .multiplier-display {
-            font-size: 64px;
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 0 0 30px rgba(240, 185, 11, 0.4);
+            font-size: 64px; font-weight: 800; color: #fff; z-index: 10;
+            text-shadow: 0 0 30px rgba(66, 153, 225, 0.5); /* Блакитне світіння */
         }
 
-        .rocket-container {
+        /* =========================================
+           СТИЛІ ТА АНІМАЦІЯ КРАСИВОЇ РАКЕТИ
+           ========================================= */
+        
+        .rocket-camera-wrapper {
             position: absolute;
-            bottom: 20px;
-            left: 20px;
+            bottom: 10%; /* Початкова позиція */
+            left: 10%;
             z-index: 20;
-            transition: transform 0.1s linear;
+            /* Плавний рух по траєкторії польоту */
+            transition: transform 0.1s linear; 
         }
+
+        .rocket-vibration-mover {
+            /* АНІМАЦІЯ 1: Легка вібрація корпусу (тряска) */
+            animation: rocketVibrate 0.1s infinite alternate;
+        }
+
+        .rocket-styled-svg {
+            width: 80px; /* Розмір ракети */
+            height: 80px;
+            transform: rotate(-45deg); /* Нахил для польоту вгору-вправо */
+            /* Блакитне світіння навколо ракети */
+            filter: drop-shadow(0 0 15px rgba(66, 153, 225, 0.8));
+        }
+
+        /* Стилізація кольорів всередині SVG польоту */
+        .rocket-styled-svg .main-body { fill: #e2e8f0; } /* Світло-сірий корпус */
+        .rocket-styled-svg .window { fill: #4299e1; stroke: #fff; stroke-width: 1px; } /* Блакитне вікно */
+        .rocket-styled-svg .fins { fill: #2b6cb0; } /* Темно-сині плавники */
         
-        .rocket-svg {
-            width: 60px;
-            height: 60px;
-            transform: rotate(45deg);
+        /* АНІМАЦІЯ 2: Пульсація вогню (полум'я двигуна) */
+        .rocket-styled-svg .flame {
+            fill: #ed8936; /* Помаранчевий вогонь */
+            transform-origin: center top; /* Росте від двигуна */
+            animation: flamePulse 0.15s infinite alternate;
         }
 
-        .rocket-crashed {
-            filter: drop-shadow(0 0 20px #fc8181) grayscale(1);
-            opacity: 0.5;
+        /* Стан CRASHED (червона ракета) */
+        .rocket-crashed .rocket-styled-svg {
+            filter: drop-shadow(0 0 20px #fc8181); /* Червоне світіння */
+        }
+        .rocket-crashed .rocket-styled-svg .main-body { fill: #fc8181; opacity: 0.7; }
+        .rocket-crashed .rocket-styled-svg .flame { display: none; } /* Гасимо вогонь */
+        .rocket-vibration-mover.stop-vibration { animation: none; } /* Зупиняємо тряску */
+
+        /* Опис анімацій (Keyframes) */
+        
+        @keyframes rocketVibrate {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(1px, -1px); }
+            100% { transform: translate(-1px, 1px); }
         }
 
-        /* UI Elements */
-        .history-stats {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 15px;
-            border-bottom: 1px solid #1e2630;
+        @keyframes flamePulse {
+            0% { transform: scaleY(1) opacity(0.8); fill: #ed8936; }
+            100% { transform: scaleY(1.3) opacity(1); fill: #f6ad55; } /* Стає довшим і світлішим */
         }
 
-        .bet-area {
-            padding: 16px;
-            background: #0e1219;
-            border-top: 1px solid #1e2630;
+        /* Інтерфейс (кнопки) */
+        .bet-area { padding: 16px; background: #0e1219; border-top: 1px solid #1e2630; }
+        .bet-btn {
+            width: 100%; padding: 15px; border-radius: 25px; border: none;
+            font-weight: bold; font-size: 16px; cursor: pointer;
+            background: linear-gradient(135deg, #f0b90b, #d4a50a); color: #000;
         }
-
-        .bet-action-btn {
-            width: 100%;
-            padding: 15px;
-            border-radius: 25px;
-            border: none;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        .btn-main { background: linear-gradient(135deg, #f0b90b, #d4a50a); color: #000; }
-        .btn-secondary { background: #1e2630; color: #fff; }
-        .btn-withdraw { background: #2ecc71; color: #fff; }
-
         .hidden { display: none !important; }
-
-        /* Overlays */
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .bet-panel {
-            background: #1a232f;
-            width: 100%;
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid #31465c;
-        }
-
-        /* Navbar */
-        .navbar {
-            position: absolute;
-            bottom: 0; width: 100%;
-            display: flex;
-            background: #0e1219;
-            border-top: 1px solid #1e2630;
-            padding: 5px 0;
-        }
-        
-        .nav-item {
-            flex: 1;
-            text-align: center;
-            color: #6b7f98;
-            font-size: 10px;
-            padding: 5px;
-        }
-        
-        .nav-item.active { color: #f0b90b; }
-        .nav-item i { font-size: 18px; display: block; margin-bottom: 3px; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div class="header">
-        <div class="user-block">
-            <div class="user-avatar" id="userAvatar">?</div>
-            <div class="user-info">
-                <div class="user-name" id="userName">Гравець</div>
-                <div class="user-level">Level 1</div>
+    <div class="game-area">
+        <div class="multiplier-display" id="multiplier">1.00x</div>
+
+        <div class="rocket-camera-wrapper" id="rocketMainContainer">
+            <div class="rocket-vibration-mover" id="rocketVibrator">
+                <svg class="rocket-styled-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <path class="flame" d="M32 56C32 56 26 44 26 38C26 32 28.6863 30 32 30C35.3137 30 38 32 38 38C38 44 32 56 32 56Z"/>
+                    <path class="fins" d="M16 40L32 48L48 40L32 32L16 40Z"/>
+                    <path class="fins" d="M32 48V60L16 40L32 48Z"/>
+                    <path class="fins" d="M32 48V60L48 40L32 48Z"/>
+                    <path class="main-body" d="M32 4C18 16 18 36 18 40L32 48L46 40C46 36 46 16 32 4Z"/>
+                    <path class="fins" d="M32 4C26 9.33333 22.6667 16 22 20H42C41.3333 16 38 9.33333 32 4Z"/>
+                    <circle class="window" cx="32" cy="24" r="5"/>
+                </svg>
             </div>
         </div>
-        <div class="balance-block" id="openDeposit">
-            <span class="balance-value" id="balanceValue">100.00</span>
-            <span style="font-size: 12px;">⭐</span>
-        </div>
     </div>
 
-    <div id="crashScreen" class="screen active">
-        <div class="history-stats">
-            <span style="color: #6b7f98; font-size: 12px;">ІСТОРІЯ</span>
-            <div id="historyList" style="display: flex; gap: 5px;">
-                <span style="color: #68d391;">x1.50</span>
-                <span style="color: #fc8181;">x1.05</span>
-            </div>
-        </div>
-
-        <div class="game-area">
-            <div class="multiplier-container">
-                <div class="multiplier-display" id="multiplier">1.00x</div>
-            </div>
-            <div class="rocket-container" id="rocketContainer">
-                <div class="rocket-svg">🚀</div>
-            </div>
-        </div>
-
-        <div class="bet-area">
-            <div id="statusText" style="text-align: center; font-size: 11px; color: #6b7f98; margin-bottom: 10px;">ОЧІКУВАННЯ РАУНДУ</div>
-            <button class="bet-action-btn btn-main" id="btnPlaceBet">ЗРОБИТИ СТАВКУ</button>
-            <button class="bet-action-btn btn-withdraw hidden" id="btnWithdraw">ЗАБРАТИ</button>
-        </div>
-    </div>
-
-    <div id="inventoryScreen" class="screen">
-        <div style="padding: 40px; text-align: center;">🎒 Інвентар порожній</div>
-    </div>
-    <div id="profileScreen" class="screen">
-        <div style="padding: 40px; text-align: center;">👤 Профіль користувача</div>
-    </div>
-
-    <div id="betOverlay" class="overlay hidden">
-        <div class="bet-panel">
-            <h3 style="margin-bottom: 15px; color: #f0b90b;">Сума ставки</h3>
-            <input type="number" id="inputBet" value="10" style="width: 100%; padding: 15px; border-radius: 10px; background: #0e1219; border: 1px solid #31465c; color: #fff; font-size: 20px; margin-bottom: 15px;">
-            <button class="bet-action-btn btn-main" id="btnConfirmBet">ПІДТВЕРДИТИ</button>
-            <button class="bet-action-btn btn-secondary" id="btnCloseBet">СКАСУВАТИ</button>
-        </div>
-    </div>
-
-    <div class="navbar">
-        <div class="nav-item" onclick="showScreen('inventory', this)">
-            <i class="fa-solid fa-box"></i><span>Склад</span>
-        </div>
-        <div class="nav-item active" onclick="showScreen('crash', this)">
-            <i class="fa-solid fa-rocket"></i><span>Краш</span>
-        </div>
-        <div class="nav-item" onclick="showScreen('profile', this)">
-            <i class="fa-solid fa-user"></i><span>Профіль</span>
-        </div>
+    <div class="bet-area">
+        <button class="bet-btn" id="btnAction" onclick="simulateCrash()">ІМІТУВАТИ КРАШ (для тесту)</button>
     </div>
 </div>
 
 <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    // Стан гри
-    let balance = 100.00;
+    const rocketMain = document.getElementById('rocketMainContainer');
+    const rocketVibrator = document.getElementById('rocketVibrator');
+    const multText = document.getElementById('multiplier');
+    const btn = document.getElementById('btnAction');
+    
     let currentMultiplier = 1.00;
-    let isPlaying = false;
-    let betAmount = 0;
     let gameInterval;
     let isCrashed = false;
 
-    // Елементи
-    const multText = document.getElementById('multiplier');
-    const rocket = document.getElementById('rocketContainer');
-    const btnPlaceBet = document.getElementById('btnPlaceBet');
-    const btnWithdraw = document.getElementById('btnWithdraw');
-    const statusText = document.getElementById('statusText');
-
-    function showScreen(screen, el) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(screen + 'Screen').classList.add('active');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    function startRound() {
+    // Функція польоту (запускається при старті)
+    function startFlying() {
         isCrashed = false;
         currentMultiplier = 1.00;
-        rocket.style.transform = `translate(0, 0)`;
-        rocket.classList.remove('rocket-crashed');
+        multText.innerText = "1.00x";
         multText.style.color = "#fff";
         
-        let startTime = Date.now();
-        let crashPoint = (Math.random() * 5 + 1).toFixed(2); // Рандомний момент крашу
+        // Скидаємо стилі крашу
+        rocketMain.classList.remove('rocket-crashed');
+        rocketVibrator.classList.remove('stop-vibration');
+        rocketMain.style.transform = `translate(0, 0)`; // Ракета повертається в кут
+        
+        btn.innerText = "ІМІТУВАТИ КРАШ (для тесту)";
+        btn.style.background = "linear-gradient(135deg, #f0b90b, #d4a50a)";
 
+        let startTime = Date.now();
+
+        // Цикл гри (оновлення кожні 50мс)
         gameInterval = setInterval(() => {
             let elapsed = (Date.now() - startTime) / 1000;
-            currentMultiplier = Math.pow(1.08, elapsed * 5); // Формула росту
             
+            // Розрахунок множника
+            currentMultiplier = Math.pow(1.1, elapsed * 3);
             multText.innerText = currentMultiplier.toFixed(2) + "x";
             
-            // Рух ракети
-            let x = elapsed * 25;
-            let y = Math.pow(elapsed, 1.2) * 15;
-            rocket.style.transform = `translate(${x}px, -${y}px)`;
+            // РОЗРАХУНОК РУХУ РАКЕТИ (вгору і вправо)
+            let xPos = elapsed * 15; // Швидкість по горизонталі
+            let yPos = Math.pow(elapsed, 1.3) * 10; // Прискорення по вертикалі
+            
+            // Обмеження, щоб не вилетіла за екран
+            xPos = Math.min(xPos, 200);
+            yPos = Math.min(yPos, 300);
 
-            if (currentMultiplier >= crashPoint) {
-                doCrash();
-            }
-        }, 100);
+            // Застосовуємо рух
+            rocketMain.style.transform = `translate(${xPos}px, -${yPos}px)`;
+
+        }, 50);
     }
 
-    function doCrash() {
-        clearInterval(gameInterval);
+    // Функція Крашу (червона ракета, зупинка)
+    function simulateCrash() {
+        if (isCrashed) {
+            startFlying(); // Якщо вже впала, то по кліку запускаємо знову
+            return;
+        }
+
+        clearInterval(gameInterval); // Зупиняємо ріст множника
         isCrashed = true;
-        multText.innerText = "CRASHED!";
-        multText.style.color = "#fc8181";
-        rocket.classList.add('rocket-crashed');
         
-        if (isPlaying) {
-            statusText.innerText = "ВИ ПРОГРАЛИ!";
-            isPlaying = false;
-        }
+        multText.innerText = "CRASHED!";
+        multText.style.color = "#fc8181"; // Червоний колір тексту
+        
+        // Активуємо CSS-стилі крашу для ракети
+        rocketMain.classList.add('rocket-crashed');
+        rocketVibrator.classList.add('stop-vibration'); // Зупиняємо тряску
 
-        btnWithdraw.classList.add('hidden');
-        btnPlaceBet.classList.remove('hidden');
-
-        setTimeout(startRound, 4000); // Перезапуск через 4 сек
+        btn.innerText = "ПОЧАТИ НОВИЙ РАУНД";
+        btn.style.background = "#1e2630";
+        btn.style.color = "#fff";
     }
 
-    btnPlaceBet.onclick = () => {
-        document.getElementById('betOverlay').classList.remove('hidden');
-    };
-
-    document.getElementById('btnConfirmBet').onclick = () => {
-        let val = parseFloat(document.getElementById('inputBet').value);
-        if (val > 0 && val <= balance) {
-            betAmount = val;
-            balance -= betAmount;
-            document.getElementById('balanceValue').innerText = balance.toFixed(2);
-            isPlaying = true;
-            document.getElementById('betOverlay').classList.add('hidden');
-            btnPlaceBet.classList.add('hidden');
-            btnWithdraw.classList.remove('hidden');
-            statusText.innerText = "СТАВКА ПРИЙНЯТА";
-        }
-    };
-
-    btnWithdraw.onclick = () => {
-        if (isPlaying && !isCrashed) {
-            let win = betAmount * currentMultiplier;
-            balance += win;
-            document.getElementById('balanceValue').innerText = balance.toFixed(2);
-            statusText.innerText = "ВИГРАШ: " + win.toFixed(2);
-            isPlaying = false;
-            btnWithdraw.classList.add('hidden');
-            btnPlaceBet.classList.remove('hidden');
-        }
-    };
-
-    document.getElementById('btnCloseBet').onclick = () => {
-        document.getElementById('betOverlay').classList.add('hidden');
-    };
-
-    // Запуск
-    startRound();
+    // Запускаємо політ при завантаженні
+    startFlying();
 </script>
 
 </body>
