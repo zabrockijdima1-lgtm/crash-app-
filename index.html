@@ -375,7 +375,7 @@
             color: #fc8181;
         }
 
-        /* Bet area - ЗМЕНШЕНО */
+        /* Bet area */
         .betting-area {
             background: #0e1219;
             padding: 8px 10px;
@@ -427,10 +427,6 @@
             cursor: pointer;
         }
 
-        .bet-max-btn:active {
-            transform: scale(0.95);
-        }
-
         .quick-amounts {
             display: flex;
             gap: 5px;
@@ -447,11 +443,6 @@
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
-        }
-
-        .quick-amount-btn:active {
-            background: #2a3440;
-            transform: scale(0.95);
         }
 
         .auto-cashout-container {
@@ -523,7 +514,6 @@
         .auto-multiplier-btn.active {
             background: #f0b90b;
             color: #0e1219;
-            border-color: #f0b90b;
         }
 
         .bet-controls {
@@ -557,23 +547,14 @@
             color: #b3c6e2;
         }
 
-        .bet-btn.primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .bet-btn:active {
-            transform: scale(0.97);
-        }
-
-        /* Deposit Modal */
+        /* Deposit Modal - Оновлено для реальної оплати */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
@@ -582,7 +563,7 @@
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s;
+            transition: 0.3s;
         }
 
         .modal-overlay.active {
@@ -593,7 +574,7 @@
         .modal {
             background: #1a232f;
             border-radius: 24px;
-            padding: 20px;
+            padding: 24px;
             width: 100%;
             max-width: 350px;
             border: 1px solid #31465c;
@@ -603,11 +584,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .modal-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             color: #f0b90b;
         }
@@ -620,58 +601,28 @@
             cursor: pointer;
         }
 
-        .deposit-methods {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .deposit-method {
-            flex: 1;
-            background: #0e1219;
-            border: 2px solid #31465c;
-            border-radius: 10px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .deposit-method.active {
-            border-color: #f0b90b;
-            background: rgba(240, 185, 11, 0.1);
-        }
-
-        .deposit-method-icon {
-            font-size: 22px;
-            margin-bottom: 4px;
-        }
-
-        .deposit-method-name {
-            font-size: 12px;
-        }
-
         .deposit-amount-section {
             background: #0e1219;
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 15px;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
         }
 
         .deposit-presets {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            margin-top: 8px;
+            gap: 8px;
+            margin-top: 12px;
         }
 
         .deposit-preset {
             background: #1a232f;
             border: 1px solid #31465c;
             border-radius: 8px;
-            padding: 6px;
+            padding: 8px;
             text-align: center;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 14px;
         }
 
         .deposit-preset.active {
@@ -683,37 +634,128 @@
         .deposit-bonus {
             background: rgba(16, 185, 129, 0.1);
             border: 1px solid #68d391;
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .deposit-bonus-icon {
             color: #68d391;
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .deposit-bonus-text {
             color: #68d391;
-            font-size: 13px;
+            font-size: 14px;
         }
 
         .deposit-submit {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: linear-gradient(135deg, #f0b90b, #d4a50a);
             border: none;
-            border-radius: 25px;
+            border-radius: 30px;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
         }
 
-        .deposit-submit:active {
-            transform: scale(0.97);
+        /* Confirmation Modal */
+        .confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+
+        .confirm-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .confirm-card {
+            background: #1a232f;
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 320px;
+            border: 2px solid #f0b90b;
+        }
+
+        .confirm-icon {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .confirm-icon i {
+            font-size: 40px;
+            color: #f0b90b;
+        }
+
+        .confirm-title {
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .confirm-product {
+            background: #0e1219;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .confirm-amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: #f0b90b;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .confirm-description {
+            text-align: center;
+            color: #b3c6e2;
+            font-size: 14px;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .confirm-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .confirm-btn.cancel {
+            background: #2a3440;
+            color: #b3c6e2;
+        }
+
+        .confirm-btn.pay {
+            background: linear-gradient(135deg, #f0b90b, #d4a50a);
+            color: #0e1219;
         }
 
         /* Navigation */
@@ -795,16 +837,6 @@
             color: #0e1219;
         }
 
-        .profile-details h2 {
-            font-size: 16px;
-            margin-bottom: 2px;
-        }
-
-        .profile-details p {
-            color: #6b7f98;
-            font-size: 12px;
-        }
-
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -837,30 +869,6 @@
             border: 2px solid #f0b90b;
             border-radius: 16px;
             padding: 16px;
-        }
-
-        .referral-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .referral-icon {
-            width: 36px;
-            height: 36px;
-            background: #f0b90b;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0e1219;
-            font-size: 16px;
-        }
-
-        .referral-title {
-            font-size: 14px;
-            font-weight: 600;
         }
 
         .referral-link-container {
@@ -896,10 +904,6 @@
             justify-content: space-around;
         }
 
-        .referral-stat {
-            text-align: center;
-        }
-
         .referral-stat-value {
             font-size: 16px;
             font-weight: 700;
@@ -909,30 +913,6 @@
         .referral-stat-label {
             color: #6b7f98;
             font-size: 10px;
-        }
-
-        /* Cases - пустий розділ */
-        .cases-container {
-            padding: 12px;
-        }
-
-        .case-card {
-            background: #1a232f;
-            border-radius: 16px;
-            padding: 30px 20px;
-            border: 1px solid #31465c;
-            text-align: center;
-        }
-
-        .case-icon {
-            font-size: 48px;
-            color: #6b7f98;
-            margin-bottom: 15px;
-        }
-
-        .case-message {
-            color: #6b7f98;
-            font-size: 14px;
         }
 
         /* Toast */
@@ -950,7 +930,6 @@
             transition: 0.3s;
             z-index: 2000;
             border: 1px solid #31465c;
-            font-size: 13px;
         }
 
         .toast.show {
@@ -1081,7 +1060,7 @@
                 </div>
             </div>
 
-            <!-- Betting Area - ЗМЕНШЕНО -->
+            <!-- Betting Area -->
             <div class="betting-area">
                 <div class="bet-input-container">
                     <div class="bet-label">СТАВКА</div>
@@ -1185,16 +1164,13 @@
             </div>
         </div>
 
-        <!-- Cases Screen - ПУСТИЙ РОЗДІЛ -->
+        <!-- Cases Screen -->
         <div id="casesScreen" class="screen">
-            <div class="cases-container">
-                <div class="case-card">
-                    <div class="case-icon">
-                        <i class="fas fa-gift"></i>
-                    </div>
-                    <div class="case-message">
-                        Скоро з'являться кейси
-                    </div>
+            <div class="profile-container">
+                <div class="profile-card" style="text-align: center;">
+                    <i class="fas fa-gift" style="font-size: 48px; color: #6b7f98; margin-bottom: 16px;"></i>
+                    <h3>Кейси</h3>
+                    <p style="color: #6b7f98; margin-top: 8px;">Скоро з'являться</p>
                 </div>
             </div>
         </div>
@@ -1205,7 +1181,6 @@
                 <div class="profile-card" style="text-align: center;">
                     <i class="fas fa-box-open" style="font-size: 48px; color: #6b7f98; margin-bottom: 16px;"></i>
                     <h3>Інвентар порожній</h3>
-                    <p style="color: #6b7f98; margin-top: 8px;">Тут будуть ваші предмети</p>
                 </div>
             </div>
         </div>
@@ -1216,7 +1191,6 @@
                 <div class="profile-card" style="text-align: center;">
                     <i class="fas fa-hammer" style="font-size: 48px; color: #6b7f98; margin-bottom: 16px;"></i>
                     <h3>Крафт</h3>
-                    <p style="color: #6b7f98; margin-top: 8px;">Скоро з'явиться</p>
                 </div>
             </div>
         </div>
@@ -1225,32 +1199,25 @@
         <div class="modal-overlay" id="depositModal">
             <div class="modal">
                 <div class="modal-header">
-                    <div class="modal-title">Поповнення ⭐</div>
+                    <div class="modal-title">Поповнити зірками</div>
                     <button class="modal-close" id="closeDepositModal">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 
-                <div class="deposit-methods">
-                    <div class="deposit-method active">
-                        <div class="deposit-method-icon">⭐</div>
-                        <div class="deposit-method-name">Stars</div>
-                    </div>
-                </div>
-                
                 <div class="deposit-amount-section">
                     <div class="bet-label">Сума</div>
                     <div class="bet-input-row">
-                        <input type="number" class="bet-amount-input" id="depositAmountInput" value="100" min="1">
+                        <input type="number" class="bet-amount-input" id="depositAmount" value="10" min="1">
                         <span class="bet-currency">⭐</span>
                     </div>
                     <div class="deposit-presets">
+                        <div class="deposit-preset" data-amount="10">10</div>
+                        <div class="deposit-preset" data-amount="25">25</div>
                         <div class="deposit-preset" data-amount="50">50</div>
-                        <div class="deposit-preset active" data-amount="100">100</div>
+                        <div class="deposit-preset" data-amount="100">100</div>
                         <div class="deposit-preset" data-amount="250">250</div>
                         <div class="deposit-preset" data-amount="500">500</div>
-                        <div class="deposit-preset" data-amount="1000">1000</div>
-                        <div class="deposit-preset" data-amount="2500">2500</div>
                     </div>
                 </div>
                 
@@ -1259,13 +1226,33 @@
                         <i class="fas fa-gift"></i>
                     </div>
                     <div class="deposit-bonus-text">
-                        +10% бонус на поповнення
+                        Бонус +10% на поповнення
                     </div>
                 </div>
                 
-                <button class="deposit-submit" id="depositSubmit">
-                    Поповнити на 100 ⭐
+                <button class="deposit-submit" id="depositNextBtn">
+                    Продовжити
                 </button>
+            </div>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div class="confirm-overlay" id="confirmModal">
+            <div class="confirm-card">
+                <div class="confirm-icon">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <div class="confirm-title">Підтвердження покупки</div>
+                <div class="confirm-product">
+                    <div class="confirm-amount" id="confirmAmount">10 ⭐</div>
+                    <div class="confirm-description">
+                        Ви дійсно хочете придбати «Поповнення Crash Game» у казік не іграйте за <span id="confirmStars">10</span> зірок?
+                    </div>
+                </div>
+                <div class="confirm-buttons">
+                    <button class="confirm-btn cancel" id="cancelConfirm">Скасувати</button>
+                    <button class="confirm-btn pay" id="payConfirm">Підтвердити й заплатити</button>
+                </div>
             </div>
         </div>
 
@@ -1312,8 +1299,6 @@
                 notificationOccurred: () => {},
                 selectionChanged: () => {}
             },
-            showAlert: (msg) => alert(msg),
-            showPopup: (params) => alert(params.message),
             openInvoice: (url, callback) => {
                 console.log('Opening invoice:', url);
                 setTimeout(() => callback('paid'), 2000);
@@ -1327,6 +1312,7 @@
         const user = tg.initDataUnsafe?.user || { id: 770160, first_name: 'Guest' };
         const userId = user.id;
         const userName = user.first_name || 'Guest';
+        const BOT_USERNAME = "ew1rsa1we2121bot"; // Ваш бот
 
         // Game state
         const gameState = {
@@ -1359,7 +1345,7 @@
         document.getElementById('profileName').textContent = userName;
         document.getElementById('profileAvatar').textContent = userName.charAt(0).toUpperCase();
         document.getElementById('profileId').textContent = userId;
-        document.getElementById('referralLink').textContent = `t.me/YourBot?start=ref_${userId}`;
+        document.getElementById('referralLink').textContent = `t.me/${BOT_USERNAME}?start=ref_${userId}`;
 
         // Elements
         const balanceEl = document.getElementById('balanceAmount');
@@ -1386,18 +1372,24 @@
                 item.classList.add('active');
                 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
                 document.getElementById(`${screen}Screen`).classList.add('active');
-                tg.HapticFeedback?.selectionChanged();
             });
         });
 
-        // Deposit Modal
+        // Deposit flow
         const depositModal = document.getElementById('depositModal');
+        const confirmModal = document.getElementById('confirmModal');
+        const depositAmount = document.getElementById('depositAmount');
+        const confirmAmount = document.getElementById('confirmAmount');
+        const confirmStars = document.getElementById('confirmStars');
         
+        let selectedAmount = 10;
+
+        // Open deposit modal
         document.getElementById('balanceBtn').addEventListener('click', () => {
             depositModal.classList.add('active');
-            tg.HapticFeedback?.impactOccurred('light');
         });
 
+        // Close deposit modal
         document.getElementById('closeDepositModal').addEventListener('click', () => {
             depositModal.classList.remove('active');
         });
@@ -1406,38 +1398,81 @@
         document.querySelectorAll('.deposit-preset').forEach(preset => {
             preset.addEventListener('click', () => {
                 const amount = parseInt(preset.dataset.amount);
-                document.getElementById('depositAmountInput').value = amount;
-                document.getElementById('depositSubmit').textContent = `Поповнити на ${amount} ⭐`;
+                depositAmount.value = amount;
+                selectedAmount = amount;
                 
                 document.querySelectorAll('.deposit-preset').forEach(p => p.classList.remove('active'));
                 preset.classList.add('active');
             });
         });
 
-        // Deposit submit
-        document.getElementById('depositSubmit').addEventListener('click', () => {
-            const amount = parseInt(document.getElementById('depositAmountInput').value) || 1;
-            
-            if (amount < 1) {
+        // Deposit amount input
+        depositAmount.addEventListener('input', (e) => {
+            selectedAmount = parseInt(e.target.value) || 1;
+        });
+
+        // Next button - show confirmation
+        document.getElementById('depositNextBtn').addEventListener('click', () => {
+            if (selectedAmount < 1) {
                 showToast('Мінімальна сума: 1 ⭐', 'error');
                 return;
             }
             
-            // Реальна купівля зірок через Telegram
-            const invoiceUrl = `https://t.me/YourBot?start=stars_${amount}_${userId}`;
+            confirmAmount.textContent = selectedAmount + ' ⭐';
+            confirmStars.textContent = selectedAmount;
             
-            tg.openInvoice(invoiceUrl, (status) => {
-                if (status === 'paid') {
-                    const bonus = Math.floor(amount * 0.1);
-                    gameState.balance += amount + bonus;
-                    updateBalance();
-                    
-                    depositModal.classList.remove('active');
-                    showToast(`+${amount + bonus} ⭐ (включно з бонусом)`, 'success');
-                } else if (status === 'cancelled') {
-                    showToast('Платіж скасовано', 'error');
+            depositModal.classList.remove('active');
+            confirmModal.classList.add('active');
+        });
+
+        // Cancel confirmation
+        document.getElementById('cancelConfirm').addEventListener('click', () => {
+            confirmModal.classList.remove('active');
+        });
+
+        // Pay confirmation - REAL PAYMENT
+        document.getElementById('payConfirm').addEventListener('click', async () => {
+            confirmModal.classList.remove('active');
+            
+            try {
+                tg.HapticFeedback.impactOccurred('medium');
+                
+                // Create invoice via your server
+                const SERVER_URL = "http://localhost:8001"; // Змініть на ваш сервер
+                
+                const response = await fetch(`${SERVER_URL}/api/create-invoice`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        amount: selectedAmount
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.link) {
+                    tg.openInvoice(data.link, (status) => {
+                        if (status === 'paid') {
+                            const bonus = Math.floor(selectedAmount * 0.1);
+                            gameState.balance += selectedAmount + bonus;
+                            updateBalance();
+                            
+                            showToast(`+${selectedAmount + bonus} ⭐ (включно з бонусом)`, 'success');
+                            tg.HapticFeedback.notificationOccurred('success');
+                        } else if (status === 'cancelled') {
+                            showToast('Платіж скасовано', 'error');
+                        } else if (status === 'failed') {
+                            showToast('Помилка платежу', 'error');
+                        }
+                    });
+                } else {
+                    showToast('Помилка створення інвойсу', 'error');
                 }
-            });
+            } catch (error) {
+                showToast('Помилка з\'єднання з сервером', 'error');
+                console.error(error);
+            }
         });
 
         // Copy referral
@@ -1558,7 +1593,6 @@
         let gameInterval;
         let countdownInterval;
 
-        // Start countdown
         function startCountdown() {
             gameState.countdown = 5;
             timerContainer.classList.remove('hidden');
@@ -1581,7 +1615,6 @@
             }, 1000);
         }
 
-        // Start game
         function startGame() {
             gameState.isRunning = true;
             gameState.isCrashed = false;
@@ -1601,7 +1634,6 @@
             gameInterval = setInterval(updateGame, 50);
         }
 
-        // Update game
         function updateGame() {
             if (!gameState.isRunning) return;
             
@@ -1626,7 +1658,6 @@
             }
         }
 
-        // Move rocket
         function moveRocket() {
             const gameArea = document.getElementById('gameArea');
             const maxWidth = gameArea.clientWidth - 90;
@@ -1640,7 +1671,6 @@
             rocketContainer.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
         }
 
-        // Crash game
         function crashGame() {
             gameState.isRunning = false;
             gameState.isCrashed = true;
@@ -1674,7 +1704,6 @@
             }, 3000);
         }
 
-        // Reset game
         function resetGame() {
             gameState.currentMultiplier = 1.00;
             multiplierEl.innerHTML = '1.00x';
@@ -1684,7 +1713,6 @@
             potentialWin.classList.add('hidden');
         }
 
-        // Add to history
         function addToHistory(multiplier) {
             gameState.history.unshift(multiplier);
             if (gameState.history.length > 6) gameState.history.pop();
@@ -1702,7 +1730,6 @@
             }
         }
 
-        // Players management
         function addPlayer(name, bet) {
             gameState.players.unshift({
                 name: name,
@@ -1752,7 +1779,6 @@
             `).join('');
         }
 
-        // Helper functions
         function updateBalance() {
             balanceEl.textContent = gameState.balance.toFixed(2);
         }
@@ -1785,13 +1811,8 @@
             updateBalance();
             updateStats();
         }, 1500);
-
-        // Add demo players
-        setTimeout(() => {
-            addPlayer('Гравець 1', Math.floor(Math.random() * 30) + 10);
-            addPlayer('Гравець 2', Math.floor(Math.random() * 30) + 10);
-        }, 2000);
     </script>
 </body>
 </html>
+
 
