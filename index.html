@@ -1410,52 +1410,132 @@
         switchScreen('crash');
     });
 
-    payBtn.addEventListener('click', () => {
-        selectedAmount = parseFloat(depositAmount.value) || 1;
-        if (selectedAmount < 1) {
-            tg.showAlert('❌ Мінімальна сума: 1 STARS');
-            return;
+    // ===== НОВИЙ ОБРОБНИК КНОПКИ ПОПОВНЕННЯ =====
+payBtn.addEventListener('click', async () => {
+    selectedAmount = parseFloat(depositAmount.value) || 1;
+    if (selectedAmount < 1) {
+        tg.showAlert('❌ Мінімальна сума: 1 STARS');
+        return;
+    }
+    
+    if (selectedMethod === 'stars') {
+        // РЕАЛЬНА ОПЛАТА ЗІРКАМИ через сервер
+        try {
+            tg.HapticFeedback.impactOccurred('medium');
+            
+            // АДРЕСА ВАШОГО СЕРВЕРА (ЗАМІНІТЬ НА ВАШУ!)
+            const SERVER_URL = "http://localhost:8001"; // Для локального тесту
+            // const SERVER_URL = "https://your-server.com"; // Для продакшену
+            
+            const response = await fetch(`${SERVER_URL}/api/create-invoice`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: tg.initDataUnsafe?.user?.id || 12345,
+                    amount: selectedAmount
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.link) {
+                // Відкриваємо інвойс в Telegram
+                tg.openInvoice(data.link, (status) => {
+                    if (status === 'paid') {
+                        // Оплата успішна
+                        const bonus = Math.floor(selectedAmount * 0.1);
+                        stars += selectedAmount + bonus;
+                        balance += selectedAmount; // Для демонстрації
+                        updateBalanceDisplay();
+                        
+                        tg.HapticFeedback.notificationOccurred('success');
+                        tg.showPopup({
+                            title: '✅ Успішно!',
+                            message: `Ви отримали ${selectedAmount} зірок + ${bonus} бонусних!`,
+                            buttons: [{ type: 'ok' }]
+                        });
+                        
+                        switchScreen('crash');
+                        
+                    } else if (status === 'cancelled') {
+                        tg.showAlert('❌ Оплату скасовано');
+                    } else if (status === 'failed') {
+                        tg.showAlert('❌ Помилка оплати');
+                    }
+                });
+            } else {
+                tg.showAlert('❌ Помилка створення інвойсу: ' + (data.message || 'невідома помилка'));
+            }
+        } catch (error) {
+            console.error('Payment error:', error);
+            tg.showAlert('❌ Помилка з\'єднання з сервером. Переконайтесь, що сервер запущений на localhost:8001');
         }
-        
-        if (selectedMethod === 'stars') {
-            payWithStars(selectedAmount);
-        } else if (selectedMethod === 'ton') {
-            tg.showAlert('💰 TON платежі в демо-режимі: +' + selectedAmount + ' TON');
-            balance += selectedAmount;
-            updateBalanceDisplay();
-            switchScreen('crash');
-        } else {
-            tg.showAlert(`💰 Поповнення через ${selectedMethod} в демо-режимі`);
-            balance += selectedAmount;
-            updateBalanceDisplay();
-            switchScreen('crash');
-        }
-    });
+    } else if (selectedMethod === 'ton') {
+        tg.showAlert('💰 TON платежі поки що в розробці');
+    } else {
+        tg.showAlert(`💰 Поповнення через ${selectedMethod} поки що в розробці`);
+    }
+});
 
-    // Confirmation - ВІРТУАЛЬНА ОПЛАТА (без сервера!)
-    cancelConfirm.addEventListener('click', () => {
-        confirmationOverlay.classList.add('hidden');
-    });
+// ===== НОВИЙ ОБРОБНИК ПІДТВЕРДЖЕННЯ =====
+cancelConfirm.addEventListener('click', () => {
+    confirmationOverlay.classList.add('hidden');
+});
 
-    confirmPay.addEventListener('click', () => {
-        confirmationOverlay.classList.add('hidden');
+confirmPay.addEventListener('click', async () => {
+    confirmationOverlay.classList.add('hidden');
+    
+    try {
+        tg.HapticFeedback.impactOccurred('medium');
         
-        // ВІРТУАЛЬНЕ поповнення - просто додаємо зірки!
-        const bonus = Math.floor(selectedAmount * 0.1);
-        stars += selectedAmount + bonus;
-        balance += selectedAmount; // Для демонстрації
+        // АДРЕСА ВАШОГО СЕРВЕРА (ЗАМІНІТЬ НА ВАШУ!)
+        const SERVER_URL = "http://localhost:8001"; // Для локального тесту
+        // const SERVER_URL = "https://your-server.com"; // Для продакшену
         
-        updateBalanceDisplay();
-        
-        tg.HapticFeedback?.notificationOccurred('success');
-        tg.showPopup({
-            title: '✅ Успішно!',
-            message: `Ви отримали ${selectedAmount} зірок + ${bonus} бонусних!`,
-            buttons: [{ type: 'ok' }]
+        const response = await fetch(`${SERVER_URL}/api/create-invoice`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                user_id: tg.initDataUnsafe?.user?.id || 12345,
+                amount: selectedAmount
+            })
         });
         
-        switchScreen('crash');
-    });
+        const data = await response.json();
+        
+        if (data.success && data.link) {
+            // Відкриваємо інвойс в Telegram
+            tg.openInvoice(data.link, (status) => {
+                if (status === 'paid') {
+                    // Оплата успішна
+                    const bonus = Math.floor(selectedAmount * 0.1);
+                    stars += selectedAmount + bonus;
+                    balance += selectedAmount; // Для демонстрації
+                    updateBalanceDisplay();
+                    
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showPopup({
+                        title: '✅ Успішно!',
+                        message: `Ви отримали ${selectedAmount} зірок + ${bonus} бонусних!`,
+                        buttons: [{ type: 'ok' }]
+                    });
+                    
+                    switchScreen('crash');
+                    
+                } else if (status === 'cancelled') {
+                    tg.showAlert('❌ Оплату скасовано');
+                } else if (status === 'failed') {
+                    tg.showAlert('❌ Помилка оплати');
+                }
+            });
+        } else {
+            tg.showAlert('❌ Помилка створення інвойсу: ' + (data.message || 'невідома помилка'));
+        }
+    } catch (error) {
+        console.error('Payment error:', error);
+        tg.showAlert('❌ Помилка з\'єднання з сервером. Переконайтесь, що сервер запущений на localhost:8001');
+    }
+});
 
     // Game loop
     function gameTick() {
