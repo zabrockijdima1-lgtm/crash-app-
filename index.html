@@ -1541,34 +1541,33 @@
     });
 
     // Confirmation
-    cancelConfirm.addEventListener('click', () => {
-        confirmationOverlay.classList.add('hidden');
-    });
-
     confirmPay.addEventListener('click', async () => {
 
     confirmationOverlay.classList.add('hidden');
 
-    const response = await fetch("http://localhost:8000/stars_invoice", {
+    const response = await fetch("http://localhost:8001/api/create-invoice", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
             user_id: tg.initDataUnsafe.user.id,
-            amount: selectedAmount
+            amount: selectedAmount,
+            currency: "XTR"
         })
     });
 
     const data = await response.json();
 
-    if (data.invoice_link) {
-        tg.openInvoice(data.invoice_link);
+    if (data.link) {
+        tg.openInvoice(data.link);
     }
 
-   });
+});
 
-    const data = await response.json();
+   
+
+    
 
     if (data.invoice_link) {
         tg.openInvoice(data.invoice_link);
