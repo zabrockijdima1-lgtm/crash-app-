@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StonksGift - Гра Краш</title>
+    <title>Stars Crash Game</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -574,37 +574,33 @@
             color: #f0b90b;
         }
         
+        /* ТІЛЬКИ ЗІРКИ - прибрали інші методи */
         .payment-methods {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: 1fr;
             gap: 8px;
             margin-bottom: 20px;
         }
         
         .payment-method {
             background: #0e1219;
-            border: 1px solid #31465c;
+            border: 2px solid #f0b90b;
             border-radius: 12px;
-            padding: 10px 0;
+            padding: 15px 0;
             text-align: center;
             cursor: pointer;
-            transition: 0.2s;
-        }
-        
-        .payment-method.active {
-            border-color: #f0b90b;
-            background: rgba(240, 185, 11, 0.1);
         }
         
         .payment-method i {
-            font-size: 20px;
-            margin-bottom: 2px;
+            font-size: 24px;
             color: #f0b90b;
+            margin-right: 8px;
         }
         
         .payment-method span {
-            font-size: 11px;
-            color: #b3c6e2;
+            font-size: 16px;
+            color: #f0b90b;
+            font-weight: 600;
         }
         
         .custom-amount {
@@ -823,7 +819,7 @@
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
             <div class="balance-block" id="balanceBlock">
-                <span class="balance-value" id="balanceValue">100.00</span>
+                <span class="balance-value" id="balanceValue">100</span>
                 <div class="balance-icon">⭐</div>
             </div>
             <div class="close-btn" id="closeBtn">
@@ -867,7 +863,7 @@
                 <div class="multiplier-display" id="multiplier">1.00x</div>
             </div>
 
-            <div class="potential-win hidden" id="potentialWin">💰 0.00 TON</div>
+            <div class="potential-win hidden" id="potentialWin">💰 0 ⭐</div>
         </div>
 
         <div class="bet-area">
@@ -875,7 +871,7 @@
 
             <div class="bet-buttons">
                 <button class="bet-action-btn secondary" id="showBetPanelBtn">
-                    <i class="fa-solid fa-gift"></i> Ставка
+                    <i class="fa-solid fa-star"></i> Ставка
                 </button>
                 <button class="bet-action-btn" id="quickBetBtn">
                     <i class="fa-solid fa-bolt"></i> Швидка
@@ -889,54 +885,43 @@
         </div>
     </div>
 
-    <!-- Deposit Screen -->
+    <!-- Deposit Screen - ТІЛЬКИ ЗІРКИ -->
     <div id="depositScreen" class="screen">
         <div class="deposit-panel">
-            <div class="deposit-title">Поповнення балансу</div>
+            <div class="deposit-title">Поповнення зірками</div>
             
             <div class="balance-info">
                 <div class="balance-info-left">
-                    <span class="balance-info-label">Поточний баланс</span>
-                    <span class="balance-info-value" id="currentBalanceDisplay">100.00 TON</span>
+                    <span class="balance-info-label">Ваш баланс</span>
+                    <span class="balance-info-value" id="currentBalanceDisplay">100 ⭐</span>
                 </div>
                 <div class="balance-info-left">
-                    <span class="balance-info-label">Зірки</span>
-                    <span class="balance-info-value" id="starsDisplay">50 ★</span>
+                    <span class="balance-info-label">Бонус</span>
+                    <span class="balance-info-value" id="starsDisplay">+10%</span>
                 </div>
             </div>
 
+            <!-- ТІЛЬКИ ЗІРКИ - один метод оплати -->
             <div class="payment-methods">
-                <div class="payment-method active" data-method="stars">
+                <div class="payment-method active">
                     <i class="fa-solid fa-star"></i>
-                    <span>Stars</span>
-                </div>
-                <div class="payment-method" data-method="ton">
-                    <i class="fa-brands fa-telegram"></i>
-                    <span>TON</span>
-                </div>
-                <div class="payment-method" data-method="crypto">
-                    <i class="fa-solid fa-coins"></i>
-                    <span>Crypto</span>
-                </div>
-                <div class="payment-method" data-method="gifts">
-                    <i class="fa-solid fa-gift"></i>
-                    <span>Gifts</span>
+                    <span>Telegram Stars</span>
                 </div>
             </div>
 
             <div class="bonus-info">
                 <div class="bonus-text">
                     <i class="fa-solid fa-gift"></i>
-                    <span>Бонус +10% на сьогоднішнє поповнення</span>
+                    <span>Бонус +10% на поповнення</span>
                 </div>
                 <div class="bonus-value" id="bonusValue">+0.1</div>
             </div>
 
             <div class="custom-amount">
-                <input type="number" id="depositAmount" min="1" value="1" placeholder="1">
+                <input type="number" id="depositAmount" min="1" value="1" step="1" placeholder="1">
             </div>
             
-            <div class="min-amount">МИН. СУМА: 1 STARS</div>
+            <div class="min-amount">МИН. СУМА: 1 ⭐</div>
 
             <div class="deposit-buttons">
                 <button class="deposit-btn cancel-btn" id="cancelDeposit">Скасувати</button>
@@ -955,17 +940,17 @@
             <div class="confirmation-product">
                 <div class="product-price" id="confirmAmount">1 ⭐</div>
                 <div class="product-description">
-                    Ви дійсно хочете придбати «Stonks Gifts payments stars» у StonksGift за <span id="confirmStars">1</span> зірку?
+                    Ви дійсно хочете придбати <span id="confirmStars">1</span> зірку з бонусом +10%?
                 </div>
             </div>
             <div class="confirmation-buttons">
                 <button class="confirmation-btn cancel-btn" id="cancelConfirm">Скасувати</button>
-                <button class="confirmation-btn pay-btn" id="confirmPay">Підтвердити й заплатити</button>
+                <button class="confirmation-btn pay-btn" id="confirmPay">Підтвердити</button>
             </div>
         </div>
     </div>
 
-    <!-- Inventory Screen -->
+    <!-- Інші екрани (без змін) -->
     <div id="inventoryScreen" class="screen">
         <div style="padding: 20px; text-align: center; color: #6b7f98;">
             <i class="fa-solid fa-box-open" style="font-size: 48px; margin-bottom: 20px; color: #f0b90b;"></i>
@@ -974,7 +959,6 @@
         </div>
     </div>
 
-    <!-- Craft Screen -->
     <div id="craftScreen" class="screen">
         <div style="padding: 20px; text-align: center; color: #6b7f98;">
             <i class="fa-solid fa-hammer" style="font-size: 48px; margin-bottom: 20px; color: #f0b90b;"></i>
@@ -983,7 +967,6 @@
         </div>
     </div>
 
-    <!-- Cases Screen -->
     <div id="casesScreen" class="screen">
         <div style="padding: 20px; text-align: center; color: #6b7f98;">
             <i class="fa-solid fa-gem" style="font-size: 48px; margin-bottom: 20px; color: #f0b90b;"></i>
@@ -992,7 +975,6 @@
         </div>
     </div>
 
-    <!-- Profile Screen -->
     <div id="profileScreen" class="screen">
         <div style="padding: 20px; text-align: center; color: #6b7f98;">
             <i class="fa-solid fa-user" style="font-size: 48px; margin-bottom: 20px; color: #f0b90b;"></i>
@@ -1012,18 +994,18 @@
             </div>
             
             <div class="bet-input-container">
-                <div class="bet-input-label">Сума ставки (TON)</div>
+                <div class="bet-input-label">Сума ставки (⭐)</div>
                 <div class="bet-input-row">
-                    <input type="number" id="betAmount" min="0.1" step="0.1" value="0.1">
+                    <input type="number" id="betAmount" min="1" step="1" value="1">
                     <span class="bet-max-btn" id="maxBetBtn">MAX</span>
                 </div>
             </div>
 
             <div class="bet-quick-btns">
-                <button class="quick-bet-btn" data-add="0.1">+0.1</button>
-                <button class="quick-bet-btn" data-add="0.5">+0.5</button>
                 <button class="quick-bet-btn" data-add="1">+1</button>
                 <button class="quick-bet-btn" data-add="5">+5</button>
+                <button class="quick-bet-btn" data-add="10">+10</button>
+                <button class="quick-bet-btn" data-add="50">+50</button>
             </div>
 
             <div class="auto-withdraw">
@@ -1070,9 +1052,8 @@
 </div>
 
 <script>
-    // Дані користувача
-    let balance = 100.00;
-    let stars = 50;
+    // Дані користувача - ТІЛЬКИ ЗІРКИ
+    let balance = 100; // Зірки
     let currentMultiplier = 1.00;
     let gameActive = true;
     let isCrashed = false;
@@ -1084,7 +1065,6 @@
 
     // Елементи
     const balanceSpan = document.getElementById('balanceValue');
-    const starsDisplay = document.getElementById('starsDisplay');
     const currentBalanceDisplay = document.getElementById('currentBalanceDisplay');
     const multiplierEl = document.getElementById('multiplier');
     const playersList = document.getElementById('playersList');
@@ -1117,7 +1097,6 @@
     const confirmBetBtn = document.getElementById('confirmBetBtn');
 
     // Deposit elements
-    const paymentMethods = document.querySelectorAll('.payment-method');
     const depositAmount = document.getElementById('depositAmount');
     const bonusValue = document.getElementById('bonusValue');
     const cancelDeposit = document.getElementById('cancelDeposit');
@@ -1132,15 +1111,14 @@
 
     // Players data
     const players = [
-        { name: 'g1zar', bet: 3.26, multiplier: 1.00, avatar: 'G' },
-        { name: 'SHAURMEOW', bet: 1.00, multiplier: 1.00, avatar: 'S' },
-        { name: 'Pudgik', bet: 0.25, multiplier: 1.00, avatar: 'P' }
+        { name: 'Гравець 1', bet: 3, multiplier: 1.00, avatar: '1' },
+        { name: 'Гравець 2', bet: 1, multiplier: 1.00, avatar: '2' },
+        { name: 'Гравець 3', bet: 5, multiplier: 1.00, avatar: '3' }
     ];
 
     function updateBalanceDisplay() {
-        balanceSpan.textContent = balance.toFixed(2);
-        if (currentBalanceDisplay) currentBalanceDisplay.textContent = balance.toFixed(2) + ' TON';
-        if (starsDisplay) starsDisplay.textContent = stars + ' ★';
+        balanceSpan.textContent = balance;
+        if (currentBalanceDisplay) currentBalanceDisplay.textContent = balance + ' ⭐';
     }
 
     function renderPlayers() {
@@ -1151,7 +1129,7 @@
                     <span class="player-name">${player.name}</span>
                 </div>
                 <div>
-                    <span class="player-bet">${player.bet.toFixed(2)} TON</span>
+                    <span class="player-bet">${player.bet} ⭐</span>
                     <span class="player-multiplier">x${player.multiplier.toFixed(2)}</span>
                 </div>
             </div>
@@ -1227,60 +1205,31 @@
         });
     }
 
-    // Функція для оплати зірками через сервер
+    // ТЕСТОВА ФУНКЦІЯ ПОПОВНЕННЯ (без сервера)
     async function payWithStars(amount) {
         try {
             tg.HapticFeedback.impactOccurred('medium');
             
-            // АДРЕСА ВАШОГО СЕРВЕРА (ЗАМІНІТЬ НА ВАШУ!)
-            const SERVER_URL = "http://localhost:8001"; // Для локального тесту
-            // const SERVER_URL = "https://your-server.com"; // Для продакшену
+            // ТЕСТОВИЙ РЕЖИМ - просто додаємо зірки
+            const bonus = Math.floor(amount * 0.1);
+            balance += amount + bonus;
+            updateBalanceDisplay();
             
-            const response = await fetch(`${SERVER_URL}/api/create-invoice`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    user_id: tg.initDataUnsafe?.user?.id || 12345,
-                    amount: amount
-                })
+            tg.HapticFeedback.notificationOccurred('success');
+            tg.showPopup({
+                title: '✅ Успішно!',
+                message: `Ви отримали ${amount} зірок + ${bonus} бонусних!`,
+                buttons: [{ type: 'ok' }]
             });
             
-            const data = await response.json();
-            
-            if (data.success && data.link) {
-                // Відкриваємо інвойс в Telegram
-                tg.openInvoice(data.link, (status) => {
-                    if (status === 'paid') {
-                        // Оплата успішна
-                        const bonus = Math.floor(amount * 0.1);
-                        stars += amount + bonus;
-                        balance += amount;
-                        updateBalanceDisplay();
-                        
-                        tg.HapticFeedback.notificationOccurred('success');
-                        tg.showPopup({
-                            title: '✅ Успішно!',
-                            message: `Ви отримали ${amount} зірок + ${bonus} бонусних!`,
-                            buttons: [{ type: 'ok' }]
-                        });
-                        
-                        if (confirmationOverlay) {
-                            confirmationOverlay.classList.add('hidden');
-                        }
-                        switchScreen('crash');
-                        
-                    } else if (status === 'cancelled') {
-                        tg.showAlert('❌ Оплату скасовано');
-                    } else if (status === 'failed') {
-                        tg.showAlert('❌ Помилка оплати');
-                    }
-                });
-            } else {
-                tg.showAlert('❌ Помилка створення інвойсу: ' + (data.message || 'невідома помилка'));
+            if (confirmationOverlay) {
+                confirmationOverlay.classList.add('hidden');
             }
+            switchScreen('crash');
+            
         } catch (error) {
             console.error('Payment error:', error);
-            tg.showAlert('❌ Помилка з\'єднання з сервером. Переконайтесь, що сервер запущений на localhost:8001');
+            tg.showAlert('❌ Помилка');
         }
     }
 
@@ -1297,10 +1246,6 @@
             showPopup: (params, callback) => {
                 alert(params.message);
                 if (callback) callback('ok');
-            },
-            openInvoice: (url, callback) => {
-                alert(`Відкриваємо інвойс: ${url}\n\nАле це демо. В реальності тут буде оплата.`);
-                if (callback) callback('paid');
             },
             close: () => {},
             expand: () => {},
@@ -1331,14 +1276,14 @@
     });
 
     maxBetBtn.addEventListener('click', () => {
-        betAmountInput.value = balance.toFixed(2);
+        betAmountInput.value = balance;
     });
 
     quickBetBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            const add = parseFloat(btn.dataset.add);
-            const current = parseFloat(betAmountInput.value) || 0;
-            betAmountInput.value = (current + add).toFixed(2);
+            const add = parseInt(btn.dataset.add);
+            const current = parseInt(betAmountInput.value) || 1;
+            betAmountInput.value = current + add;
         });
     });
 
@@ -1359,9 +1304,9 @@
     quickBetBtn.addEventListener('click', () => {
         if (!gameActive || isCrashed) return;
         
-        const betAmount = 0.1;
+        const betAmount = 1;
         if (balance < betAmount) {
-            tg.showAlert('❌ Недостатньо коштів!');
+            tg.showAlert('❌ Недостатньо зірок!');
             return;
         }
         
@@ -1381,10 +1326,10 @@
 
     // Confirm bet
     confirmBetBtn.addEventListener('click', () => {
-        const betAmount = parseFloat(betAmountInput.value) || 0.1;
+        const betAmount = parseInt(betAmountInput.value) || 1;
         
         if (balance < betAmount) {
-            tg.showAlert('❌ Недостатньо коштів!');
+            tg.showAlert('❌ Недостатньо зірок!');
             return;
         }
         
@@ -1403,11 +1348,11 @@
         tg.HapticFeedback?.impactOccurred('medium');
     });
 
-    // Withdraw
+    // Withdraw - ТІЛЬКИ ЗІРКИ
     withdrawBtn.addEventListener('click', () => {
         if (!isPlaying || !gameActive || isCrashed) return;
         
-        const winAmount = currentBet * currentMultiplier;
+        const winAmount = Math.floor(currentBet * currentMultiplier);
         balance += winAmount;
         isPlaying = false;
         
@@ -1419,7 +1364,7 @@
         quickBetBtn.classList.remove('hidden');
         
         tg.HapticFeedback?.notificationOccurred('success');
-        tg.showAlert(`✅ Ви забрали ${winAmount.toFixed(2)} TON!`);
+        tg.showAlert(`✅ Ви забрали ${winAmount} ⭐!`);
     });
 
     // Navigation
@@ -1439,20 +1384,11 @@
         tg.close();
     });
 
-    // Deposit
-    let selectedMethod = 'stars';
+    // Deposit - ТІЛЬКИ ЗІРКИ
     let selectedAmount = 1;
 
-    paymentMethods.forEach(method => {
-        method.addEventListener('click', () => {
-            paymentMethods.forEach(m => m.classList.remove('active'));
-            method.classList.add('active');
-            selectedMethod = method.dataset.method;
-        });
-    });
-
     depositAmount.addEventListener('input', () => {
-        selectedAmount = parseFloat(depositAmount.value) || 1;
+        selectedAmount = parseInt(depositAmount.value) || 1;
         if (selectedAmount < 1) selectedAmount = 1;
         depositAmount.value = selectedAmount;
         
@@ -1464,25 +1400,20 @@
         switchScreen('crash');
     });
 
-    // ===== ОНОВЛЕНИЙ ОБРОБНИК КНОПКИ ПОПОВНЕННЯ =====
+    // Кнопка поповнення - ТІЛЬКИ ЗІРКИ
     payBtn.addEventListener('click', async () => {
-        selectedAmount = parseFloat(depositAmount.value) || 1;
+        selectedAmount = parseInt(depositAmount.value) || 1;
         if (selectedAmount < 1) {
-            tg.showAlert('❌ Мінімальна сума: 1 STARS');
+            tg.showAlert('❌ Мінімальна сума: 1 ⭐');
             return;
         }
         
-        if (selectedMethod === 'stars') {
-            // РЕАЛЬНА ОПЛАТА ЗІРКАМИ через сервер
-            await payWithStars(selectedAmount);
-        } else if (selectedMethod === 'ton') {
-            tg.showAlert('💰 TON платежі поки що в розробці');
-        } else {
-            tg.showAlert(`💰 Поповнення через ${selectedMethod} поки що в розробці`);
-        }
+        confirmAmount.textContent = selectedAmount + ' ⭐';
+        confirmStars.textContent = selectedAmount;
+        confirmationOverlay.classList.remove('hidden');
     });
 
-    // ===== ОНОВЛЕНИЙ ОБРОБНИК ПІДТВЕРДЖЕННЯ =====
+    // Підтвердження
     cancelConfirm.addEventListener('click', () => {
         confirmationOverlay.classList.add('hidden');
     });
@@ -1516,7 +1447,7 @@
         rocketContainer.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
         
         if (autoWithdrawMultiplier && currentMultiplier >= autoWithdrawMultiplier && isPlaying) {
-            const winAmount = currentBet * currentMultiplier;
+            const winAmount = Math.floor(currentBet * currentMultiplier);
             balance += winAmount;
             isPlaying = false;
             updateBalanceDisplay();
@@ -1524,13 +1455,13 @@
             withdrawBtn.classList.add('hidden');
             showBetPanelBtn.classList.remove('hidden');
             quickBetBtn.classList.remove('hidden');
-            tg.showAlert(`✅ Автовивід спрацював! Виграш: ${winAmount.toFixed(2)} TON`);
+            tg.showAlert(`✅ Автовивід спрацював! Виграш: ${winAmount} ⭐`);
             autoWithdrawMultiplier = null;
         }
         
         if (isPlaying) {
-            const win = currentBet * currentMultiplier;
-            potentialWin.textContent = `💰 ${win.toFixed(2)} TON`;
+            const win = Math.floor(currentBet * currentMultiplier);
+            potentialWin.textContent = `💰 ${win} ⭐`;
         }
         
         players.forEach(p => p.multiplier = currentMultiplier);
@@ -1547,158 +1478,5 @@
         if (gameLoop) clearInterval(gameLoop);
     });
 </script>
-    // Ініціалізація Telegram Web App
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    tg.ready();
-
-    // Елементи DOM
-    const multiplierDisplay = document.getElementById('multiplier');
-    const rocket = document.getElementById('rocketContainer');
-    const balanceDisplay = document.getElementById('balanceValue');
-    const roundStatus = document.getElementById('roundStatus');
-    const withdrawBtn = document.getElementById('withdrawBtn');
-    const showBetPanelBtn = document.getElementById('showBetPanelBtn');
-    const potentialWin = document.getElementById('potentialWin');
-
-    // Налаштування гри
-    let balance = 100.00;
-    let currentMultiplier = 1.00;
-    let isPlaying = false;
-    let gameActive = false;
-    let betAmount = 0;
-    let autoWithdrawAt = 0;
-
-    // --- Логіка гри Краш ---
-
-    function startNewRound() {
-        if (gameActive) return;
-        
-        resetGame();
-        gameActive = true;
-        roundStatus.innerText = "РАКЕТА ЛЕТИТЬ!";
-        
-        let startTime = Date.now();
-        const crashPoint = (Math.random() * 5 + 1).toFixed(2); // Випадковий краш для демо
-
-        gameLoop = setInterval(() => {
-            let elapsed = (Date.now() - startTime) / 1000;
-            // Експоненціальне зростання: x = 1.05^t
-            currentMultiplier = Math.pow(1.07, elapsed * 5).toFixed(2);
-            
-            if (currentMultiplier >= parseFloat(crashPoint)) {
-                crash();
-            } else {
-                updateUI(elapsed);
-            }
-        }, 50);
-    }
-
-    function updateUI(t) {
-        multiplierDisplay.innerText = currentMultiplier + "x";
-        
-        // Рух ракети (вгору і вправо)
-        let x = Math.min(t * 20, 70); 
-        let y = Math.min(t * 25, 70);
-        rocket.style.transform = `translate(${x}px, -${y}px)`;
-
-        if (isPlaying) {
-            let win = (betAmount * currentMultiplier).toFixed(2);
-            potentialWin.classList.remove('hidden');
-            potentialWin.innerText = `💰 ${win} TON`;
-            
-            // Автовивід
-            if (autoWithdrawAt > 0 && currentMultiplier >= autoWithdrawAt) {
-                withdraw();
-            }
-        }
-    }
-
-    function crash() {
-        clearInterval(gameLoop);
-        gameActive = false;
-        multiplierDisplay.style.color = "#fc8181"; // Червоний
-        roundStatus.innerText = "CRASHED!";
-        rocket.classList.add('rocket-crashed');
-        
-        if (isPlaying) {
-            isPlaying = false;
-            potentialWin.classList.add('hidden');
-        }
-
-        setTimeout(() => {
-            resetGame();
-            startNewRound(); // Автоматичний старт наступного раунду
-        }, 3000);
-    }
-
-    function resetGame() {
-        currentMultiplier = 1.00;
-        multiplierDisplay.innerText = "1.00x";
-        multiplierDisplay.style.color = "#fff";
-        rocket.style.transform = "translate(0, 0)";
-        rocket.classList.remove('rocket-crashed');
-        potentialWin.classList.add('hidden');
-    }
-
-    // --- Ставки та Вивід ---
-
-    showBetPanelBtn.addEventListener('click', () => {
-        if (!gameActive) {
-            // Для демо просто ставимо 10 TON
-            betAmount = 10;
-            balance -= betAmount;
-            balanceDisplay.innerText = balance.toFixed(2);
-            isPlaying = true;
-            
-            showBetPanelBtn.classList.add('hidden');
-            withdrawBtn.classList.remove('hidden');
-        }
-    });
-
-    withdrawBtn.addEventListener('click', withdraw);
-
-    function withdraw() {
-        if (!isPlaying || !gameActive) return;
-        
-        let win = betAmount * currentMultiplier;
-        balance += win;
-        balanceDisplay.innerText = balance.toFixed(2);
-        isPlaying = false;
-        
-        withdrawBtn.classList.add('hidden');
-        showBetPanelBtn.classList.remove('hidden');
-        potentialWin.innerText = `ВИГРАШ: +${win.toFixed(2)}`;
-        tg.HapticFeedback.notificationOccurred('success');
-    }
-
-    // --- Робота з Telegram Stars ---
-
-    const payBtn = document.getElementById('payBtn');
-    payBtn.addEventListener('click', () => {
-        const amount = document.getElementById('depositAmount').value;
-        
-        // Виклик системного вікна оплати зірок
-        // Примітка: invoice_url має генеруватися вашим бекендом (aiogram)
-        // tg.openInvoice(invoice_url); 
-        
-        alert(`Запит на поповнення: ${amount} Stars. Надішліть invoice_url з бекенду.`);
-    });
-
-    // Навігація
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', () => {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(item.dataset.screen + 'Screen').classList.add('active');
-            
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-        });
-    });
-
-    // Початковий запуск
-    startNewRound();
-</script>
 </body>
 </html>
-
