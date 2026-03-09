@@ -180,7 +180,6 @@
             min-height: 280px;
         }
 
-        /* Ракета - завжди видна */
         .rocket-container {
             position: absolute;
             bottom: 10px;
@@ -860,6 +859,251 @@
         .hidden {
             display: none !important;
         }
+
+        /* Профіль */
+        .profile-section {
+            background: #1a232f;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 16px;
+            border: 1px solid #31465c;
+        }
+        
+        .profile-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f0b90b;
+            margin-bottom: 16px;
+        }
+        
+        .profile-stats {
+            background: #0e1219;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #b3c6e2;
+        }
+        
+        .stat-value {
+            color: #f0b90b;
+            font-weight: 600;
+        }
+        
+        .referral-link-container {
+            background: #0e1219;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .referral-link {
+            flex: 1;
+            background: #1e2630;
+            border: 1px solid #31465c;
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            font-size: 12px;
+            word-break: break-all;
+        }
+        
+        .copy-btn {
+            background: #f0b90b;
+            color: #0e1219;
+            border: none;
+            border-radius: 8px;
+            padding: 0 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .referral-earnings {
+            background: #0e1219;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .earnings-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f0b90b;
+        }
+        
+        .withdraw-earnings-btn {
+            background: linear-gradient(135deg, #f0b90b, #d4a50a);
+            color: #0e1219;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .promo-section {
+            background: #0e1219;
+            border-radius: 12px;
+            padding: 16px;
+        }
+        
+        .promo-title {
+            color: #f0b90b;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .promo-input {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .promo-input input {
+            flex: 1;
+            background: #1e2630;
+            border: 1px solid #31465c;
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            outline: none;
+        }
+        
+        .promo-input button {
+            background: #f0b90b;
+            color: #0e1219;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .promo-list {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .promo-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            background: #1e2630;
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+        
+        .promo-code {
+            color: #f0b90b;
+            font-weight: 600;
+        }
+        
+        .promo-status {
+            color: #68d391;
+            font-size: 11px;
+        }
+
+        /* Кейси */
+        .cases-section {
+            background: #1a232f;
+            border-radius: 24px;
+            padding: 20px;
+            margin: 16px;
+            border: 1px solid #31465c;
+        }
+        
+        .cases-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #f0b90b;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .daily-case {
+            background: #0e1219;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #f0b90b;
+        }
+        
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .case-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f0b90b;
+        }
+        
+        .case-status {
+            background: #f0b90b;
+            color: #0e1219;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .open-case-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #f0b90b, #d4a50a);
+            border: none;
+            color: #0e1219;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+        
+        .prizes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .prize-item {
+            background: #1a232f;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #31465c;
+        }
+        
+        .prize-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f0b90b;
+            margin-bottom: 4px;
+        }
+        
+        .prize-name {
+            font-size: 12px;
+            color: #b3c6e2;
+            margin-bottom: 4px;
+        }
+        
+        .prize-chance {
+            font-size: 11px;
+            color: #6b7f98;
+        }
     </style>
 </head>
 <body>
@@ -906,18 +1150,13 @@
         </div>
 
         <div class="game-area" id="gameArea">
-            <!-- Велика ракета - завжди видна -->
             <div class="rocket-container" id="rocketContainer">
                 <div class="rocket-svg">
                     <svg viewBox="0 0 100 100">
-                        <!-- Корпус ракети -->
                         <path class="rocket-body" d="M50 10 L75 40 L75 75 L25 75 L25 40 L50 10 Z" fill="#63b3ed"/>
-                        <!-- Ніс ракети -->
                         <polygon points="50,10 60,30 40,30" fill="#4a86b8"/>
-                        <!-- Крила -->
                         <polygon points="25,45 10,55 25,65" fill="#4a86b8"/>
                         <polygon points="75,45 90,55 75,65" fill="#4a86b8"/>
-                        <!-- Ілюмінатор -->
                         <circle cx="50" cy="45" r="8" fill="#fff"/>
                         <circle cx="50" cy="45" r="5" fill="#2d3748"/>
                     </svg>
@@ -925,15 +1164,12 @@
                 <div class="flame"></div>
             </div>
 
-            <!-- Множник збоку -->
             <div class="multiplier-container">
                 <div class="multiplier-display" id="multiplier">1.00x</div>
             </div>
 
-            <!-- Потенційний виграш -->
             <div class="potential-win hidden" id="potentialWin">💰 0 ⭐</div>
 
-            <!-- Таймер 5 секунд -->
             <div class="timer-container hidden" id="timerContainer">
                 <div class="timer-display" id="timerDisplay">5</div>
             </div>
@@ -951,12 +1187,11 @@
                 </button>
             </div>
 
-            <!-- Список гравців -->
             <div class="players-list" id="playersList"></div>
         </div>
     </div>
 
-    <!-- Deposit Screen - ТІЛЬКИ ЗІРКИ -->
+    <!-- Deposit Screen -->
     <div id="depositScreen" class="screen">
         <div class="deposit-panel">
             <div class="deposit-title">Поповнення зірками</div>
@@ -1000,6 +1235,118 @@
         </div>
     </div>
 
+    <!-- Cases Screen -->
+    <div id="casesScreen" class="screen">
+        <div class="cases-section">
+            <div class="cases-title">🎁 КЕЙСИ</div>
+            
+            <!-- Щоденний кейс -->
+            <div class="daily-case">
+                <div class="case-header">
+                    <span class="case-name">ЩОДЕННИЙ КЕЙС</span>
+                    <span class="case-status" id="dailyCaseStatus">Доступно</span>
+                </div>
+                
+                <button class="open-case-btn" id="openDailyCaseBtn">Відкрити</button>
+                
+                <div class="prizes-grid">
+                    <div class="prize-item">
+                        <div class="prize-value">102</div>
+                        <div class="prize-name">Artisan Bricks</div>
+                        <div class="prize-chance">Legendary 4.97%</div>
+                    </div>
+                    <div class="prize-item">
+                        <div class="prize-value">1.04</div>
+                        <div class="prize-name">Diamond</div>
+                        <div class="prize-chance">Unique 0.52%</div>
+                    </div>
+                    <div class="prize-item">
+                        <div class="prize-value">1.04</div>
+                        <div class="prize-name">Instant Ramens</div>
+                        <div class="prize-chance">Unique 4.97%</div>
+                    </div>
+                    <div class="prize-item">
+                        <div class="prize-value">1.04</div>
+                        <div class="prize-name">Ring</div>
+                        <div class="prize-chance">Unique 0.52%</div>
+                    </div>
+                    <div class="prize-item">
+                        <div class="prize-value">0.52</div>
+                        <div class="prize-name">Champagne</div>
+                        <div class="prize-chance">Basic 0.26%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Screen -->
+    <div id="profileScreen" class="screen">
+        <div class="profile-section">
+            <div class="profile-title">👤 ПРОФІЛЬ</div>
+            
+            <div class="profile-stats">
+                <div class="stat-row">
+                    <span>ID:</span>
+                    <span class="stat-value" id="profileUserId">123456789</span>
+                </div>
+                <div class="stat-row">
+                    <span>Ім'я:</span>
+                    <span class="stat-value" id="profileUserName">Діма | BIO</span>
+                </div>
+                <div class="stat-row">
+                    <span>Рівень:</span>
+                    <span class="stat-value">Level 1</span>
+                </div>
+                <div class="stat-row">
+                    <span>Всього ігор:</span>
+                    <span class="stat-value" id="totalGames">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Всього виграшів:</span>
+                    <span class="stat-value" id="totalWins">0 ⭐</span>
+                </div>
+            </div>
+
+            <div class="profile-title">🤝 РЕФЕРАЛЬНА СИСТЕМА</div>
+            
+            <div class="referral-link-container">
+                <div class="referral-link" id="referralLink">https://t.me/your_bot?start=ref_123456</div>
+                <button class="copy-btn" id="copyReferralBtn">COPY</button>
+            </div>
+            
+            <div class="referral-earnings">
+                <div>
+                    <div style="color: #b3c6e2; font-size: 12px;">Реферальний баланс</div>
+                    <div class="earnings-amount" id="referralBalance">0 ⭐</div>
+                </div>
+                <button class="withdraw-earnings-btn" id="withdrawReferralBtn">ВИВЕСТИ</button>
+            </div>
+
+            <div class="profile-title">🎫 ПРОМОКОДИ</div>
+            
+            <div class="promo-section">
+                <div class="promo-title">Введіть промокод</div>
+                <div class="promo-input">
+                    <input type="text" id="promoCodeInput" placeholder="XXX-XXX">
+                    <button id="activatePromoBtn">Активувати</button>
+                </div>
+                
+                <div class="promo-title">Активні промокоди</div>
+                <div class="promo-list" id="promoList">
+                    <div class="promo-item">
+                        <span class="promo-code">WELCOME10</span>
+                        <span class="promo-status">+10 ⭐</span>
+                    </div>
+                    <div class="promo-item">
+                        <span class="promo-code">BONUS20</span>
+                        <span class="promo-status">+20 ⭐</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Confirmation Overlay -->
     <div class="confirmation-overlay hidden" id="confirmationOverlay">
         <div class="confirmation-card">
@@ -1020,93 +1367,9 @@
         </div>
     </div>
 
-    <!-- Інші екрани -->
-    <div id="inventoryScreen" class="screen">
-        <div style="padding: 20px; text-align: center; color: #6b7f98;">
-            <i class="fa-solid fa-box-open" style="font-size: 48px; margin-bottom: 20px; color: #f0b90b;"></i>
-            <h3>Ваш інвентар порожній</h3>
-            <p style="margin-top: 10px;">Тут будуть ваші предмети</p>
-        </div>
-    </div>
-
-    <div id="craftScreen" class="screen">
-        <div style="padding: 20px; text-align: center; color: #6b7f98;">
-            <i class="fa-solid fa-hammer" style="font-size: 48px; margin-bottom: 20px; color: #f0b90b;"></i>
-            <h3>Крафт предметів</h3>
-            <p style="margin-top: 10px;">Скоро з'явиться</p>
-        </div>
-    </div>
-
-    <div id="casesScreen" class="screen">
-        <div style="padding: 20px; text-align: center; color: #6b7f98;">
-            <i class="fa-solid fa-gem" style="font-size: 48px; margin-bottom: 20px; color: #f0b90b;"></i>
-            <h3>Кейси</h3>
-            <p style="margin-top: 10px;">Скоро відкриття</p>
-        </div>
-    </div>
-
-    <div id="profileScreen" class="screen">
-        <div style="padding: 20px; text-align: center; color: #6b7f98;">
-            <i class="fa-solid fa-user" style="font-size: 48px; margin-bottom: 20px; color: #f0b90b;"></i>
-            <h3>Профіль гравця</h3>
-            <p style="margin-top: 10px;">Статистика та досягнення</p>
-        </div>
-    </div>
-
-    <!-- Bet Panel Overlay -->
-    <div class="bet-panel-overlay hidden" id="betPanelOverlay">
-        <div class="bet-panel">
-            <div class="bet-panel-header">
-                <span class="bet-panel-title">Виберіть суму ставки</span>
-                <span class="bet-panel-close" id="closeBetPanel">
-                    <i class="fa-solid fa-xmark"></i>
-                </span>
-            </div>
-            
-            <div class="bet-input-container">
-                <div class="bet-input-label">Сума ставки (⭐)</div>
-                <div class="bet-input-row">
-                    <input type="number" id="betAmount" min="1" step="1" value="1">
-                    <span class="bet-max-btn" id="maxBetBtn">MAX</span>
-                </div>
-            </div>
-
-            <div class="bet-quick-btns">
-                <button class="quick-bet-btn" data-add="1">+1</button>
-                <button class="quick-bet-btn" data-add="5">+5</button>
-                <button class="quick-bet-btn" data-add="10">+10</button>
-                <button class="quick-bet-btn" data-add="50">+50</button>
-            </div>
-
-            <div class="auto-withdraw">
-                <div class="auto-withdraw-header">
-                    <span>Автовивід</span>
-                    <span>при множнику</span>
-                </div>
-                <div class="auto-btns">
-                    <button class="auto-btn" data-mult="1.5">x1.5</button>
-                    <button class="auto-btn" data-mult="2">x2</button>
-                    <button class="auto-btn" data-mult="3">x3</button>
-                    <button class="auto-btn" data-mult="5">x5</button>
-                </div>
-                <button class="auto-off-btn" id="autoOffBtn">🔴 ВИМКНУТИ АВТОВИВІД</button>
-            </div>
-
-            <button class="place-bet-btn" id="confirmBetBtn">Поставити ставку</button>
-        </div>
-    </div>
-
     <!-- Navbar -->
     <div class="navbar">
-        <div class="nav-item" data-screen="inventory">
-            <i class="fa-solid fa-box-archive nav-icon"></i>
-            <span>Інвентар</span>
-        </div>
-        <div class="nav-item" data-screen="craft">
-            <i class="fa-solid fa-hammer nav-icon"></i>
-            <span>Крафт</span>
-        </div>
-        <div class="nav-item active" data-screen="crash">
+        <div class="nav-item" data-screen="crash">
             <i class="fa-solid fa-rocket nav-icon"></i>
             <span>Краш</span>
         </div>
@@ -1118,6 +1381,10 @@
             <i class="fa-solid fa-user nav-icon"></i>
             <span>Профіль</span>
         </div>
+        <div class="nav-item" data-screen="deposit">
+            <i class="fa-solid fa-plus nav-icon"></i>
+            <span>Поповнити</span>
+        </div>
     </div>
 </div>
 
@@ -1125,7 +1392,7 @@
     // Дані користувача
     let balance = 100;
     let currentMultiplier = 1.00;
-    let gameActive = false; // Спочатку неактивна
+    let gameActive = false;
     let isCrashed = false;
     let gameLoop = null;
     let rocketPos = 0;
@@ -1134,9 +1401,31 @@
     let autoWithdrawMultiplier = null;
     let countdown = 5;
     let countdownInterval = null;
-    let canPlaceBet = true; // Чи можна ставити ставки
+    let canPlaceBet = true;
+    let userId = 123456;
+    let userName = 'Гравець';
 
-    // Список гравців - тільки реальні
+    // Реферальна система
+    let referralBalance = 0;
+    let referralCode = 'ref_' + Math.floor(Math.random() * 1000000);
+    
+    // Статистика
+    let totalGames = 0;
+    let totalWins = 0;
+    
+    // Промокоди
+    let activePromos = [
+        { code: 'WELCOME10', reward: 10, active: true },
+        { code: 'BONUS20', reward: 20, active: true }
+    ];
+    
+    // Використані промокоди
+    let usedPromos = JSON.parse(localStorage.getItem('usedPromos')) || [];
+
+    // Кейси
+    let dailyCaseOpened = localStorage.getItem('dailyCaseOpened') === 'true';
+
+    // Список гравців
     let players = [];
 
     // Елементи
@@ -1157,11 +1446,19 @@
     const screens = {
         crash: document.getElementById('crashScreen'),
         deposit: document.getElementById('depositScreen'),
-        inventory: document.getElementById('inventoryScreen'),
-        craft: document.getElementById('craftScreen'),
         cases: document.getElementById('casesScreen'),
         profile: document.getElementById('profileScreen')
     };
+
+    // Profile elements
+    const profileUserId = document.getElementById('profileUserId');
+    const profileUserName = document.getElementById('profileUserName');
+    const totalGamesSpan = document.getElementById('totalGames');
+    const totalWinsSpan = document.getElementById('totalWins');
+    const referralLink = document.getElementById('referralLink');
+    const referralBalanceSpan = document.getElementById('referralBalance');
+    const promoList = document.getElementById('promoList');
+    const dailyCaseStatus = document.getElementById('dailyCaseStatus');
 
     // Bet panel elements
     const betPanelOverlay = document.getElementById('betPanelOverlay');
@@ -1189,6 +1486,31 @@
     function updateBalanceDisplay() {
         balanceSpan.textContent = balance;
         if (currentBalanceDisplay) currentBalanceDisplay.textContent = balance + ' ⭐';
+    }
+
+    function updateProfileDisplay() {
+        if (profileUserId) profileUserId.textContent = userId;
+        if (profileUserName) profileUserName.textContent = userName;
+        if (totalGamesSpan) totalGamesSpan.textContent = totalGames;
+        if (totalWinsSpan) totalWinsSpan.textContent = totalWins + ' ⭐';
+        if (referralLink) referralLink.textContent = `https://t.me/your_bot?start=${referralCode}`;
+        if (referralBalanceSpan) referralBalanceSpan.textContent = referralBalance + ' ⭐';
+        
+        // Оновлюємо список промокодів
+        if (promoList) {
+            promoList.innerHTML = activePromos.filter(p => p.active).map(promo => `
+                <div class="promo-item">
+                    <span class="promo-code">${promo.code}</span>
+                    <span class="promo-status">+${promo.reward} ⭐</span>
+                </div>
+            `).join('');
+        }
+        
+        // Оновлюємо статус кейсу
+        if (dailyCaseStatus) {
+            dailyCaseStatus.textContent = dailyCaseOpened ? 'Вже відкрито' : 'Доступно';
+            dailyCaseStatus.style.color = dailyCaseOpened ? '#fc8181' : '#f0b90b';
+        }
     }
 
     function renderPlayers() {
@@ -1227,7 +1549,6 @@
         }
     }
 
-    // Функція запуску таймера 5 секунд
     function startCountdown() {
         canPlaceBet = true;
         countdown = 5;
@@ -1249,7 +1570,6 @@
         }, 1000);
     }
 
-    // Функція запуску гри
     function startGame() {
         gameActive = true;
         isCrashed = false;
@@ -1269,7 +1589,6 @@
         isCrashed = true;
         gameActive = false;
         
-        // Додаємо в історію
         const historyBar = document.getElementById('historyBar');
         const chip = document.createElement('span');
         chip.className = 'history-chip';
@@ -1279,7 +1598,6 @@
             historyBar.removeChild(historyBar.lastChild);
         }
 
-        // Оновлюємо множники
         const historyMultipliers = document.getElementById('historyMultipliers');
         const multChip = document.createElement('span');
         multChip.className = 'history-multiplier-item';
@@ -1301,7 +1619,6 @@
             withdrawBtn.classList.add('hidden');
         }
         
-        // Запускаємо таймер на новий раунд
         startCountdown();
     }
 
@@ -1320,9 +1637,12 @@
                 item.classList.add('active');
             }
         });
+        
+        if (screenId === 'profile') {
+            updateProfileDisplay();
+        }
     }
 
-    // РЕАЛЬНА ФУНКЦІЯ ПОПОВНЕННЯ
     async function payWithStars(amount) {
         try {
             tg.HapticFeedback.impactOccurred('medium');
@@ -1333,7 +1653,7 @@
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    user_id: tg.initDataUnsafe?.user?.id || 12345,
+                    user_id: userId,
                     amount: amount
                 })
             });
@@ -1346,6 +1666,14 @@
                         const bonus = Math.floor(amount * 0.1);
                         balance += amount + bonus;
                         updateBalanceDisplay();
+                        
+                        // Перевіряємо чи є реферал
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const ref = urlParams.get('start');
+                        if (ref) {
+                            // Додаємо 5% рефералу
+                            tg.showAlert(`✅ Реферал отримав ${Math.floor(amount * 0.05)} ⭐!`);
+                        }
                         
                         tg.HapticFeedback.notificationOccurred('success');
                         tg.showPopup({
@@ -1400,10 +1728,18 @@
 
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const user = tg.initDataUnsafe.user;
-        document.getElementById('userName').textContent =
-            user.first_name + (user.last_name ? ' ' + user.last_name : '');
-        document.getElementById('userAvatar').textContent =
-            user.first_name.charAt(0).toUpperCase();
+        userId = user.id;
+        userName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+        document.getElementById('userName').textContent = userName;
+        document.getElementById('userAvatar').textContent = user.first_name.charAt(0);
+        
+        // Перевіряємо реферальний код
+        const urlParams = new URLSearchParams(window.location.search);
+        const ref = urlParams.get('start');
+        if (ref) {
+            // Тут має бути збереження реферала
+            console.log('Реферал:', ref);
+        }
     }
 
     // Bet panel
@@ -1445,7 +1781,6 @@
         autoWithdrawMultiplier = null;
     });
 
-    // Confirm bet
     confirmBetBtn.addEventListener('click', () => {
         if (!canPlaceBet) {
             tg.showAlert('❌ Ставки приймаються тільки під час таймера!');
@@ -1464,8 +1799,7 @@
         balance -= betAmount;
         isPlaying = true;
         
-        // Додаємо гравця в список (тільки реального)
-        addPlayerBet('Гравець', betAmount);
+        addPlayerBet(userName, betAmount);
         
         updateBalanceDisplay();
         
@@ -1477,7 +1811,6 @@
         tg.HapticFeedback?.impactOccurred('medium');
     });
 
-    // Withdraw
     withdrawBtn.addEventListener('click', () => {
         if (!isPlaying || !gameActive || isCrashed) return;
         
@@ -1485,14 +1818,16 @@
         balance += winAmount;
         isPlaying = false;
         
-        // Позначаємо гравця як такого, що забрав виграш
-        markPlayerWithdrawn('Гравець');
+        totalGames++;
+        totalWins += winAmount;
+        
+        markPlayerWithdrawn(userName);
         
         updateBalanceDisplay();
         
         potentialWin.classList.add('hidden');
         withdrawBtn.classList.add('hidden');
-        showBetPanelBtn.classList.add('hidden'); // Ховаємо кнопку ставки під час гри
+        showBetPanelBtn.classList.add('hidden');
         
         tg.HapticFeedback?.notificationOccurred('success');
         tg.showAlert(`✅ Ви забрали ${winAmount} ⭐!`);
@@ -1506,7 +1841,6 @@
         });
     });
 
-    // Balance click - open deposit
     balanceBlock.addEventListener('click', () => {
         switchScreen('deposit');
     });
@@ -1531,7 +1865,6 @@
         switchScreen('crash');
     });
 
-    // Кнопка поповнення
     payBtn.addEventListener('click', async () => {
         selectedAmount = parseInt(depositAmount.value) || 1;
         if (selectedAmount < 1) {
@@ -1544,7 +1877,6 @@
         confirmationOverlay.classList.remove('hidden');
     });
 
-    // Підтвердження
     cancelConfirm.addEventListener('click', () => {
         confirmationOverlay.classList.add('hidden');
     });
@@ -1552,6 +1884,85 @@
     confirmPay.addEventListener('click', async () => {
         confirmationOverlay.classList.add('hidden');
         await payWithStars(selectedAmount);
+    });
+
+    // Копіювання реферального посилання
+    document.getElementById('copyReferralBtn')?.addEventListener('click', () => {
+        navigator.clipboard.writeText(referralLink.textContent);
+        tg.showAlert('✅ Посилання скопійовано!');
+    });
+
+    // Виведення реферальних зірок
+    document.getElementById('withdrawReferralBtn')?.addEventListener('click', () => {
+        if (referralBalance > 0) {
+            balance += referralBalance;
+            referralBalance = 0;
+            updateBalanceDisplay();
+            updateProfileDisplay();
+            tg.showAlert('✅ Реферальні зірки виведено на баланс!');
+        } else {
+            tg.showAlert('❌ Немає зірок для виведення');
+        }
+    });
+
+    // Активація промокоду
+    document.getElementById('activatePromoBtn')?.addEventListener('click', () => {
+        const input = document.getElementById('promoCodeInput');
+        const code = input.value.trim().toUpperCase();
+        
+        if (!code) {
+            tg.showAlert('❌ Введіть промокод');
+            return;
+        }
+        
+        if (usedPromos.includes(code)) {
+            tg.showAlert('❌ Цей промокод вже використано');
+            return;
+        }
+        
+        const promo = activePromos.find(p => p.code === code);
+        if (promo) {
+            balance += promo.reward;
+            usedPromos.push(code);
+            localStorage.setItem('usedPromos', JSON.stringify(usedPromos));
+            updateBalanceDisplay();
+            tg.showAlert(`✅ Промокод активовано! +${promo.reward} ⭐`);
+            input.value = '';
+        } else {
+            tg.showAlert('❌ Невірний промокод');
+        }
+    });
+
+    // Відкриття кейсу
+    document.getElementById('openDailyCaseBtn')?.addEventListener('click', () => {
+        if (dailyCaseOpened) {
+            tg.showAlert('❌ Щоденний кейс вже відкрито! Завтра буде новий');
+            return;
+        }
+        
+        // Імітація відкриття кейсу
+        const prizes = [
+            { name: 'Artisan Bricks Legendary', value: 102 },
+            { name: 'Diamond Unique', value: 1.04 },
+            { name: 'Instant Ramens Unique', value: 1.04 },
+            { name: 'Ring Unique', value: 1.04 },
+            { name: 'Champagne Basic', value: 0.52 }
+        ];
+        
+        const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+        const stars = Math.floor(randomPrize.value);
+        
+        balance += stars;
+        dailyCaseOpened = true;
+        localStorage.setItem('dailyCaseOpened', 'true');
+        updateBalanceDisplay();
+        updateProfileDisplay();
+        
+        tg.showPopup({
+            title: '🎁 Вітаємо!',
+            message: `Ви отримали: ${randomPrize.name}\n+${stars} ⭐`,
+            buttons: [{ type: 'ok' }]
+        });
     });
 
     // Game loop
@@ -1582,7 +1993,10 @@
             balance += winAmount;
             isPlaying = false;
             
-            markPlayerWithdrawn('Гравець');
+            totalGames++;
+            totalWins += winAmount;
+            
+            markPlayerWithdrawn(userName);
             
             updateBalanceDisplay();
             potentialWin.classList.add('hidden');
@@ -1597,7 +2011,6 @@
             potentialWin.textContent = `💰 ${win} ⭐`;
         }
         
-        // Оновлюємо множники тільки для тих, хто ще не забрав
         players.forEach(p => {
             if (!p.withdrawn) {
                 p.multiplier = currentMultiplier;
@@ -1606,11 +2019,12 @@
         renderPlayers();
     }
 
-    // Initialize - запускаємо перший таймер
+    // Initialize
     startCountdown();
     gameLoop = setInterval(gameTick, 50);
     renderPlayers();
     updateBalanceDisplay();
+    updateProfileDisplay();
 
     window.addEventListener('beforeunload', () => {
         if (gameLoop) clearInterval(gameLoop);
@@ -1619,3 +2033,4 @@
 </script>
 </body>
 </html>
+
