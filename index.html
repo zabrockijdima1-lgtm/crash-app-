@@ -856,253 +856,487 @@
             display: flex;
         }
 
-        .hidden {
-            display: none !important;
+        /* Профіль та реферальна система */
+        .profile-container {
+            padding: 16px;
+            flex: 1;
+            overflow-y: auto;
         }
 
-        /* Профіль */
-        .profile-section {
+        .profile-card {
             background: #1a232f;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 20px;
-            margin: 16px;
+            margin-bottom: 16px;
             border: 1px solid #31465c;
         }
-        
-        .profile-title {
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(145deg, #f0b90b, #d4a50a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #0e1219;
+        }
+
+        .profile-info h2 {
             font-size: 18px;
-            font-weight: 600;
-            color: #f0b90b;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .profile-info p {
+            color: #6b7f98;
+            font-size: 13px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
             margin-bottom: 16px;
         }
-        
-        .profile-stats {
+
+        .stat-card {
             background: #0e1219;
+            padding: 12px;
             border-radius: 12px;
+            border: 1px solid #31465c;
+        }
+
+        .stat-label {
+            color: #6b7f98;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            color: #f0b90b;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .referral-card {
+            background: linear-gradient(135deg, rgba(240, 185, 11, 0.1), rgba(212, 165, 10, 0.1));
+            border: 2px solid #f0b90b;
+            border-radius: 16px;
             padding: 16px;
             margin-bottom: 16px;
         }
-        
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            color: #b3c6e2;
-        }
-        
-        .stat-value {
+
+        .referral-title {
             color: #f0b90b;
-            font-weight: 600;
-        }
-        
-        .referral-link-container {
-            background: #0e1219;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
             display: flex;
+            align-items: center;
             gap: 8px;
         }
-        
+
+        .referral-link-box {
+            background: #0e1219;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .referral-link {
             flex: 1;
-            background: #1e2630;
-            border: 1px solid #31465c;
-            border-radius: 8px;
-            padding: 10px;
-            color: #fff;
+            color: #8e9fb1;
             font-size: 12px;
             word-break: break-all;
         }
-        
+
         .copy-btn {
             background: #f0b90b;
             color: #0e1219;
-            border: none;
-            border-radius: 8px;
-            padding: 0 15px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
         }
-        
-        .referral-earnings {
+
+        .referral-balance {
             background: #0e1219;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
+            border-radius: 10px;
+            padding: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        
-        .earnings-amount {
-            font-size: 24px;
-            font-weight: 700;
-            color: #f0b90b;
-        }
-        
-        .withdraw-earnings-btn {
-            background: linear-gradient(135deg, #f0b90b, #d4a50a);
-            color: #0e1219;
-            border: none;
-            border-radius: 30px;
-            padding: 10px 20px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .promo-section {
-            background: #0e1219;
-            border-radius: 12px;
-            padding: 16px;
-        }
-        
-        .promo-title {
-            color: #f0b90b;
-            font-size: 14px;
             margin-bottom: 12px;
         }
-        
-        .promo-input {
+
+        .referral-balance-left {
             display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
+            flex-direction: column;
         }
-        
-        .promo-input input {
-            flex: 1;
-            background: #1e2630;
-            border: 1px solid #31465c;
-            border-radius: 8px;
-            padding: 10px;
+
+        .referral-balance-label {
+            color: #6b7f98;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .referral-balance-value {
+            color: #68d391;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .withdraw-ref-btn {
+            background: linear-gradient(135deg, #68d391, #48bb78);
             color: #fff;
-            outline: none;
-        }
-        
-        .promo-input button {
-            background: #f0b90b;
-            color: #0e1219;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 15px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
         }
-        
-        .promo-list {
-            max-height: 150px;
-            overflow-y: auto;
+
+        .referrals-list {
+            margin-top: 12px;
         }
-        
-        .promo-item {
+
+        .referral-item {
             display: flex;
             justify-content: space-between;
-            padding: 8px;
-            background: #1e2630;
-            border-radius: 6px;
-            margin-bottom: 6px;
+            align-items: center;
+            background: #0e1219;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
         }
-        
-        .promo-code {
-            color: #f0b90b;
-            font-weight: 600;
+
+        .referral-name {
+            color: #b3c6e2;
+            font-size: 13px;
         }
-        
-        .promo-status {
+
+        .referral-earned {
             color: #68d391;
-            font-size: 11px;
+            font-size: 13px;
+            font-weight: 600;
         }
 
         /* Кейси */
-        .cases-section {
+        .cases-container {
+            padding: 16px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .promo-input-card {
             background: #1a232f;
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 20px;
-            margin: 16px;
+            margin-bottom: 16px;
             border: 1px solid #31465c;
         }
-        
-        .cases-title {
-            font-size: 20px;
-            font-weight: 700;
+
+        .promo-title {
             color: #f0b90b;
-            text-align: center;
-            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
         }
-        
-        .daily-case {
+
+        .promo-input-box {
+            display: flex;
+            gap: 8px;
+        }
+
+        .promo-input {
+            flex: 1;
             background: #0e1219;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 2px solid #f0b90b;
+            border: 1px solid #31465c;
+            border-radius: 25px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
         }
-        
+
+        .apply-promo-btn {
+            background: linear-gradient(135deg, #f0b90b, #d4a50a);
+            color: #0e1219;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .case-card {
+            background: #1a232f;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 2px solid #31465c;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case-card.locked {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .case-card.locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            opacity: 0.8;
+        }
+
         .case-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
         }
-        
+
         .case-name {
-            font-size: 18px;
-            font-weight: 600;
             color: #f0b90b;
+            font-size: 18px;
+            font-weight: 700;
         }
-        
-        .case-status {
-            background: #f0b90b;
-            color: #0e1219;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
+
+        .case-price {
+            background: rgba(240, 185, 11, 0.2);
+            color: #f0b90b;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
             font-weight: 600;
         }
-        
+
+        .case-items-preview {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+        }
+
+        .case-item-preview {
+            background: #0e1219;
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .item-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .item-chance {
+            color: #6b7f98;
+            font-size: 10px;
+        }
+
         .open-case-btn {
             width: 100%;
             background: linear-gradient(135deg, #f0b90b, #d4a50a);
-            border: none;
             color: #0e1219;
-            font-weight: 700;
-            font-size: 16px;
             padding: 14px;
             border-radius: 30px;
+            font-weight: 700;
+            font-size: 16px;
             cursor: pointer;
+        }
+
+        .case-opening-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .case-opening-animation {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .case-box {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f0b90b, #d4a50a);
+            border-radius: 20px;
+            animation: boxShake 0.5s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        @keyframes boxShake {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .case-result {
+            text-align: center;
+            opacity: 0;
+            animation: fadeInScale 0.5s forwards;
+            animation-delay: 2s;
+        }
+
+        @keyframes fadeInScale {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .result-item {
+            background: #1a232f;
+            border-radius: 20px;
+            padding: 24px;
+            border: 2px solid #f0b90b;
+        }
+
+        .result-icon {
+            font-size: 60px;
             margin-bottom: 16px;
         }
-        
-        .prizes-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+
+        .result-name {
+            color: #f0b90b;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
-        
-        .prize-item {
-            background: #1a232f;
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            border: 1px solid #31465c;
-        }
-        
-        .prize-value {
+
+        .result-value {
+            color: #68d391;
             font-size: 24px;
             font-weight: 700;
-            color: #f0b90b;
-            margin-bottom: 4px;
         }
-        
-        .prize-name {
-            font-size: 12px;
+
+        .close-result-btn {
+            margin-top: 20px;
+            background: #2a3440;
             color: #b3c6e2;
-            margin-bottom: 4px;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
         }
-        
-        .prize-chance {
-            font-size: 11px;
+
+        /* Admin Panel for Promocodes */
+        .admin-panel {
+            background: #1a232f;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 2px solid #fc8181;
+        }
+
+        .admin-title {
+            color: #fc8181;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .create-promo-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .create-promo-input {
+            flex: 1;
+            background: #0e1219;
+            border: 1px solid #31465c;
+            border-radius: 10px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .create-promo-btn {
+            background: #fc8181;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .promo-list {
+            background: #0e1219;
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .promo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #31465c;
+        }
+
+        .promo-item:last-child {
+            border-bottom: none;
+        }
+
+        .promo-code {
+            color: #f0b90b;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .promo-uses {
             color: #6b7f98;
+            font-size: 11px;
+        }
+
+        .delete-promo-btn {
+            color: #fc8181;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -1131,6 +1365,7 @@
 
     <!-- Crash Screen -->
     <div id="crashScreen" class="screen active">
+        <!-- Existing crash game content remains unchanged -->
         <div class="history-stats">
             <span class="history-title">Історія ставок</span>
             <div class="history-multipliers" id="historyMultipliers">
@@ -1191,7 +1426,147 @@
         </div>
     </div>
 
-    <!-- Deposit Screen -->
+    <!-- Cases Screen -->
+    <div id="casesScreen" class="screen">
+        <div class="cases-container">
+            <!-- Admin Panel (visible only for owner) -->
+            <div class="admin-panel hidden" id="adminPanel">
+                <div class="admin-title">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Адмін панель - Промокоди
+                </div>
+                <div class="create-promo-box">
+                    <input type="text" class="create-promo-input" id="newPromoCode" placeholder="Новий промокод">
+                    <button class="create-promo-btn" id="createPromoBtn">Створити</button>
+                </div>
+                <div class="promo-list" id="promoList">
+                    <!-- Promocodes will be listed here -->
+                </div>
+            </div>
+
+            <!-- Promo Input -->
+            <div class="promo-input-card">
+                <div class="promo-title">🎁 Введіть промокод</div>
+                <div class="promo-input-box">
+                    <input type="text" class="promo-input" id="promoInput" placeholder="Промокод">
+                    <button class="apply-promo-btn" id="applyPromoBtn">Застосувати</button>
+                </div>
+            </div>
+
+            <!-- Trial Case -->
+            <div class="case-card locked" id="trialCase">
+                <div class="case-header">
+                    <span class="case-name">🎁 Пробний кейс</span>
+                    <span class="case-price">БЕЗКОШТОВНО</span>
+                </div>
+                <div class="case-items-preview">
+                    <div class="case-item-preview">
+                        <div class="item-icon">⭐</div>
+                        <div class="item-chance">50 зірок</div>
+                    </div>
+                    <div class="case-item-preview">
+                        <div class="item-icon">💎</div>
+                        <div class="item-chance">100 зірок</div>
+                    </div>
+                    <div class="case-item-preview">
+                        <div class="item-icon">🔥</div>
+                        <div class="item-chance">200 зірок</div>
+                    </div>
+                    <div class="case-item-preview">
+                        <div class="item-icon">💰</div>
+                        <div class="item-chance">500 зірок</div>
+                    </div>
+                </div>
+                <button class="open-case-btn" id="openTrialCaseBtn">Відкрити кейс</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Case Opening Animation -->
+    <div class="case-opening-overlay hidden" id="caseOpeningOverlay">
+        <div class="case-opening-animation">
+            <div class="case-box">📦</div>
+        </div>
+        <div class="case-result">
+            <div class="result-item">
+                <div class="result-icon" id="resultIcon">⭐</div>
+                <div class="result-name" id="resultName">Виграш!</div>
+                <div class="result-value" id="resultValue">+50 зірок</div>
+            </div>
+            <button class="close-result-btn" id="closeResultBtn">Закрити</button>
+        </div>
+    </div>
+
+    <!-- Profile Screen -->
+    <div id="profileScreen" class="screen">
+        <div class="profile-container">
+            <!-- Profile Info -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">Д</div>
+                    <div class="profile-info">
+                        <h2 id="profileName">Діма | BIO</h2>
+                        <p>ID: <span id="profileId">123456</span></p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Всього ігор</div>
+                        <div class="stat-value" id="totalGames">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Виграно зірок</div>
+                        <div class="stat-value" id="totalWon">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Найбільший виграш</div>
+                        <div class="stat-value" id="biggestWin">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Відкрито кейсів</div>
+                        <div class="stat-value" id="casesOpened">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referral System -->
+            <div class="profile-card">
+                <div class="referral-card">
+                    <div class="referral-title">
+                        <i class="fa-solid fa-users"></i>
+                        Реферальна програма
+                    </div>
+                    
+                    <div class="referral-link-box">
+                        <span class="referral-link" id="referralLink">t.me/StarsGameBot?start=ref_123456</span>
+                        <button class="copy-btn" id="copyReferralBtn">Копіювати</button>
+                    </div>
+
+                    <div style="color: #8e9fb1; font-size: 12px; margin-bottom: 12px;">
+                        💰 Отримуйте 5% від кожного поповнення ваших рефералів!
+                    </div>
+
+                    <div class="referral-balance">
+                        <div class="referral-balance-left">
+                            <div class="referral-balance-label">Реферальний баланс</div>
+                            <div class="referral-balance-value" id="referralBalance">0 ⭐</div>
+                        </div>
+                        <button class="withdraw-ref-btn" id="withdrawRefBtn">Вивести на баланс</button>
+                    </div>
+
+                    <div class="referrals-list">
+                        <div style="color: #6b7f98; font-size: 12px; margin-bottom: 8px;">Ваші реферали:</div>
+                        <div id="referralsList">
+                            <!-- Referrals will be listed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Other screens remain unchanged -->
     <div id="depositScreen" class="screen">
         <div class="deposit-panel">
             <div class="deposit-title">Поповнення зірками</div>
@@ -1235,119 +1610,67 @@
         </div>
     </div>
 
-    <!-- Cases Screen -->
-    <div id="casesScreen" class="screen">
-        <div class="cases-section">
-            <div class="cases-title">🎁 КЕЙСИ</div>
-            
-            <!-- Щоденний кейс -->
-            <div class="daily-case">
-                <div class="case-header">
-                    <span class="case-name">ЩОДЕННИЙ КЕЙС</span>
-                    <span class="case-status" id="dailyCaseStatus">Доступно</span>
-                </div>
-                
-                <button class="open-case-btn" id="openDailyCaseBtn">Відкрити</button>
-                
-                <div class="prizes-grid">
-                    <div class="prize-item">
-                        <div class="prize-value">102</div>
-                        <div class="prize-name">Artisan Bricks</div>
-                        <div class="prize-chance">Legendary 4.97%</div>
-                    </div>
-                    <div class="prize-item">
-                        <div class="prize-value">1.04</div>
-                        <div class="prize-name">Diamond</div>
-                        <div class="prize-chance">Unique 0.52%</div>
-                    </div>
-                    <div class="prize-item">
-                        <div class="prize-value">1.04</div>
-                        <div class="prize-name">Instant Ramens</div>
-                        <div class="prize-chance">Unique 4.97%</div>
-                    </div>
-                    <div class="prize-item">
-                        <div class="prize-value">1.04</div>
-                        <div class="prize-name">Ring</div>
-                        <div class="prize-chance">Unique 0.52%</div>
-                    </div>
-                    <div class="prize-item">
-                        <div class="prize-value">0.52</div>
-                        <div class="prize-name">Champagne</div>
-                        <div class="prize-chance">Basic 0.26%</div>
-                    </div>
-                </div>
-            </div>
+    <!-- Inventory Screen -->
+    <div id="inventoryScreen" class="screen">
+        <div style="padding: 20px; text-align: center; color: #6b7f98;">
+            <i class="fa-solid fa-box-open" style="font-size: 48px; margin-bottom: 20px; color: #f0b90b;"></i>
+            <h3>Ваш інвентар порожній</h3>
+            <p style="margin-top: 10px;">Тут будуть ваші предмети</p>
         </div>
     </div>
 
-    <!-- Profile Screen -->
-    <div id="profileScreen" class="screen">
-        <div class="profile-section">
-            <div class="profile-title">👤 ПРОФІЛЬ</div>
-            
-            <div class="profile-stats">
-                <div class="stat-row">
-                    <span>ID:</span>
-                    <span class="stat-value" id="profileUserId">123456789</span>
-                </div>
-                <div class="stat-row">
-                    <span>Ім'я:</span>
-                    <span class="stat-value" id="profileUserName">Діма | BIO</span>
-                </div>
-                <div class="stat-row">
-                    <span>Рівень:</span>
-                    <span class="stat-value">Level 1</span>
-                </div>
-                <div class="stat-row">
-                    <span>Всього ігор:</span>
-                    <span class="stat-value" id="totalGames">0</span>
-                </div>
-                <div class="stat-row">
-                    <span>Всього виграшів:</span>
-                    <span class="stat-value" id="totalWins">0 ⭐</span>
-                </div>
-            </div>
-
-            <div class="profile-title">🤝 РЕФЕРАЛЬНА СИСТЕМА</div>
-            
-            <div class="referral-link-container">
-                <div class="referral-link" id="referralLink">https://t.me/your_bot?start=ref_123456</div>
-                <button class="copy-btn" id="copyReferralBtn">COPY</button>
-            </div>
-            
-            <div class="referral-earnings">
-                <div>
-                    <div style="color: #b3c6e2; font-size: 12px;">Реферальний баланс</div>
-                    <div class="earnings-amount" id="referralBalance">0 ⭐</div>
-                </div>
-                <button class="withdraw-earnings-btn" id="withdrawReferralBtn">ВИВЕСТИ</button>
-            </div>
-
-            <div class="profile-title">🎫 ПРОМОКОДИ</div>
-            
-            <div class="promo-section">
-                <div class="promo-title">Введіть промокод</div>
-                <div class="promo-input">
-                    <input type="text" id="promoCodeInput" placeholder="XXX-XXX">
-                    <button id="activatePromoBtn">Активувати</button>
-                </div>
-                
-                <div class="promo-title">Активні промокоди</div>
-                <div class="promo-list" id="promoList">
-                    <div class="promo-item">
-                        <span class="promo-code">WELCOME10</span>
-                        <span class="promo-status">+10 ⭐</span>
-                    </div>
-                    <div class="promo-item">
-                        <span class="promo-code">BONUS20</span>
-                        <span class="promo-status">+20 ⭐</span>
-                    </div>
-                </div>
-            </div>
+    <div id="craftScreen" class="screen">
+        <div style="padding: 20px; text-align: center; color: #6b7f98;">
+            <i class="fa-solid fa-hammer" style="font-size: 48px; margin-bottom: 20px; color: #f0b90b;"></i>
+            <h3>Крафт предметів</h3>
+            <p style="margin-top: 10px;">Скоро з'явиться</p>
         </div>
     </div>
 
-    <!-- Confirmation Overlay -->
+    <!-- Existing overlays remain unchanged -->
+    <div class="bet-panel-overlay hidden" id="betPanelOverlay">
+        <!-- Existing bet panel content -->
+        <div class="bet-panel">
+            <div class="bet-panel-header">
+                <span class="bet-panel-title">Виберіть суму ставки</span>
+                <span class="bet-panel-close" id="closeBetPanel">
+                    <i class="fa-solid fa-xmark"></i>
+                </span>
+            </div>
+            
+            <div class="bet-input-container">
+                <div class="bet-input-label">Сума ставки (⭐)</div>
+                <div class="bet-input-row">
+                    <input type="number" id="betAmount" min="1" step="1" value="1">
+                    <span class="bet-max-btn" id="maxBetBtn">MAX</span>
+                </div>
+            </div>
+
+            <div class="bet-quick-btns">
+                <button class="quick-bet-btn" data-add="1">+1</button>
+                <button class="quick-bet-btn" data-add="5">+5</button>
+                <button class="quick-bet-btn" data-add="10">+10</button>
+                <button class="quick-bet-btn" data-add="50">+50</button>
+            </div>
+
+            <div class="auto-withdraw">
+                <div class="auto-withdraw-header">
+                    <span>Автовивід</span>
+                    <span>при множнику</span>
+                </div>
+                <div class="auto-btns">
+                    <button class="auto-btn" data-mult="1.5">x1.5</button>
+                    <button class="auto-btn" data-mult="2">x2</button>
+                    <button class="auto-btn" data-mult="3">x3</button>
+                    <button class="auto-btn" data-mult="5">x5</button>
+                </div>
+                <button class="auto-off-btn" id="autoOffBtn">🔴 ВИМКНУТИ АВТОВИВІД</button>
+            </div>
+
+            <button class="place-bet-btn" id="confirmBetBtn">Поставити ставку</button>
+        </div>
+    </div>
+
     <div class="confirmation-overlay hidden" id="confirmationOverlay">
         <div class="confirmation-card">
             <div class="confirmation-icon">
@@ -1369,7 +1692,15 @@
 
     <!-- Navbar -->
     <div class="navbar">
-        <div class="nav-item" data-screen="crash">
+        <div class="nav-item" data-screen="inventory">
+            <i class="fa-solid fa-box-archive nav-icon"></i>
+            <span>Інвентар</span>
+        </div>
+        <div class="nav-item" data-screen="craft">
+            <i class="fa-solid fa-hammer nav-icon"></i>
+            <span>Крафт</span>
+        </div>
+        <div class="nav-item active" data-screen="crash">
             <i class="fa-solid fa-rocket nav-icon"></i>
             <span>Краш</span>
         </div>
@@ -1381,15 +1712,11 @@
             <i class="fa-solid fa-user nav-icon"></i>
             <span>Профіль</span>
         </div>
-        <div class="nav-item" data-screen="deposit">
-            <i class="fa-solid fa-plus nav-icon"></i>
-            <span>Поповнити</span>
-        </div>
     </div>
 </div>
 
 <script>
-    // Дані користувача
+    // Game state
     let balance = 100;
     let currentMultiplier = 1.00;
     let gameActive = false;
@@ -1402,118 +1729,403 @@
     let countdown = 5;
     let countdownInterval = null;
     let canPlaceBet = true;
-    let userId = 123456;
-    let userName = 'Гравець';
-
-    // Реферальна система
-    let referralBalance = 0;
-    let referralCode = 'ref_' + Math.floor(Math.random() * 1000000);
-    
-    // Статистика
-    let totalGames = 0;
-    let totalWins = 0;
-    
-    // Промокоди
-    let activePromos = [
-        { code: 'WELCOME10', reward: 10, active: true },
-        { code: 'BONUS20', reward: 20, active: true }
-    ];
-    
-    // Використані промокоди
-    let usedPromos = JSON.parse(localStorage.getItem('usedPromos')) || [];
-
-    // Кейси
-    let dailyCaseOpened = localStorage.getItem('dailyCaseOpened') === 'true';
-
-    // Список гравців
     let players = [];
 
-    // Елементи
+    // Referral System
+    let referralBalance = 0;
+    let referralCode = '';
+    let referrer = null;
+    let referrals = [];
+
+    // Stats
+    let stats = {
+        totalGames: 0,
+        totalWon: 0,
+        biggestWin: 0,
+        casesOpened: 0
+    };
+
+    // Promocodes Storage
+    let validPromocodes = localStorage.getItem('promocodes') ? JSON.parse(localStorage.getItem('promocodes')) : [];
+    let usedPromocodes = localStorage.getItem('usedPromocodes') ? JSON.parse(localStorage.getItem('usedPromocodes')) : [];
+    
+    // Owner ID (change this to your real Telegram ID)
+    const OWNER_ID = 123456; // Replace with your Telegram ID
+    
+    // Initialize Telegram WebApp
+    let tg = window.Telegram?.WebApp;
+    if (!tg) {
+        tg = {
+            showAlert: (t) => alert(t),
+            HapticFeedback: {
+                impactOccurred: () => {},
+                notificationOccurred: () => {},
+                selectionChanged: () => {}
+            },
+            showPopup: (params, callback) => {
+                alert(params.message);
+                if (callback) callback('ok');
+            },
+            openInvoice: (url, callback) => {
+                alert(`Відкриваємо інвойс: ${url}\n\nДемо режим`);
+                if (callback) callback('paid');
+            },
+            close: () => {},
+            expand: () => {},
+            ready: () => {},
+            initDataUnsafe: { user: { id: 123456, first_name: 'Test', last_name: 'User' } }
+        };
+    }
+    
+    tg.expand();
+    tg.ready();
+
+    // Get user data
+    const userId = tg.initDataUnsafe?.user?.id || 123456;
+    const userName = tg.initDataUnsafe?.user?.first_name || 'User';
+
+    // Initialize user profile
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const user = tg.initDataUnsafe.user;
+        const fullName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+        document.getElementById('userName').textContent = fullName;
+        document.getElementById('profileName').textContent = fullName;
+        document.getElementById('userAvatar').textContent = user.first_name.charAt(0).toUpperCase();
+        document.getElementById('profileAvatar').textContent = user.first_name.charAt(0).toUpperCase();
+        document.getElementById('profileId').textContent = user.id;
+        
+        // Generate referral link
+        referralCode = 'ref_' + user.id;
+        document.getElementById('referralLink').textContent = `t.me/StarsGameBot?start=${referralCode}`;
+    }
+
+    // Check if user is owner and show admin panel
+    if (userId === OWNER_ID) {
+        document.getElementById('adminPanel')?.classList.remove('hidden');
+    }
+
+    // Check URL parameters for referral
+    const urlParams = new URLSearchParams(window.location.search);
+    const startParam = urlParams.get('start');
+    if (startParam && startParam.startsWith('ref_')) {
+        referrer = startParam.replace('ref_', '');
+        if (referrer != userId) {
+            console.log('Referred by:', referrer);
+        }
+    }
+
+    // Elements
     const balanceSpan = document.getElementById('balanceValue');
     const currentBalanceDisplay = document.getElementById('currentBalanceDisplay');
-    const multiplierEl = document.getElementById('multiplier');
-    const playersList = document.getElementById('playersList');
-    const rocketContainer = document.getElementById('rocketContainer');
-    const potentialWin = document.getElementById('potentialWin');
-    const roundStatus = document.getElementById('roundStatus');
-    const showBetPanelBtn = document.getElementById('showBetPanelBtn');
-    const withdrawBtn = document.getElementById('withdrawBtn');
-    const balanceBlock = document.getElementById('balanceBlock');
-    const closeBtn = document.getElementById('closeBtn');
-    const timerContainer = document.getElementById('timerContainer');
-    const timerDisplay = document.getElementById('timerDisplay');
     const navItems = document.querySelectorAll('.nav-item');
     const screens = {
         crash: document.getElementById('crashScreen'),
         deposit: document.getElementById('depositScreen'),
+        inventory: document.getElementById('inventoryScreen'),
+        craft: document.getElementById('craftScreen'),
         cases: document.getElementById('casesScreen'),
         profile: document.getElementById('profileScreen')
     };
-
-    // Profile elements
-    const profileUserId = document.getElementById('profileUserId');
-    const profileUserName = document.getElementById('profileUserName');
-    const totalGamesSpan = document.getElementById('totalGames');
-    const totalWinsSpan = document.getElementById('totalWins');
-    const referralLink = document.getElementById('referralLink');
-    const referralBalanceSpan = document.getElementById('referralBalance');
-    const promoList = document.getElementById('promoList');
-    const dailyCaseStatus = document.getElementById('dailyCaseStatus');
-
-    // Bet panel elements
-    const betPanelOverlay = document.getElementById('betPanelOverlay');
-    const closeBetPanel = document.getElementById('closeBetPanel');
-    const betAmountInput = document.getElementById('betAmount');
-    const maxBetBtn = document.getElementById('maxBetBtn');
-    const quickBetBtns = document.querySelectorAll('.quick-bet-btn');
-    const autoBtns = document.querySelectorAll('.auto-btn');
-    const autoOffBtn = document.getElementById('autoOffBtn');
-    const confirmBetBtn = document.getElementById('confirmBetBtn');
-
-    // Deposit elements
-    const depositAmount = document.getElementById('depositAmount');
-    const bonusValue = document.getElementById('bonusValue');
-    const cancelDeposit = document.getElementById('cancelDeposit');
-    const payBtn = document.getElementById('payBtn');
-
-    // Confirmation elements
-    const confirmationOverlay = document.getElementById('confirmationOverlay');
-    const cancelConfirm = document.getElementById('cancelConfirm');
-    const confirmPay = document.getElementById('confirmPay');
-    const confirmAmount = document.getElementById('confirmAmount');
-    const confirmStars = document.getElementById('confirmStars');
 
     function updateBalanceDisplay() {
         balanceSpan.textContent = balance;
         if (currentBalanceDisplay) currentBalanceDisplay.textContent = balance + ' ⭐';
     }
 
-    function updateProfileDisplay() {
-        if (profileUserId) profileUserId.textContent = userId;
-        if (profileUserName) profileUserName.textContent = userName;
-        if (totalGamesSpan) totalGamesSpan.textContent = totalGames;
-        if (totalWinsSpan) totalWinsSpan.textContent = totalWins + ' ⭐';
-        if (referralLink) referralLink.textContent = `https://t.me/your_bot?start=${referralCode}`;
-        if (referralBalanceSpan) referralBalanceSpan.textContent = referralBalance + ' ⭐';
+    function updateStats() {
+        document.getElementById('totalGames').textContent = stats.totalGames;
+        document.getElementById('totalWon').textContent = stats.totalWon;
+        document.getElementById('biggestWin').textContent = stats.biggestWin;
+        document.getElementById('casesOpened').textContent = stats.casesOpened;
+    }
+
+    function updateReferralDisplay() {
+        document.getElementById('referralBalance').textContent = referralBalance + ' ⭐';
         
-        // Оновлюємо список промокодів
-        if (promoList) {
-            promoList.innerHTML = activePromos.filter(p => p.active).map(promo => `
-                <div class="promo-item">
-                    <span class="promo-code">${promo.code}</span>
-                    <span class="promo-status">+${promo.reward} ⭐</span>
+        const referralsList = document.getElementById('referralsList');
+        if (referrals.length > 0) {
+            referralsList.innerHTML = referrals.map(ref => `
+                <div class="referral-item">
+                    <span class="referral-name">${ref.name}</span>
+                    <span class="referral-earned">+${ref.earned} ⭐</span>
                 </div>
             `).join('');
-        }
-        
-        // Оновлюємо статус кейсу
-        if (dailyCaseStatus) {
-            dailyCaseStatus.textContent = dailyCaseOpened ? 'Вже відкрито' : 'Доступно';
-            dailyCaseStatus.style.color = dailyCaseOpened ? '#fc8181' : '#f0b90b';
+        } else {
+            referralsList.innerHTML = '<div style="color: #6b7f98; font-size: 12px;">У вас ще немає рефералів</div>';
         }
     }
 
+    // Copy referral link
+    document.getElementById('copyReferralBtn')?.addEventListener('click', () => {
+        const refLink = document.getElementById('referralLink').textContent;
+        navigator.clipboard.writeText(refLink).then(() => {
+            tg.HapticFeedback?.notificationOccurred('success');
+            tg.showAlert('✅ Реферальне посилання скопійовано!');
+        });
+    });
+
+    // Withdraw referral balance
+    document.getElementById('withdrawRefBtn')?.addEventListener('click', () => {
+        if (referralBalance > 0) {
+            balance += referralBalance;
+            const withdrawn = referralBalance;
+            referralBalance = 0;
+            updateBalanceDisplay();
+            updateReferralDisplay();
+            tg.HapticFeedback?.notificationOccurred('success');
+            tg.showAlert(`✅ Виведено ${withdrawn} ⭐ на основний баланс!`);
+        } else {
+            tg.showAlert('❌ Немає зірок для виведення');
+        }
+    });
+
+    // Promocode System
+    function savePromocodes() {
+        localStorage.setItem('promocodes', JSON.stringify(validPromocodes));
+        localStorage.setItem('usedPromocodes', JSON.stringify(usedPromocodes));
+    }
+
+    function updatePromoList() {
+        const promoList = document.getElementById('promoList');
+        if (validPromocodes.length > 0) {
+            promoList.innerHTML = validPromocodes.map(promo => `
+                <div class="promo-item">
+                    <div>
+                        <div class="promo-code">${promo.code}</div>
+                        <div class="promo-uses">Використано: ${promo.uses} разів</div>
+                    </div>
+                    <i class="fa-solid fa-trash delete-promo-btn" data-code="${promo.code}"></i>
+                </div>
+            `).join('');
+            
+            // Add delete handlers
+            document.querySelectorAll('.delete-promo-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const code = e.target.dataset.code;
+                    validPromocodes = validPromocodes.filter(p => p.code !== code);
+                    savePromocodes();
+                    updatePromoList();
+                });
+            });
+        } else {
+            promoList.innerHTML = '<div style="color: #6b7f98; font-size: 12px;">Немає активних промокодів</div>';
+        }
+    }
+
+    // Create new promocode (admin only)
+    document.getElementById('createPromoBtn')?.addEventListener('click', () => {
+        const newCode = document.getElementById('newPromoCode').value.trim();
+        if (!newCode) {
+            tg.showAlert('❌ Введіть промокод');
+            return;
+        }
+        
+        if (validPromocodes.find(p => p.code === newCode)) {
+            tg.showAlert('❌ Такий промокод вже існує');
+            return;
+        }
+        
+        validPromocodes.push({
+            code: newCode,
+            uses: 0,
+            createdAt: Date.now()
+        });
+        
+        savePromocodes();
+        updatePromoList();
+        document.getElementById('newPromoCode').value = '';
+        tg.HapticFeedback?.notificationOccurred('success');
+        tg.showAlert('✅ Промокод створено!');
+    });
+
+    // Apply promocode
+    document.getElementById('applyPromoBtn')?.addEventListener('click', () => {
+        const promoInput = document.getElementById('promoInput').value.trim();
+        if (!promoInput) {
+            tg.showAlert('❌ Введіть промокод');
+            return;
+        }
+        
+        const promo = validPromocodes.find(p => p.code === promoInput);
+        if (!promo) {
+            tg.showAlert('❌ Невірний промокод');
+            return;
+        }
+        
+        if (usedPromocodes.includes(promoInput)) {
+            tg.showAlert('❌ Ви вже використали цей промокод');
+            return;
+        }
+        
+        // Unlock trial case
+        document.getElementById('trialCase')?.classList.remove('locked');
+        usedPromocodes.push(promoInput);
+        promo.uses++;
+        savePromocodes();
+        
+        document.getElementById('promoInput').value = '';
+        tg.HapticFeedback?.notificationOccurred('success');
+        tg.showAlert('✅ Промокод застосовано! Кейс розблоковано.');
+    });
+
+    // Open case
+    document.getElementById('openTrialCaseBtn')?.addEventListener('click', () => {
+        if (document.getElementById('trialCase').classList.contains('locked')) {
+            tg.showAlert('❌ Спочатку введіть промокод!');
+            return;
+        }
+        
+        // Show opening animation
+        document.getElementById('caseOpeningOverlay').classList.remove('hidden');
+        
+        // Simulate case opening
+        setTimeout(() => {
+            // Random prize
+            const prizes = [
+                { icon: '⭐', name: 'Зірки', value: 50 },
+                { icon: '💎', name: 'Діаманти', value: 100 },
+                { icon: '🔥', name: 'Вогонь', value: 200 },
+                { icon: '💰', name: 'Скарб', value: 500 }
+            ];
+            
+            const prize = prizes[Math.floor(Math.random() * prizes.length)];
+            
+            // Update result display
+            document.getElementById('resultIcon').textContent = prize.icon;
+            document.getElementById('resultName').textContent = prize.name;
+            document.getElementById('resultValue').textContent = `+${prize.value} зірок`;
+            
+            // Add to balance
+            balance += prize.value;
+            updateBalanceDisplay();
+            
+            // Update stats
+            stats.casesOpened++;
+            if (prize.value > stats.biggestWin) {
+                stats.biggestWin = prize.value;
+            }
+            stats.totalWon += prize.value;
+            updateStats();
+            
+            // Show result
+            document.querySelector('.case-result').style.opacity = '1';
+            
+            // Lock case again
+            document.getElementById('trialCase')?.classList.add('locked');
+        }, 2000);
+    });
+
+    // Close case result
+    document.getElementById('closeResultBtn')?.addEventListener('click', () => {
+        document.getElementById('caseOpeningOverlay').classList.add('hidden');
+        document.querySelector('.case-result').style.opacity = '0';
+    });
+
+    // Payment with referral bonus
+    async function payWithStars(amount) {
+        try {
+            tg.HapticFeedback?.impactOccurred('medium');
+            
+            const SERVER_URL = "http://localhost:8001";
+            
+            const response = await fetch(`${SERVER_URL}/api/create-invoice`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: userId,
+                    amount: amount,
+                    referrer: referrer
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.link) {
+                tg.openInvoice(data.link, (status) => {
+                    if (status === 'paid') {
+                        const bonus = Math.floor(amount * 0.1);
+                        balance += amount + bonus;
+                        updateBalanceDisplay();
+                        
+                        // Add referral bonus (5% of deposit)
+                        if (referrer) {
+                            // In real app, this should be handled server-side
+                            const refBonus = Math.floor(amount * 0.05);
+                            // Send to referrer's account via server
+                            console.log(`Referral bonus: ${refBonus} stars to user ${referrer}`);
+                        }
+                        
+                        tg.HapticFeedback?.notificationOccurred('success');
+                        tg.showPopup({
+                            title: '✅ Успішно!',
+                            message: `Ви отримали ${amount} зірок + ${bonus} бонусних!`,
+                            buttons: [{ type: 'ok' }]
+                        });
+                        
+                        document.getElementById('confirmationOverlay')?.classList.add('hidden');
+                        switchScreen('crash');
+                        
+                    } else if (status === 'cancelled') {
+                        tg.showAlert('❌ Оплату скасовано');
+                    }
+                });
+            }
+        } catch (error) {
+            tg.showAlert('❌ Помилка з\'єднання');
+        }
+    }
+
+    function switchScreen(screenId) {
+        Object.values(screens).forEach(screen => {
+            if (screen) screen.classList.remove('active');
+        });
+        
+        if (screens[screenId]) {
+            screens[screenId].classList.add('active');
+        }
+        
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.dataset.screen === screenId) {
+                item.classList.add('active');
+            }
+        });
+        
+        // Update stats when opening profile
+        if (screenId === 'profile') {
+            updateStats();
+            updateReferralDisplay();
+        }
+        
+        // Update promo list when opening cases
+        if (screenId === 'cases' && userId === OWNER_ID) {
+            updatePromoList();
+        }
+    }
+    
+    // Navigation
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const screenId = this.dataset.screen;
+            switchScreen(screenId);
+        });
+    });
+
+    // Balance click
+    document.getElementById('balanceBlock')?.addEventListener('click', () => {
+        switchScreen('deposit');
+    });
+
+    // Close button
+    document.getElementById('closeBtn')?.addEventListener('click', () => {
+        tg.close();
+    });
+
+    // [Rest of the game logic remains the same as in your original code]
+    // Including all the crash game mechanics, betting, etc.
+
     function renderPlayers() {
+        const playersList = document.getElementById('playersList');
         playersList.innerHTML = players.map(player => `
             <div class="player-row ${player.withdrawn ? 'withdrawn' : ''}">
                 <div class="player-left">
@@ -1552,6 +2164,8 @@
     function startCountdown() {
         canPlaceBet = true;
         countdown = 5;
+        const timerContainer = document.getElementById('timerContainer');
+        const timerDisplay = document.getElementById('timerDisplay');
         timerContainer.classList.remove('hidden');
         timerDisplay.textContent = countdown;
         
@@ -1576,13 +2190,15 @@
         currentMultiplier = 1.00;
         rocketPos = 0;
         
+        const multiplierEl = document.getElementById('multiplier');
         multiplierEl.style.color = '#fff';
         multiplierEl.textContent = '1.00x';
         
+        const rocketContainer = document.getElementById('rocketContainer');
         rocketContainer.classList.remove('rocket-crashed');
         rocketContainer.style.transform = 'translate(0, 0) rotate(0deg)';
         
-        roundStatus.textContent = 'ГРА ТРИВАЄ';
+        document.getElementById('roundStatus').textContent = 'ГРА ТРИВАЄ';
     }
 
     function crash() {
@@ -1607,365 +2223,25 @@
             historyMultipliers.removeChild(historyMultipliers.lastChild);
         }
 
+        const multiplierEl = document.getElementById('multiplier');
         multiplierEl.style.color = '#fc8181';
         multiplierEl.textContent = '💥 ' + currentMultiplier.toFixed(2) + 'x';
         
+        const rocketContainer = document.getElementById('rocketContainer');
         rocketContainer.classList.add('rocket-crashed');
+        
+        const potentialWin = document.getElementById('potentialWin');
         potentialWin.classList.add('hidden');
         
         if (isPlaying) {
             isPlaying = false;
-            showBetPanelBtn.classList.remove('hidden');
-            withdrawBtn.classList.add('hidden');
+            document.getElementById('showBetPanelBtn').classList.remove('hidden');
+            document.getElementById('withdrawBtn').classList.add('hidden');
         }
         
         startCountdown();
     }
 
-    function switchScreen(screenId) {
-        Object.values(screens).forEach(screen => {
-            if (screen) screen.classList.remove('active');
-        });
-        
-        if (screens[screenId]) {
-            screens[screenId].classList.add('active');
-        }
-        
-        navItems.forEach(item => {
-            item.classList.remove('active');
-            if (item.dataset.screen === screenId) {
-                item.classList.add('active');
-            }
-        });
-        
-        if (screenId === 'profile') {
-            updateProfileDisplay();
-        }
-    }
-
-    async function payWithStars(amount) {
-        try {
-            tg.HapticFeedback.impactOccurred('medium');
-            
-            const SERVER_URL = "http://localhost:8001";
-            
-            const response = await fetch(`${SERVER_URL}/api/create-invoice`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    user_id: userId,
-                    amount: amount
-                })
-            });
-            
-            const data = await response.json();
-            
-            if (data.success && data.link) {
-                tg.openInvoice(data.link, (status) => {
-                    if (status === 'paid') {
-                        const bonus = Math.floor(amount * 0.1);
-                        balance += amount + bonus;
-                        updateBalanceDisplay();
-                        
-                        // Перевіряємо чи є реферал
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const ref = urlParams.get('start');
-                        if (ref) {
-                            // Додаємо 5% рефералу
-                            tg.showAlert(`✅ Реферал отримав ${Math.floor(amount * 0.05)} ⭐!`);
-                        }
-                        
-                        tg.HapticFeedback.notificationOccurred('success');
-                        tg.showPopup({
-                            title: '✅ Успішно!',
-                            message: `Ви отримали ${amount} зірок + ${bonus} бонусних!`,
-                            buttons: [{ type: 'ok' }]
-                        });
-                        
-                        confirmationOverlay.classList.add('hidden');
-                        switchScreen('crash');
-                        
-                    } else if (status === 'cancelled') {
-                        tg.showAlert('❌ Оплату скасовано');
-                    } else if (status === 'failed') {
-                        tg.showAlert('❌ Помилка оплати');
-                    }
-                });
-            } else {
-                tg.showAlert('❌ Помилка створення інвойсу');
-            }
-        } catch (error) {
-            tg.showAlert('❌ Помилка з\'єднання з сервером');
-        }
-    }
-
-    // Ініціалізація Telegram
-    let tg = window.Telegram?.WebApp;
-    if (!tg) {
-        tg = {
-            showAlert: (t) => alert(t),
-            HapticFeedback: {
-                impactOccurred: () => {},
-                notificationOccurred: () => {},
-                selectionChanged: () => {}
-            },
-            showPopup: (params, callback) => {
-                alert(params.message);
-                if (callback) callback('ok');
-            },
-            openInvoice: (url, callback) => {
-                alert(`Відкриваємо інвойс: ${url}\n\nАле це демо. Для реальної оплати запустіть сервер.`);
-                if (callback) callback('paid');
-            },
-            close: () => {},
-            expand: () => {},
-            ready: () => {}
-        };
-    }
-    
-    tg.expand();
-    tg.ready();
-
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        const user = tg.initDataUnsafe.user;
-        userId = user.id;
-        userName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-        document.getElementById('userName').textContent = userName;
-        document.getElementById('userAvatar').textContent = user.first_name.charAt(0);
-        
-        // Перевіряємо реферальний код
-        const urlParams = new URLSearchParams(window.location.search);
-        const ref = urlParams.get('start');
-        if (ref) {
-            // Тут має бути збереження реферала
-            console.log('Реферал:', ref);
-        }
-    }
-
-    // Bet panel
-    showBetPanelBtn.addEventListener('click', () => {
-        if (!canPlaceBet) {
-            tg.showAlert('❌ Ставки приймаються тільки під час таймера!');
-            return;
-        }
-        betPanelOverlay.classList.remove('hidden');
-        tg.HapticFeedback?.impactOccurred('light');
-    });
-
-    closeBetPanel.addEventListener('click', () => {
-        betPanelOverlay.classList.add('hidden');
-    });
-
-    maxBetBtn.addEventListener('click', () => {
-        betAmountInput.value = balance;
-    });
-
-    quickBetBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const add = parseInt(btn.dataset.add);
-            const current = parseInt(betAmountInput.value) || 1;
-            betAmountInput.value = current + add;
-        });
-    });
-
-    autoBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            autoBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            autoWithdrawMultiplier = parseFloat(btn.dataset.mult);
-        });
-    });
-
-    autoOffBtn.addEventListener('click', () => {
-        autoBtns.forEach(b => b.classList.remove('active'));
-        autoWithdrawMultiplier = null;
-    });
-
-    confirmBetBtn.addEventListener('click', () => {
-        if (!canPlaceBet) {
-            tg.showAlert('❌ Ставки приймаються тільки під час таймера!');
-            betPanelOverlay.classList.add('hidden');
-            return;
-        }
-        
-        const betAmount = parseInt(betAmountInput.value) || 1;
-        
-        if (balance < betAmount) {
-            tg.showAlert('❌ Недостатньо зірок!');
-            return;
-        }
-        
-        currentBet = betAmount;
-        balance -= betAmount;
-        isPlaying = true;
-        
-        addPlayerBet(userName, betAmount);
-        
-        updateBalanceDisplay();
-        
-        potentialWin.classList.remove('hidden');
-        betPanelOverlay.classList.add('hidden');
-        showBetPanelBtn.classList.add('hidden');
-        withdrawBtn.classList.remove('hidden');
-        
-        tg.HapticFeedback?.impactOccurred('medium');
-    });
-
-    withdrawBtn.addEventListener('click', () => {
-        if (!isPlaying || !gameActive || isCrashed) return;
-        
-        const winAmount = Math.floor(currentBet * currentMultiplier);
-        balance += winAmount;
-        isPlaying = false;
-        
-        totalGames++;
-        totalWins += winAmount;
-        
-        markPlayerWithdrawn(userName);
-        
-        updateBalanceDisplay();
-        
-        potentialWin.classList.add('hidden');
-        withdrawBtn.classList.add('hidden');
-        showBetPanelBtn.classList.add('hidden');
-        
-        tg.HapticFeedback?.notificationOccurred('success');
-        tg.showAlert(`✅ Ви забрали ${winAmount} ⭐!`);
-    });
-
-    // Navigation
-    navItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const screenId = this.dataset.screen;
-            switchScreen(screenId);
-        });
-    });
-
-    balanceBlock.addEventListener('click', () => {
-        switchScreen('deposit');
-    });
-
-    closeBtn.addEventListener('click', () => {
-        tg.close();
-    });
-
-    // Deposit
-    let selectedAmount = 1;
-
-    depositAmount.addEventListener('input', () => {
-        selectedAmount = parseInt(depositAmount.value) || 1;
-        if (selectedAmount < 1) selectedAmount = 1;
-        depositAmount.value = selectedAmount;
-        
-        const bonus = (selectedAmount * 0.1).toFixed(1);
-        bonusValue.textContent = `+${bonus}`;
-    });
-
-    cancelDeposit.addEventListener('click', () => {
-        switchScreen('crash');
-    });
-
-    payBtn.addEventListener('click', async () => {
-        selectedAmount = parseInt(depositAmount.value) || 1;
-        if (selectedAmount < 1) {
-            tg.showAlert('❌ Мінімальна сума: 1 ⭐');
-            return;
-        }
-        
-        confirmAmount.textContent = selectedAmount + ' ⭐';
-        confirmStars.textContent = selectedAmount;
-        confirmationOverlay.classList.remove('hidden');
-    });
-
-    cancelConfirm.addEventListener('click', () => {
-        confirmationOverlay.classList.add('hidden');
-    });
-
-    confirmPay.addEventListener('click', async () => {
-        confirmationOverlay.classList.add('hidden');
-        await payWithStars(selectedAmount);
-    });
-
-    // Копіювання реферального посилання
-    document.getElementById('copyReferralBtn')?.addEventListener('click', () => {
-        navigator.clipboard.writeText(referralLink.textContent);
-        tg.showAlert('✅ Посилання скопійовано!');
-    });
-
-    // Виведення реферальних зірок
-    document.getElementById('withdrawReferralBtn')?.addEventListener('click', () => {
-        if (referralBalance > 0) {
-            balance += referralBalance;
-            referralBalance = 0;
-            updateBalanceDisplay();
-            updateProfileDisplay();
-            tg.showAlert('✅ Реферальні зірки виведено на баланс!');
-        } else {
-            tg.showAlert('❌ Немає зірок для виведення');
-        }
-    });
-
-    // Активація промокоду
-    document.getElementById('activatePromoBtn')?.addEventListener('click', () => {
-        const input = document.getElementById('promoCodeInput');
-        const code = input.value.trim().toUpperCase();
-        
-        if (!code) {
-            tg.showAlert('❌ Введіть промокод');
-            return;
-        }
-        
-        if (usedPromos.includes(code)) {
-            tg.showAlert('❌ Цей промокод вже використано');
-            return;
-        }
-        
-        const promo = activePromos.find(p => p.code === code);
-        if (promo) {
-            balance += promo.reward;
-            usedPromos.push(code);
-            localStorage.setItem('usedPromos', JSON.stringify(usedPromos));
-            updateBalanceDisplay();
-            tg.showAlert(`✅ Промокод активовано! +${promo.reward} ⭐`);
-            input.value = '';
-        } else {
-            tg.showAlert('❌ Невірний промокод');
-        }
-    });
-
-    // Відкриття кейсу
-    document.getElementById('openDailyCaseBtn')?.addEventListener('click', () => {
-        if (dailyCaseOpened) {
-            tg.showAlert('❌ Щоденний кейс вже відкрито! Завтра буде новий');
-            return;
-        }
-        
-        // Імітація відкриття кейсу
-        const prizes = [
-            { name: 'Artisan Bricks Legendary', value: 102 },
-            { name: 'Diamond Unique', value: 1.04 },
-            { name: 'Instant Ramens Unique', value: 1.04 },
-            { name: 'Ring Unique', value: 1.04 },
-            { name: 'Champagne Basic', value: 0.52 }
-        ];
-        
-        const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
-        const stars = Math.floor(randomPrize.value);
-        
-        balance += stars;
-        dailyCaseOpened = true;
-        localStorage.setItem('dailyCaseOpened', 'true');
-        updateBalanceDisplay();
-        updateProfileDisplay();
-        
-        tg.showPopup({
-            title: '🎁 Вітаємо!',
-            message: `Ви отримали: ${randomPrize.name}\n+${stars} ⭐`,
-            buttons: [{ type: 'ok' }]
-        });
-    });
-
-    // Game loop
     function gameTick() {
         if (!gameActive || isCrashed) return;
 
@@ -1975,6 +2251,7 @@
         }
 
         currentMultiplier += 0.008 + (currentMultiplier * 0.0015);
+        const multiplierEl = document.getElementById('multiplier');
         multiplierEl.textContent = currentMultiplier.toFixed(2) + 'x';
         
         rocketPos += 0.5;
@@ -1986,6 +2263,7 @@
         const y = Math.max(30, maxHeight - rocketPos * 1.5);
         const rotation = 10 + rocketPos * 0.2;
         
+        const rocketContainer = document.getElementById('rocketContainer');
         rocketContainer.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
         
         if (autoWithdrawMultiplier && currentMultiplier >= autoWithdrawMultiplier && isPlaying) {
@@ -1993,21 +2271,25 @@
             balance += winAmount;
             isPlaying = false;
             
-            totalGames++;
-            totalWins += winAmount;
-            
-            markPlayerWithdrawn(userName);
+            markPlayerWithdrawn('Гравець');
             
             updateBalanceDisplay();
-            potentialWin.classList.add('hidden');
-            withdrawBtn.classList.add('hidden');
-            showBetPanelBtn.classList.add('hidden');
-            tg.showAlert(`✅ Автовивід спрацював! Виграш: ${winAmount} ⭐`);
+            document.getElementById('potentialWin').classList.add('hidden');
+            document.getElementById('withdrawBtn').classList.add('hidden');
+            document.getElementById('showBetPanelBtn').classList.add('hidden');
+            
+            stats.totalWon += winAmount;
+            if (winAmount > stats.biggestWin) {
+                stats.biggestWin = winAmount;
+            }
+            
+            tg.showAlert(`✅ Автовивід! Виграш: ${winAmount} ⭐`);
             autoWithdrawMultiplier = null;
         }
         
         if (isPlaying) {
             const win = Math.floor(currentBet * currentMultiplier);
+            const potentialWin = document.getElementById('potentialWin');
             potentialWin.textContent = `💰 ${win} ⭐`;
         }
         
@@ -2019,12 +2301,146 @@
         renderPlayers();
     }
 
-    // Initialize
+    // Bet panel handlers
+    document.getElementById('showBetPanelBtn')?.addEventListener('click', () => {
+        if (!canPlaceBet) {
+            tg.showAlert('❌ Ставки приймаються тільки під час таймера!');
+            return;
+        }
+        document.getElementById('betPanelOverlay').classList.remove('hidden');
+        tg.HapticFeedback?.impactOccurred('light');
+    });
+
+    document.getElementById('closeBetPanel')?.addEventListener('click', () => {
+        document.getElementById('betPanelOverlay').classList.add('hidden');
+    });
+
+    document.getElementById('maxBetBtn')?.addEventListener('click', () => {
+        document.getElementById('betAmount').value = balance;
+    });
+
+    document.querySelectorAll('.quick-bet-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const add = parseInt(btn.dataset.add);
+            const betInput = document.getElementById('betAmount');
+            const current = parseInt(betInput.value) || 1;
+            betInput.value = current + add;
+        });
+    });
+
+    document.querySelectorAll('.auto-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.auto-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            autoWithdrawMultiplier = parseFloat(btn.dataset.mult);
+        });
+    });
+
+    document.getElementById('autoOffBtn')?.addEventListener('click', () => {
+        document.querySelectorAll('.auto-btn').forEach(b => b.classList.remove('active'));
+        autoWithdrawMultiplier = null;
+    });
+
+    document.getElementById('confirmBetBtn')?.addEventListener('click', () => {
+        if (!canPlaceBet) {
+            tg.showAlert('❌ Ставки приймаються тільки під час таймера!');
+            document.getElementById('betPanelOverlay').classList.add('hidden');
+            return;
+        }
+        
+        const betAmount = parseInt(document.getElementById('betAmount').value) || 1;
+        
+        if (balance < betAmount) {
+            tg.showAlert('❌ Недостатньо зірок!');
+            return;
+        }
+        
+        currentBet = betAmount;
+        balance -= betAmount;
+        isPlaying = true;
+        
+        addPlayerBet('Гравець', betAmount);
+        
+        updateBalanceDisplay();
+        
+        document.getElementById('potentialWin').classList.remove('hidden');
+        document.getElementById('betPanelOverlay').classList.add('hidden');
+        document.getElementById('showBetPanelBtn').classList.add('hidden');
+        document.getElementById('withdrawBtn').classList.remove('hidden');
+        
+        stats.totalGames++;
+        
+        tg.HapticFeedback?.impactOccurred('medium');
+    });
+
+    document.getElementById('withdrawBtn')?.addEventListener('click', () => {
+        if (!isPlaying || !gameActive || isCrashed) return;
+        
+        const winAmount = Math.floor(currentBet * currentMultiplier);
+        balance += winAmount;
+        isPlaying = false;
+        
+        markPlayerWithdrawn('Гравець');
+        
+        updateBalanceDisplay();
+        
+        document.getElementById('potentialWin').classList.add('hidden');
+        document.getElementById('withdrawBtn').classList.add('hidden');
+        document.getElementById('showBetPanelBtn').classList.add('hidden');
+        
+        stats.totalWon += winAmount;
+        if (winAmount > stats.biggestWin) {
+            stats.biggestWin = winAmount;
+        }
+        
+        tg.HapticFeedback?.notificationOccurred('success');
+        tg.showAlert(`✅ Ви забрали ${winAmount} ⭐!`);
+    });
+
+    // Deposit handlers
+    const depositAmount = document.getElementById('depositAmount');
+    depositAmount?.addEventListener('input', () => {
+        const selectedAmount = parseInt(depositAmount.value) || 1;
+        if (selectedAmount < 1) {
+            depositAmount.value = 1;
+        }
+        const bonus = (selectedAmount * 0.1).toFixed(1);
+        document.getElementById('bonusValue').textContent = `+${bonus}`;
+    });
+
+    document.getElementById('cancelDeposit')?.addEventListener('click', () => {
+        switchScreen('crash');
+    });
+
+    document.getElementById('payBtn')?.addEventListener('click', async () => {
+        const selectedAmount = parseInt(depositAmount.value) || 1;
+        if (selectedAmount < 1) {
+            tg.showAlert('❌ Мінімальна сума: 1 ⭐');
+            return;
+        }
+        
+        document.getElementById('confirmAmount').textContent = selectedAmount + ' ⭐';
+        document.getElementById('confirmStars').textContent = selectedAmount;
+        document.getElementById('confirmationOverlay').classList.remove('hidden');
+    });
+
+    document.getElementById('cancelConfirm')?.addEventListener('click', () => {
+        document.getElementById('confirmationOverlay').classList.add('hidden');
+    });
+
+    document.getElementById('confirmPay')?.addEventListener('click', async () => {
+        document.getElementById('confirmationOverlay').classList.add('hidden');
+        const selectedAmount = parseInt(depositAmount.value) || 1;
+        await payWithStars(selectedAmount);
+    });
+
+    // Initialize game
     startCountdown();
     gameLoop = setInterval(gameTick, 50);
     renderPlayers();
     updateBalanceDisplay();
-    updateProfileDisplay();
+    updateStats();
+    updateReferralDisplay();
 
     window.addEventListener('beforeunload', () => {
         if (gameLoop) clearInterval(gameLoop);
