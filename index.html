@@ -1541,39 +1541,24 @@
     });
 
     // Confirmation
-    confirmPay.addEventListener('click', async () => {
-
-    confirmationOverlay.classList.add('hidden');
-
-    const response = await fetch("http://localhost:8001/api/create-invoice", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            user_id: tg.initDataUnsafe.user.id,
-            amount: selectedAmount,
-            currency: "XTR"
-        })
+    cancelConfirm.addEventListener('click', () => {
+        confirmationOverlay.classList.add('hidden');
     });
 
-    const data = await response.json();
-
-    if (data.link) {
-        tg.openInvoice(data.link);
-    }
-
-});
-
-   
-
-    
-
-    if (data.invoice_link) {
-        tg.openInvoice(data.invoice_link);
-    }
-
- 
+    confirmPay.addEventListener('click', async () => {
+        confirmationOverlay.classList.add('hidden');
+        
+        // Тут має бути реальна оплата через Telegram Stars
+        // Для тесту імітуємо успішну оплату
+        tg.HapticFeedback.notificationOccurred('success');
+        
+        const bonus = Math.floor(selectedAmount * 0.1);
+        stars += selectedAmount + bonus;
+        updateBalanceDisplay();
+        
+        tg.showAlert(`✅ Оплата пройшла успішно! Ви отримали ${selectedAmount} зірок + ${bonus} бонусних!`);
+        switchScreen('crash');
+    });
 
     // Free cases
     openFreeCase.addEventListener('click', () => {
