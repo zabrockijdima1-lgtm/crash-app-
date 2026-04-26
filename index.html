@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -13,305 +12,210 @@
   --bg:#0a0a14;--bg2:#111120;--bg3:#181830;
   --accent:#7c5cfc;--accent2:#5c3ccc;
   --green:#3ddc84;--red:#ff3355;--orange:#ff8c42;--gold:#ffd700;
-  --yellow:#ffe066;
 }
 html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-serif;overflow:hidden}
 #app{display:flex;flex-direction:column;height:100vh;max-height:100vh}
 
-/* ── SKY ── */
-#sky{
-  position:relative;flex:0 0 235px;overflow:hidden;
-  background:#060610;
-}
-/* Stars background */
-#sky::before{
-  content:'';position:absolute;inset:0;
-  background-image:
-    radial-gradient(1px 1px at 10% 20%,#fff8 0%,transparent 100%),
-    radial-gradient(1px 1px at 25% 60%,#fff6 0%,transparent 100%),
-    radial-gradient(1px 1px at 40% 15%,#fff9 0%,transparent 100%),
-    radial-gradient(1px 1px at 55% 75%,#fff5 0%,transparent 100%),
-    radial-gradient(1px 1px at 70% 30%,#fff8 0%,transparent 100%),
-    radial-gradient(1px 1px at 85% 55%,#fff6 0%,transparent 100%),
-    radial-gradient(1px 1px at 15% 85%,#fff7 0%,transparent 100%),
-    radial-gradient(1px 1px at 90% 10%,#fffa 0%,transparent 100%),
-    radial-gradient(1px 1px at 60% 45%,#fff5 0%,transparent 100%),
-    radial-gradient(1px 1px at 35% 90%,#fff6 0%,transparent 100%),
-    radial-gradient(1.5px 1.5px at 78% 68%,#fffd 0%,transparent 100%),
-    radial-gradient(1px 1px at 5% 50%,#fff7 0%,transparent 100%);
-}
+/* SKY */
+#sky{position:relative;flex:0 0 230px;overflow:hidden;background:#060610}
+#sky::before{content:'';position:absolute;inset:0;background-image:
+  radial-gradient(1px 1px at 8% 15%,#fff9 0%,transparent 100%),
+  radial-gradient(1px 1px at 22% 65%,#fff6 0%,transparent 100%),
+  radial-gradient(1px 1px at 38% 12%,#fff8 0%,transparent 100%),
+  radial-gradient(1px 1px at 52% 78%,#fff5 0%,transparent 100%),
+  radial-gradient(1px 1px at 68% 28%,#fff7 0%,transparent 100%),
+  radial-gradient(1px 1px at 83% 52%,#fff6 0%,transparent 100%),
+  radial-gradient(1.5px 1.5px at 76% 70%,#fffd 0%,transparent 100%),
+  radial-gradient(1px 1px at 92% 8%,#fffa 0%,transparent 100%),
+  radial-gradient(1px 1px at 14% 88%,#fff7 0%,transparent 100%),
+  radial-gradient(1px 1px at 45% 45%,#fff5 0%,transparent 100%)}
 #graph-canvas{position:absolute;inset:0;width:100%;height:100%}
-
-/* ── MULTIPLIER ── */
 #mult{
-  position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);
-  font-family:'Orbitron',monospace;font-size:48px;font-weight:900;
+  position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Orbitron',monospace;font-size:46px;font-weight:900;
   color:#fff;letter-spacing:3px;pointer-events:none;z-index:5;text-align:center;
-  text-shadow:0 0 30px #7c5cfc66,0 2px 0 #0008;
+  text-shadow:0 0 30px #7c5cfc55;
 }
-#mult.crashed{color:var(--red);text-shadow:0 0 30px #ff335566}
-#mult.waiting{font-size:24px;color:#aaa;text-shadow:none}
-#mult small{display:block;font-size:11px;font-weight:400;color:#555;font-family:'Inter',sans-serif;margin-top:2px;letter-spacing:0}
+#mult.crashed{color:var(--red);text-shadow:0 0 30px #ff335555}
+#mult.waiting{font-size:20px;color:#666;text-shadow:none}
+#mult small{display:block;font-size:11px;font-weight:400;color:#444;font-family:'Inter',sans-serif;margin-top:2px;letter-spacing:0}
 
-/* ── ANIMATED ROCKET ── */
-#rocket-wrap{
-  position:absolute;pointer-events:none;z-index:6;
-  display:none;
-  transform-origin:center bottom;
-}
-.rocket-body{
-  position:relative;width:44px;height:70px;
-  animation:rocket-wobble 0.4s ease-in-out infinite alternate;
-}
-@keyframes rocket-wobble{
-  0%{transform:rotate(-2deg) scale(1)}
-  100%{transform:rotate(2deg) scale(1.03)}
-}
-/* Rocket SVG inline */
-.rocket-svg{width:44px;height:70px;display:block}
+/* ROCKET */
+#rkt{position:absolute;pointer-events:none;z-index:6;display:none}
+.rbody{position:relative;width:44px;height:70px;animation:rwob .4s ease-in-out infinite alternate}
+@keyframes rwob{0%{transform:rotate(-2deg)}100%{transform:rotate(2deg) scale(1.03)}}
+.rsvg{width:44px;height:70px;display:block}
+.fw{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.f{border-radius:50% 50% 30% 30%;animation:flk .08s ease-in-out infinite alternate;transform-origin:center top}
+.f1{width:16px;height:28px;background:linear-gradient(180deg,#fff 0%,#ffe066 30%,#ff8c42 70%,transparent)}
+.f2{width:10px;height:20px;background:linear-gradient(180deg,#ffe066,#ff8c42 50%,transparent);margin-top:-18px;animation-delay:.04s}
+.f3{width:6px;height:14px;background:linear-gradient(180deg,#ff8c42,transparent);margin-top:-12px;animation-delay:.02s}
+@keyframes flk{0%{transform:scaleX(1) scaleY(1)}100%{transform:scaleX(.8) scaleY(1.15)}}
 
-/* Flame */
-.flame-wrap{
-  position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:0;
-}
-.flame{
-  border-radius:50% 50% 30% 30%;
-  animation:flicker 0.08s ease-in-out infinite alternate;
-  transform-origin:center top;
-}
-.flame1{width:16px;height:28px;background:linear-gradient(180deg,#fff 0%,#ffe066 30%,#ff8c42 70%,transparent 100%);animation-delay:0s}
-.flame2{width:10px;height:20px;background:linear-gradient(180deg,#ffe066 0%,#ff8c42 50%,transparent 100%);margin-top:-18px;animation-delay:0.04s}
-.flame3{width:6px;height:14px;background:linear-gradient(180deg,#ff8c42 0%,transparent 100%);margin-top:-12px;animation-delay:0.02s}
-@keyframes flicker{
-  0%{transform:scaleX(1) scaleY(1)}
-  100%{transform:scaleX(0.8) scaleY(1.15)}
-}
-/* Smoke trail */
-.smoke{
-  position:absolute;border-radius:50%;
-  animation:smoke-rise 0.6s ease-out forwards;
-  pointer-events:none;
-}
-@keyframes smoke-rise{
-  0%{opacity:0.4;transform:scale(0.5) translateY(0)}
-  100%{opacity:0;transform:scale(2) translateY(20px)}
-}
+#balpill{position:absolute;top:10px;right:12px;z-index:10;background:#00000077;border:0.5px solid #ffd70030;border-radius:20px;padding:5px 12px;font-family:'Orbitron',monospace;font-size:12px;color:var(--gold)}
+#rlbl{position:absolute;top:10px;left:12px;z-index:10;font-size:10px;color:#2a2a3a}
 
-/* ── BALANCE PILL ── */
-#bal-pill{
-  position:absolute;top:10px;right:12px;z-index:10;
-  background:#00000077;border:0.5px solid #ffd70030;border-radius:20px;
-  padding:5px 12px;font-family:'Orbitron',monospace;font-size:12px;color:var(--gold);
-  backdrop-filter:blur(4px);
-}
-#round-lbl{position:absolute;top:10px;left:12px;z-index:10;font-size:10px;color:#333}
-
-/* ── HISTORY BAR ── */
-#hist{
-  display:flex;gap:5px;padding:7px 10px;overflow-x:auto;
-  background:#08080f;border-bottom:0.5px solid #ffffff0a;scrollbar-width:none;flex-shrink:0;
-}
+/* HISTORY */
+#hist{display:flex;gap:5px;padding:7px 10px;overflow-x:auto;background:#07070f;border-bottom:0.5px solid #ffffff08;scrollbar-width:none;flex-shrink:0}
 #hist::-webkit-scrollbar{display:none}
-.hc{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;cursor:default}
-.hl{background:#1a1a28;color:#444;border:0.5px solid #ffffff0a}
-.hm{background:#0f1f15;color:#3ddc84;border:0.5px solid #3ddc8420}
-.hh{background:#1f1208;color:var(--orange);border:0.5px solid #ff8c4220}
-.hmoon{background:#18103a;color:#cc88ff;border:0.5px solid #cc88ff30}
+.hc{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.hl{background:#151525;color:#3a3a5a;border:0.5px solid #ffffff08}
+.hm{background:#0c1a10;color:var(--green);border:0.5px solid #3ddc8418}
+.hh{background:#1a0f06;color:var(--orange);border:0.5px solid #ff8c4218}
+.hmoon{background:#150d30;color:#cc88ff;border:0.5px solid #cc88ff28}
 
-/* ── CONTROLS ── */
+/* CONTROLS */
 #controls{padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-shrink:0}
-.card{background:var(--bg2);border:0.5px solid #ffffff0d;border-radius:12px;padding:10px 12px}
-.clabel{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.bet-inp{
-  width:100%;background:var(--bg);border:0.5px solid #ffffff15;border-radius:8px;
-  color:#fff;font-family:'Orbitron',monospace;font-size:15px;font-weight:700;padding:7px 10px;outline:none;
-}
-.bet-inp:focus{border-color:#7c5cfc44}
+.card{background:var(--bg2);border:0.5px solid #ffffff0a;border-radius:12px;padding:10px 12px}
+.clabel{font-size:10px;color:#3a3a5a;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.binp{width:100%;background:var(--bg);border:0.5px solid #ffffff12;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:15px;font-weight:700;padding:7px 10px;outline:none}
+.binp:focus{border-color:#7c5cfc44}
 .qbtns{display:flex;gap:4px;margin-top:6px}
-.qb{background:#181828;border:0.5px solid #ffffff0d;border-radius:6px;color:#666;font-size:10px;padding:3px 7px;cursor:pointer;font-family:'Inter',sans-serif}
-.qb:active{background:#22223a;color:#ccc}
+.qb{background:#14142a;border:0.5px solid #ffffff0a;border-radius:6px;color:#555;font-size:10px;padding:3px 7px;cursor:pointer}
+.qb:active{background:#1e1e3a;color:#ccc}
 .auto-row{display:flex;align-items:center;gap:6px}
-.tog-lbl{font-size:12px;color:#555;flex:1}
-.toggle{width:36px;height:20px;background:#181828;border-radius:10px;border:0.5px solid #ffffff10;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
-.toggle.on{background:var(--accent)}
-.toggle::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .2s}
-.toggle.on::after{left:19px}
-.auto-inp{
-  background:var(--bg);border:0.5px solid #ffffff15;border-radius:8px;
-  color:#fff;font-family:'Orbitron',monospace;font-size:12px;
-  padding:5px 8px;width:65px;outline:none;margin-top:8px;
-}
+.tlbl{font-size:12px;color:#444;flex:1}
+.tog{width:36px;height:20px;background:#14142a;border-radius:10px;border:0.5px solid #ffffff0d;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.tog.on{background:var(--accent)}
+.tog::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .2s}
+.tog.on::after{left:19px}
+.ainp{background:var(--bg);border:0.5px solid #ffffff12;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:12px;padding:5px 8px;width:65px;outline:none;margin-top:8px}
 
-/* ── BET BUTTON ── */
-#bet-btn{
-  grid-column:1/-1;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
+/* BET BTN */
+#betbtn{
+  grid-column:1/-1;background:linear-gradient(135deg,var(--accent),var(--accent2));
   border:none;border-radius:12px;color:#fff;font-family:'Orbitron',monospace;
   font-size:14px;font-weight:700;padding:14px;cursor:pointer;letter-spacing:1px;
-  transition:opacity .15s,transform .1s;position:relative;overflow:hidden;
+  transition:opacity .15s,transform .1s;
 }
-#bet-btn::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,#fff2,transparent 60%);
-  border-radius:inherit;pointer-events:none;
-}
-#bet-btn:active{transform:scale(.98);opacity:.9}
-#bet-btn.cashout{background:linear-gradient(135deg,#ff8c42,#cc5522)}
-#bet-btn.cashout::after{background:linear-gradient(135deg,#fff1,transparent)}
-#bet-btn:disabled{opacity:.28;cursor:not-allowed}
+#betbtn:active{transform:scale(.98);opacity:.9}
+#betbtn.co{background:linear-gradient(135deg,var(--orange),#cc5522)}
+#betbtn:disabled{opacity:.25;cursor:not-allowed}
 
-/* ── TOP-UP ROW ── */
-#topup-btn{
+/* TOP-UP */
+#topupbtn{
   display:block;width:calc(100% - 24px);margin:0 12px 6px;
-  background:var(--bg2);border:0.5px solid #ffd70030;border-radius:10px;
+  background:var(--bg2);border:0.5px solid #ffd70035;border-radius:10px;
   color:var(--gold);font-family:'Orbitron',monospace;font-size:11px;
-  padding:8px;cursor:pointer;letter-spacing:1px;text-align:center;flex-shrink:0;
+  padding:9px;cursor:pointer;letter-spacing:1px;text-align:center;flex-shrink:0;
 }
-#topup-btn:active{opacity:.75}
+#topupbtn:active{opacity:.75}
 
-/* ── PLAYERS ── */
+/* PLAYERS */
 #pw{flex:1;overflow:hidden;padding:0 12px;min-height:0;display:flex;flex-direction:column}
-.sec-t{font-size:10px;color:#2a2a40;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;flex-shrink:0}
+.sect{font-size:10px;color:#252535;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;flex-shrink:0;display:flex;align-items:center;gap:6px}
+.pcnt{background:var(--bg3);border-radius:8px;padding:1px 6px;font-size:9px;color:#444}
 #pl{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px;scrollbar-width:none;padding-bottom:6px}
 #pl::-webkit-scrollbar{display:none}
-.pr{
-  display:flex;align-items:center;gap:8px;
-  background:var(--bg2);border:0.5px solid #ffffff06;border-radius:8px;padding:6px 10px;flex-shrink:0;
-}
-.pav{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
-.pn{flex:1;font-size:12px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pr{display:flex;align-items:center;gap:8px;background:var(--bg2);border:0.5px solid #ffffff06;border-radius:8px;padding:7px 10px;flex-shrink:0}
+.pr.me{border-color:#7c5cfc40}
+.pav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;overflow:hidden}
+.pav img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.pi{display:flex;flex-direction:column;flex:1;overflow:hidden;min-width:0}
+.pn{font-size:12px;color:#aaa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pn.m{color:#fff;font-weight:600}
+.pu{font-size:10px;color:#2a2a3a;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pr-right{display:flex;align-items:center;gap:3px;flex-shrink:0}
+.pmx{font-size:9px;padding:2px 5px;border-radius:6px;font-family:'Orbitron',monospace}
 .pa{font-family:'Orbitron',monospace;font-size:11px;font-weight:700}
 
-/* ── TOPUP MODAL ── */
-#mbg{
-  display:none;position:fixed;inset:0;background:#00000099;z-index:100;
-  align-items:flex-end;justify-content:center;
-}
+/* TOPUP MODAL */
+#mbg{display:none;position:fixed;inset:0;background:#000000aa;z-index:100;align-items:flex-end;justify-content:center}
 #mbg.open{display:flex}
-#modal{
-  background:var(--bg2);border-radius:20px 20px 0 0;border:0.5px solid #ffffff14;
-  padding:20px;width:100%;max-width:480px;
-}
+#modal{background:var(--bg2);border-radius:20px 20px 0 0;border:0.5px solid #ffffff12;padding:20px;width:100%;max-width:480px}
 #modal h3{font-family:'Orbitron',monospace;font-size:15px;margin-bottom:3px}
-#modal p{font-size:12px;color:#555;margin-bottom:14px}
-.star-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px}
-.so{background:var(--bg3);border:0.5px solid #ffffff10;border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:border-color .15s}
-.so:active,.so.sel{border-color:var(--accent)}
+#modal p{font-size:12px;color:#444;margin-bottom:14px}
+.sopts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px}
+.so{background:var(--bg3);border:0.5px solid #ffffff0e;border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:border-color .15s}
+.so.sel,.so:active{border-color:var(--accent)}
 .so .sa{font-size:18px}
 .so .sl{font-family:'Orbitron',monospace;font-size:11px;margin-top:4px;color:#ccc}
-#cstars{width:100%;background:var(--bg);border:0.5px solid #ffffff15;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:14px;padding:9px 12px;outline:none;margin-bottom:10px}
-#pay-btn{width:100%;background:linear-gradient(135deg,var(--gold),#cc9900);border:none;border-radius:10px;color:#000;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;padding:13px;cursor:pointer}
-#pay-btn:active{opacity:.85}
-#mcl{width:100%;background:transparent;border:none;color:#444;font-size:12px;padding:10px;cursor:pointer;margin-top:2px}
+#cstars{width:100%;background:var(--bg);border:0.5px solid #ffffff12;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:14px;padding:9px 12px;outline:none;margin-bottom:10px}
+#paybtn{width:100%;background:linear-gradient(135deg,var(--gold),#bb8800);border:none;border-radius:10px;color:#000;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;padding:13px;cursor:pointer}
+#paybtn:active{opacity:.85}
+#mclose{width:100%;background:transparent;border:none;color:#444;font-size:12px;padding:10px;cursor:pointer;margin-top:2px}
 
-/* ── ADMIN PANEL ── */
-#admin-btn{
-  position:fixed;bottom:16px;right:16px;z-index:50;
-  width:36px;height:36px;border-radius:50%;
-  background:var(--bg3);border:0.5px solid #ffffff15;
-  color:#333;font-size:16px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-}
-#admin-bg{display:none;position:fixed;inset:0;background:#000000cc;z-index:110;overflow-y:auto}
-#admin-bg.open{display:block}
-#admin-panel{
-  background:var(--bg2);border-radius:16px 16px 0 0;border:0.5px solid #ffffff14;
-  padding:20px;margin-top:60px;min-height:calc(100vh - 60px);
-}
-#admin-panel h2{font-family:'Orbitron',monospace;font-size:16px;margin-bottom:16px;color:var(--accent)}
-.admin-section{background:var(--bg3);border-radius:10px;padding:14px;margin-bottom:12px}
-.admin-section h4{font-size:11px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.stat-box{background:var(--bg2);border-radius:8px;padding:10px;text-align:center}
-.stat-val{font-family:'Orbitron',monospace;font-size:18px;font-weight:700;color:#fff}
-.stat-lbl{font-size:10px;color:#444;margin-top:3px}
-.admin-inp{width:100%;background:var(--bg);border:0.5px solid #ffffff15;border-radius:8px;color:#fff;font-size:13px;padding:8px 10px;outline:none;margin-bottom:8px}
-.admin-btn{width:100%;border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;padding:10px;cursor:pointer;margin-bottom:6px}
-.abtn-red{background:#ff335530;color:var(--red);border:0.5px solid #ff335530}
-.abtn-green{background:#3ddc8420;color:var(--green);border:0.5px solid #3ddc8420}
-.abtn-accent{background:var(--accent);color:#fff}
-.abtn-gray{background:#1e1e30;color:#666;border:0.5px solid #ffffff10}
-.txn-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid #ffffff08;font-size:12px}
-.txn-row:last-child{border:none}
-#admin-close{
-  position:absolute;top:20px;right:20px;background:transparent;border:none;
-  color:#444;font-size:20px;cursor:pointer;z-index:1;
-}
+/* WIN POPUP */
+#winpop{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#192a19,#0f1f0f);border:1px solid var(--green);border-radius:16px;padding:24px 32px;text-align:center;z-index:250}
+#winpop.show{display:block;animation:popin .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popin{0%{transform:translate(-50%,-50%) scale(.5)}100%{transform:translate(-50%,-50%) scale(1)}}
+.wpm{font-family:'Orbitron',monospace;font-size:36px;font-weight:900;color:var(--green)}
+.wpa{font-family:'Orbitron',monospace;font-size:20px;color:#fff;margin-top:4px}
+.wpl{font-size:12px;color:#444;margin-top:6px}
 
-/* ── TOAST ── */
-#toast{
-  position:fixed;top:55px;left:50%;transform:translateX(-50%);
-  background:var(--red);color:#fff;font-family:'Orbitron',monospace;font-size:13px;
-  padding:9px 20px;border-radius:12px;z-index:300;pointer-events:none;
-  opacity:0;transition:opacity .25s;white-space:nowrap;
-}
+/* TOAST */
+#toast{position:fixed;top:52px;left:50%;transform:translateX(-50%);background:var(--red);color:#fff;font-family:'Orbitron',monospace;font-size:12px;padding:8px 18px;border-radius:12px;z-index:300;pointer-events:none;opacity:0;transition:opacity .25s;white-space:nowrap}
 #toast.win{background:var(--green);color:#000}
 #toast.show{opacity:1}
 
-/* ── WIN POPUP ── */
-#win-popup{
-  display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-  background:linear-gradient(135deg,#1a2a1a,#0f1f0f);
-  border:1px solid var(--green);border-radius:16px;padding:24px 32px;
-  text-align:center;z-index:250;
-}
-#win-popup.show{display:block;animation:pop-in .3s cubic-bezier(.34,1.56,.64,1)}
-@keyframes pop-in{0%{transform:translate(-50%,-50%) scale(0.5)}100%{transform:translate(-50%,-50%) scale(1)}}
-#win-popup .wp-mult{font-family:'Orbitron',monospace;font-size:36px;font-weight:900;color:var(--green)}
-#win-popup .wp-amt{font-family:'Orbitron',monospace;font-size:20px;color:#fff;margin-top:4px}
-#win-popup .wp-lbl{font-size:12px;color:#555;margin-top:6px}
+/* SMOKE */
+.smk{position:absolute;border-radius:50%;animation:smkr .6s ease-out forwards;pointer-events:none}
+@keyframes smkr{0%{opacity:.3;transform:scale(.5)}100%{opacity:0;transform:scale(2) translateY(18px)}}
 
-/* ── STAR PARTICLES ── */
-.sp{position:fixed;pointer-events:none;z-index:200;font-size:16px;animation:sp-fly 1s ease-out forwards}
-@keyframes sp-fly{0%{opacity:1;transform:translateY(0) scale(1) rotate(0deg)}100%{opacity:0;transform:translateY(-80px) scale(0.3) rotate(180deg)}}
+/* STARS FX */
+.sp{position:fixed;pointer-events:none;z-index:200;font-size:14px;animation:spf 1s ease-out forwards}
+@keyframes spf{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-70px) scale(.3)}}
+
+/* SETUP SCREEN */
+#setup{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:16px}
+#setup h2{font-family:'Orbitron',monospace;font-size:18px;color:var(--accent);text-align:center}
+#setup p{font-size:12px;color:#555;text-align:center;line-height:1.6}
+.sinp{width:100%;background:var(--bg2);border:0.5px solid #ffffff18;border-radius:10px;color:#fff;font-size:13px;padding:10px 14px;outline:none;margin-bottom:4px}
+.sinp:focus{border-color:var(--accent)}
+.sbtn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:#fff;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;padding:12px;cursor:pointer;margin-top:8px}
+.sbtn:active{opacity:.85}
+#setup-err{color:var(--red);font-size:11px;text-align:center;min-height:16px}
 </style>
 </head>
 <body>
 
-<div id="app">
+<!-- SETUP (first launch only) -->
+<div id="setup">
+  <h2>🚀 Rocket — Налаштування</h2>
+  <p>Введи Bot Token та JSONBin Master Key.<br>Зберігається тільки в цьому браузері.</p>
+
+  <input class="sinp" id="s-token" type="password" placeholder="Bot Token (від @BotFather)">
+  <input class="sinp" id="s-jsonbin" type="password" placeholder="JSONBin Master Key (jsonbin.io → Keys)">
+  <input class="sinp" id="s-binid" placeholder="JSONBin Bin ID (залиш порожнім — створю сам)">
+
+  <div id="setup-err"></div>
+  <button class="sbtn" onclick="saveSetup()">Зберегти та запустити 🚀</button>
+
+  <p style="font-size:10px;color:#333;margin-top:8px">
+    JSONBin.io — безкоштовно, реєстрація за 1 хвилину.<br>
+    Дані гравців зберігаються там і синхронізуються між усіма.
+  </p>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
   <div id="sky">
     <canvas id="graph-canvas"></canvas>
     <div id="mult" class="waiting">Очікування...<small></small></div>
-
-    <!-- Animated Rocket -->
-    <div id="rocket-wrap">
-      <div class="rocket-body">
-        <!-- Rocket SVG (unicorn-style like screenshot) -->
-        <svg class="rocket-svg" viewBox="0 0 44 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Body -->
-          <path d="M22 4 C14 4 8 18 8 36 L36 36 C36 18 30 4 22 4Z" fill="#e8d5ff"/>
-          <path d="M22 4 C18 4 14 12 12 22 L32 22 C30 12 26 4 22 4Z" fill="#f0e8ff"/>
-          <!-- Window -->
-          <circle cx="22" cy="22" r="6" fill="#7c5cfc" opacity="0.9"/>
+    <div id="rkt">
+      <div class="rbody">
+        <svg class="rsvg" viewBox="0 0 44 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 4C14 4 8 18 8 36L36 36C36 18 30 4 22 4Z" fill="#e8d5ff"/>
+          <path d="M22 4C18 4 14 12 12 22L32 22C30 12 26 4 22 4Z" fill="#f0e8ff"/>
+          <circle cx="22" cy="22" r="6" fill="#7c5cfc" opacity=".9"/>
           <circle cx="22" cy="22" r="4" fill="#a88fff"/>
-          <circle cx="20" cy="20" r="1.5" fill="#fff" opacity="0.6"/>
-          <!-- Fins left -->
-          <path d="M8 36 L2 50 L10 44 L8 36Z" fill="#cc88ff"/>
-          <!-- Fins right -->
-          <path d="M36 36 L42 50 L34 44 L36 36Z" fill="#cc88ff"/>
-          <!-- Nose detail -->
-          <path d="M19 6 Q22 2 25 6" stroke="#c8a8ff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <!-- Side stripes -->
-          <path d="M12 28 Q22 26 32 28" stroke="#cc88ff" stroke-width="1" fill="none" opacity="0.5"/>
-          <!-- Bottom ring -->
+          <circle cx="20" cy="20" r="1.5" fill="#fff" opacity=".6"/>
+          <path d="M8 36L2 50L10 44L8 36Z" fill="#cc88ff"/>
+          <path d="M36 36L42 50L34 44L36 36Z" fill="#cc88ff"/>
+          <path d="M19 6Q22 2 25 6" stroke="#c8a8ff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
           <rect x="9" y="34" width="26" height="4" rx="2" fill="#b888ff"/>
-          <!-- Stars decoration -->
-          <text x="5" y="18" font-size="7" fill="#ffd700" opacity="0.8">★</text>
-          <text x="32" y="24" font-size="5" fill="#ffd700" opacity="0.6">★</text>
+          <text x="5" y="18" font-size="7" fill="#ffd700" opacity=".8">★</text>
+          <text x="32" y="24" font-size="5" fill="#ffd700" opacity=".6">★</text>
         </svg>
-
-        <!-- Flame -->
-        <div class="flame-wrap">
-          <div class="flame flame1"></div>
-          <div class="flame flame2"></div>
-          <div class="flame flame3"></div>
+        <div class="fw">
+          <div class="f f1"></div>
+          <div class="f f2"></div>
+          <div class="f f3"></div>
         </div>
       </div>
     </div>
-
-    <div id="bal-pill">⭐ <span id="bal">100</span></div>
-    <div id="round-lbl">Раунд #<span id="rid">1</span></div>
+    <div id="balpill">⭐ <span id="bal">0</span></div>
+    <div id="rlbl">Раунд #<span id="rid">1</span></div>
   </div>
 
   <div id="hist"></div>
@@ -319,7 +223,7 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
   <div id="controls">
     <div class="card">
       <div class="clabel">Ставка ⭐</div>
-      <input class="bet-inp" id="bi" type="number" value="10" min="1" step="1">
+      <input class="binp" id="bi" type="number" value="10" min="1" step="1">
       <div class="qbtns">
         <button class="qb" onclick="setBet(5)">5</button>
         <button class="qb" onclick="setBet(10)">10</button>
@@ -331,147 +235,142 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
     <div class="card">
       <div class="clabel">Авто-вивід</div>
       <div class="auto-row">
-        <span class="tog-lbl">Авто</span>
-        <div class="toggle" id="atog" onclick="toggleAuto()"></div>
+        <span class="tlbl">Авто</span>
+        <div class="tog" id="atog" onclick="toggleAuto()"></div>
       </div>
-      <input class="auto-inp" id="aval" type="number" value="2.00" min="1.01" step="0.1" placeholder="2.00×">
+      <input class="ainp" id="aval" type="number" value="2.00" min="1.01" step="0.1" placeholder="2.00×">
     </div>
-    <button id="bet-btn" onclick="handleBet()">🚀 ПОСТАВИТИ</button>
+    <button id="betbtn" onclick="handleBet()">🚀 ПОСТАВИТИ</button>
   </div>
 
-  <button id="topup-btn" onclick="openTopup()">⭐ Поповнити баланс зірками Telegram</button>
+  <button id="topupbtn" onclick="openTopup()">⭐ Поповнити зірками Telegram</button>
 
   <div id="pw">
-    <div class="sec-t">Гравці в раунді</div>
+    <div class="sect">
+      Гравці в раунді
+      <span class="pcnt" id="pcnt">0</span>
+    </div>
     <div id="pl"></div>
   </div>
 </div>
 
 <!-- TOPUP MODAL -->
-<div id="mbg" onclick="bgClick(event)">
+<div id="mbg" onclick="if(event.target===this)closeTopup()">
   <div id="modal">
-    <h3>⭐ Поповнення балансу</h3>
-    <p>Вибери кількість зірок Telegram</p>
-    <div class="star-opts">
-      <div class="so" onclick="pickStars(this,50)"><div class="sa">⭐</div><div class="sl">50</div></div>
-      <div class="so sel" onclick="pickStars(this,100)"><div class="sa">⭐⭐</div><div class="sl">100</div></div>
-      <div class="so" onclick="pickStars(this,250)"><div class="sa">⭐⭐⭐</div><div class="sl">250</div></div>
-      <div class="so" onclick="pickStars(this,500)"><div class="sa">🌟</div><div class="sl">500</div></div>
-      <div class="so" onclick="pickStars(this,1000)"><div class="sa">🌟🌟</div><div class="sl">1 000</div></div>
-      <div class="so" onclick="pickStars(this,5000)"><div class="sa">💫</div><div class="sl">5 000</div></div>
+    <h3>⭐ Поповнення зірками</h3>
+    <p>Реальна оплата через Telegram Stars</p>
+    <div class="sopts">
+      <div class="so" onclick="pickS(this,50)"><div class="sa">⭐</div><div class="sl">50</div></div>
+      <div class="so sel" onclick="pickS(this,100)"><div class="sa">⭐⭐</div><div class="sl">100</div></div>
+      <div class="so" onclick="pickS(this,250)"><div class="sa">⭐⭐⭐</div><div class="sl">250</div></div>
+      <div class="so" onclick="pickS(this,500)"><div class="sa">🌟</div><div class="sl">500</div></div>
+      <div class="so" onclick="pickS(this,1000)"><div class="sa">🌟🌟</div><div class="sl">1 000</div></div>
+      <div class="so" onclick="pickS(this,5000)"><div class="sa">💫</div><div class="sl">5 000</div></div>
     </div>
-    <input class="bet-inp" id="cstars" type="number" min="1" placeholder="Своя кількість..." oninput="selStars=parseInt(this.value)||0">
-    <button id="pay-btn" onclick="processPayment()">Оплатити ⭐ зірками</button>
-    <button id="mcl" onclick="closeTopup()">Скасувати</button>
+    <input class="binp" id="cstars" type="number" min="1" placeholder="Інша кількість...">
+    <button id="paybtn" onclick="doPayment()">Оплатити ⭐ зірками</button>
+    <button id="mclose" onclick="closeTopup()">Скасувати</button>
   </div>
 </div>
 
-<!-- ADMIN PANEL -->
-<button id="admin-btn" onclick="openAdmin()" title="Адмін">⚙</button>
-<div id="admin-bg">
-  <div id="admin-panel">
-    <button id="admin-close" onclick="closeAdmin()">✕</button>
-    <h2>⚙ Адмін панель</h2>
-
-    <div class="admin-section">
-      <h4>Статистика</h4>
-      <div class="stat-grid">
-        <div class="stat-box"><div class="stat-val" id="st-rounds">0</div><div class="stat-lbl">Раундів</div></div>
-        <div class="stat-box"><div class="stat-val" id="st-bets">0</div><div class="stat-lbl">Ставок</div></div>
-        <div class="stat-box"><div class="stat-val" id="st-wagered">0</div><div class="stat-lbl">Зіграно ⭐</div></div>
-        <div class="stat-box"><div class="stat-val" id="st-house">0</div><div class="stat-lbl">Профіт ⭐</div></div>
-      </div>
-    </div>
-
-    <div class="admin-section">
-      <h4>Налаштування гри</h4>
-      <label style="font-size:11px;color:#555;display:block;margin-bottom:4px">House Edge % (зараз: <span id="he-val">5</span>%)</label>
-      <input type="range" id="house-edge" min="1" max="20" value="5" style="width:100%;margin-bottom:10px" oninput="document.getElementById('he-val').textContent=this.value;houseEdge=this.value/100">
-      <label style="font-size:11px;color:#555;display:block;margin-bottom:4px">Швидкість ракети (зараз: <span id="speed-val">0.20</span>)</label>
-      <input type="range" id="speed-sl" min="5" max="50" value="20" style="width:100%;margin-bottom:10px" oninput="document.getElementById('speed-val').textContent=(this.value/100).toFixed(2);rocketSpeed=this.value/100">
-      <label style="font-size:11px;color:#555;display:block;margin-bottom:4px">Мін. ставка ⭐</label>
-      <input class="admin-inp" id="min-bet-inp" type="number" value="1" min="1">
-      <button class="admin-btn abtn-accent" onclick="applySettings()">Зберегти налаштування</button>
-    </div>
-
-    <div class="admin-section">
-      <h4>Управління балансом гравця</h4>
-      <input class="admin-inp" id="adm-uid" type="text" placeholder="User ID або 'me'">
-      <input class="admin-inp" id="adm-amt" type="number" placeholder="Кількість зірок">
-      <button class="admin-btn abtn-green" onclick="adminCredit()">+ Нарахувати</button>
-      <button class="admin-btn abtn-red" onclick="adminDebit()">- Списати</button>
-    </div>
-
-    <div class="admin-section">
-      <h4>Останні транзакції</h4>
-      <div id="txn-list"><div style="color:#333;font-size:12px">Немає транзакцій</div></div>
-    </div>
-
-    <div class="admin-section">
-      <h4>Небезпечна зона</h4>
-      <button class="admin-btn abtn-red" onclick="if(confirm('Скинути всю статистику?'))resetStats()">Скинути статистику</button>
-      <button class="admin-btn abtn-gray" onclick="closeAdmin()">Закрити панель</button>
-    </div>
-  </div>
+<div id="winpop">
+  <div class="wpm" id="wpm">2.00×</div>
+  <div class="wpa" id="wpa">+20 ⭐</div>
+  <div class="wpl">Виведено успішно!</div>
 </div>
-
-<!-- WIN POPUP -->
-<div id="win-popup">
-  <div class="wp-mult" id="wp-mult">2.00×</div>
-  <div class="wp-amt" id="wp-amt">+20 ⭐</div>
-  <div class="wp-lbl">Виведено успішно!</div>
-</div>
-
 <div id="toast"></div>
 
 <script>
-// ── Telegram ─────────────────────────────────────────────────────────────
-const tg = window.Telegram?.WebApp;
+// ════════════════════════════════════════════════════════════════════════════
+// НАЛАШТУВАННЯ — вводяться при першому запуску через UI
+// ════════════════════════════════════════════════════════════════════════════
+let CFG = {
+  botToken: '',
+  jsonbinKey: '',
+  binId: '',
+};
+
+const JSONBIN = 'https://api.jsonbin.io/v3';
+
+// ── Telegram SDK ────────────────────────────────────────────────────────────
+const tg      = window.Telegram?.WebApp;
 tg?.ready(); tg?.expand();
 tg?.setHeaderColor?.('#0a0a14');
 tg?.setBackgroundColor?.('#0a0a14');
-const tgUser = tg?.initDataUnsafe?.user;
+const tgUser  = tg?.initDataUnsafe?.user;
 
-// ── Config ────────────────────────────────────────────────────────────────
-let ADMIN_IDS = [tgUser?.id || 12345]; // Add your real Telegram ID here
-let rocketSpeed = 0.20;   // Lower = slower rocket
-let houseEdge   = 0.05;
-let minBet      = 1;
-
-// ── State ─────────────────────────────────────────────────────────────────
-let balance   = 100;
-let userId    = tgUser?.id    || 12345;
+// ── State ────────────────────────────────────────────────────────────────────
+let userId    = tgUser?.id       || 0;
 let userName  = tgUser?.first_name || 'Гравець';
+let userNick  = tgUser?.username  || '';
+let userPhoto = tgUser?.photo_url || '';
+
+let balance   = 0;
 let phase     = 'waiting';
 let mult      = 1.0;
 let crashAt   = 1.0;
-let hasBet    = false, betAmt = 0;
-let myWin     = null;
-let myLost    = false;
-let autoOn    = false;
-let selStars  = 100;
+let hasBet    = false, betAmt = 0, myWin = null, myLost = false;
+let autoOn    = false, selStars = 100;
 let roundId   = 1;
 let points    = [];
-let startT    = 0;
-let loopId    = null;
-let cdTimer   = null;
-let fakePlayers = [];
-let isAdmin   = ADMIN_IDS.includes(userId);
+let loopId    = null, cdTimer = null, smokeT = null;
+let rocketSpeed = 0.18;
 
-// ── Stats ─────────────────────────────────────────────────────────────────
-let stats = {rounds:0, bets:0, wagered:0, houseProfit:0};
-let transactions = [];
+// JSONBin game state
+let gbState   = {};  // {round_id, phase, crash_at, history, players:{uid:{name,nick,photo,bal,bet,win,lost,ts}}}
 
-function addTxn(type, amount, label){
-  transactions.unshift({type, amount, label, time: new Date().toLocaleTimeString()});
-  if(transactions.length>20) transactions.pop();
+// ── Setup screen ─────────────────────────────────────────────────────────────
+function loadCfg(){
+  try{
+    const s = localStorage.getItem('rkt_cfg');
+    if(s){ CFG = JSON.parse(s); return true; }
+  }catch(e){}
+  return false;
 }
 
-// ── Canvas ────────────────────────────────────────────────────────────────
-const canvas = document.getElementById('graph-canvas');
-const ctx    = canvas.getContext('2d');
-const multEl = document.getElementById('mult');
-const rktWrap= document.getElementById('rocket-wrap');
+function saveCfg(){
+  localStorage.setItem('rkt_cfg', JSON.stringify(CFG));
+}
+
+async function saveSetup(){
+  const token  = document.getElementById('s-token').value.trim();
+  const key    = document.getElementById('s-jsonbin').value.trim();
+  const binid  = document.getElementById('s-binid').value.trim();
+  const err    = document.getElementById('setup-err');
+  err.textContent = '';
+
+  if(!token || !key){ err.textContent = 'Заповни Bot Token і JSONBin Key'; return; }
+
+  CFG.botToken   = token;
+  CFG.jsonbinKey = key;
+
+  // Create or use existing bin
+  if(binid){
+    CFG.binId = binid;
+  } else {
+    err.textContent = 'Створюю сховище...';
+    try{
+      const r = await fetch(`${JSONBIN}/b`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','X-Master-Key':key,'X-Bin-Name':'rocket-game'},
+        body: JSON.stringify({round_id:1,phase:'waiting',crash_at:1,history:[],players:{}}),
+      });
+      const d = await r.json();
+      if(!d.metadata?.id){ err.textContent = 'JSONBin помилка: '+JSON.stringify(d); return; }
+      CFG.binId = d.metadata.id;
+    }catch(e){ err.textContent = 'Помилка JSONBin: '+e.message; return; }
+  }
+
+  saveCfg();
+  document.getElementById('setup').style.display = 'none';
+  boot();
+}
+
+// ── Canvas ────────────────────────────────────────────────────────────────────
+const canvas  = document.getElementById('graph-canvas');
+const ctx     = canvas.getContext('2d');
+const multEl  = document.getElementById('mult');
+const rktEl   = document.getElementById('rkt');
 
 function resize(){ canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight; }
 
@@ -479,217 +378,235 @@ function drawGraph(crashed){
   resize();
   if(points.length < 2) return;
   const W=canvas.width, H=canvas.height;
-  const maxM = Math.max(mult, 1.5);
-  const dur  = points[points.length-1].t - points[0].t;
+  const maxM = Math.max(mult,1.5);
+  const dur = points[points.length-1].t - points[0].t;
   if(dur<=0) return;
   const sx=(W-24)/dur, sy=(H-44)/(maxM-1);
-  function px(p){ return {x:12+(p.t-points[0].t)*sx, y:H-22-(p.m-1)*sy}; }
-
-  const color = crashed ? '#ff3355' : '#7c5cfc';
-  const grad  = ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0, color+'44'); grad.addColorStop(1, color+'00');
-
+  const px=p=>({x:12+(p.t-points[0].t)*sx, y:H-22-(p.m-1)*sy});
+  const col = crashed ? '#ff3355' : '#7c5cfc';
   ctx.clearRect(0,0,W,H);
-  const p0 = px(points[0]);
-  ctx.beginPath(); ctx.moveTo(p0.x, p0.y);
-  for(let i=1;i<points.length;i++){ const p=px(points[i]); ctx.lineTo(p.x,p.y); }
-  const last = px(points[points.length-1]);
-  ctx.lineTo(last.x, H-22); ctx.lineTo(p0.x, H-22); ctx.closePath();
+  const p0=px(points[0]);
+  const grad=ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,col+'44'); grad.addColorStop(1,col+'00');
+  ctx.beginPath(); ctx.moveTo(p0.x,p0.y);
+  for(let i=1;i<points.length;i++){const p=px(points[i]);ctx.lineTo(p.x,p.y)}
+  const last=px(points[points.length-1]);
+  ctx.lineTo(last.x,H-22); ctx.lineTo(p0.x,H-22); ctx.closePath();
   ctx.fillStyle=grad; ctx.fill();
-
-  ctx.beginPath(); ctx.moveTo(p0.x, p0.y);
-  for(let i=1;i<points.length;i++){ const p=px(points[i]); ctx.lineTo(p.x,p.y); }
-  ctx.strokeStyle=color; ctx.lineWidth=2.5; ctx.stroke();
-
-  // Glow dot at tip
+  ctx.beginPath(); ctx.moveTo(p0.x,p0.y);
+  for(let i=1;i<points.length;i++){const p=px(points[i]);ctx.lineTo(p.x,p.y)}
+  ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.stroke();
   if(!crashed){
-    ctx.beginPath(); ctx.arc(last.x, last.y, 4, 0, Math.PI*2);
-    ctx.fillStyle='#fff'; ctx.fill();
-    // Move rocket
-    rktWrap.style.display='block';
-    // Rocket faces direction of curve
-    const prev = points.length>3 ? px(points[points.length-3]) : p0;
-    const angle = Math.atan2(last.y-prev.y, last.x-prev.x) * 180/Math.PI;
-    rktWrap.style.left = (last.x - 22) + 'px';
-    rktWrap.style.bottom = (H - last.y - 18) + 'px';
-    rktWrap.style.transform = `rotate(${Math.max(-80, Math.min(0, angle-45))}deg)`;
+    ctx.beginPath(); ctx.arc(last.x,last.y,4,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill();
+    rktEl.style.display='block';
+    const prev=points.length>3?px(points[points.length-3]):p0;
+    const ang=Math.atan2(last.y-prev.y,last.x-prev.x)*180/Math.PI;
+    rktEl.style.left=(last.x-22)+'px';
+    rktEl.style.bottom=(H-last.y-18)+'px';
+    rktEl.style.transform=`rotate(${Math.max(-80,Math.min(0,ang-45))}deg)`;
   }
 }
 
-// ── Smoke particles ───────────────────────────────────────────────────────
-let smokeTimer=null;
+// ── Smoke ─────────────────────────────────────────────────────────────────────
 function startSmoke(){
-  if(smokeTimer)return;
-  smokeTimer=setInterval(()=>{
-    if(phase!=='flying'){clearInterval(smokeTimer);smokeTimer=null;return;}
+  if(smokeT) return;
+  smokeT = setInterval(()=>{
+    if(phase!=='flying'){clearInterval(smokeT);smokeT=null;return;}
     const sky=document.getElementById('sky');
-    const r=rktWrap.getBoundingClientRect();
-    const skyR=sky.getBoundingClientRect();
+    const rr=rktEl.getBoundingClientRect(), sr=sky.getBoundingClientRect();
     const s=document.createElement('div');
-    s.className='smoke';
-    const sz=6+Math.random()*8;
-    s.style.cssText=`
-      width:${sz}px;height:${sz}px;
-      background:rgba(180,140,255,${0.15+Math.random()*0.15});
-      left:${r.left-skyR.left+14+Math.random()*8-4}px;
-      top:${r.top-skyR.top+60}px;
-    `;
-    sky.appendChild(s);
-    setTimeout(()=>s.remove(),600);
-  },80);
+    const sz=5+Math.random()*7;
+    s.className='smk';
+    s.style.cssText=`width:${sz}px;height:${sz}px;background:rgba(180,140,255,.12);left:${rr.left-sr.left+14+Math.random()*6-3}px;top:${rr.top-sr.top+62}px`;
+    sky.appendChild(s); setTimeout(()=>s.remove(),600);
+  },90);
 }
 
-// ── Crash generator ───────────────────────────────────────────────────────
+// ── Crash point generator ─────────────────────────────────────────────────────
 function genCrash(){
   const r=Math.random();
-  if(r < houseEdge) return 1.00;
-  const c = (1-houseEdge) / (1-r);
-  return Math.round(Math.min(c,500)*100)/100;
+  if(r<0.05) return 1.00;
+  return Math.round(Math.min(0.95/(1-r),500)*100)/100;
 }
 
-// ── Fake players ──────────────────────────────────────────────────────────
-const FAKE_POOL=[
-  {name:'Олексій К.',  user:'@oleksiy_k'},
-  {name:'Дарина',      user:'@daryna_ua'},
-  {name:'Богдан',      user:'@bogdan2025'},
-  {name:'Катерина М.', user:'@kate_moon'},
-  {name:'Влад',        user:'@vlad_crypto'},
-  {name:'Аріна',       user:'@arina_777'},
-  {name:'Роман',       user:'@roman_wins'},
-  {name:'Настя',       user:'@nastya_lucky'},
-  {name:'Дмитро',      user:'@dima_stars'},
-  {name:'Юлія',        user:'@yulia_play'},
-  {name:'Артем',       user:'@artem_go'},
-  {name:'Соня',        user:'@sonya_tg'},
-  {name:'Максим',      user:'@max_rocket'},
-  {name:'Оля',         user:'@olya_win'},
-  {name:'Сашко',       user:'@sashko_ua'},
-  {name:'Вікторія',    user:'@vika_stars'},
-  {name:'Ігор',        user:'@igor_lucky'},
-  {name:'Марина',      user:'@marina_bet'},
-  {name:'Андрій',      user:'@andrii_tg'},
-  {name:'Лєра',        user:'@lera_moon'},
-];
-const COLORS=['#7c5cfc','#ff8c42','#3ddc84','#ff3355','#44aaff','#ffd700','#cc88ff','#44ccff','#ff66aa','#66ccff'];
-
-function genFakePlayers(){
-  fakePlayers=[];
-  const shuffled=[...FAKE_POOL].sort(()=>Math.random()-0.5);
-  const n=Math.floor(4+Math.random()*6);
-  for(let i=0;i<Math.min(n,shuffled.length);i++){
-    const ac=Math.random()<0.5?+(1.3+Math.random()*5).toFixed(2):null;
-    fakePlayers.push({
-      id:2000+i,
-      name:shuffled[i].name,
-      user:shuffled[i].user,
-      color:COLORS[i%COLORS.length],
-      bet:+(1+Math.random()*99).toFixed(0)*1,
-      autoCashout:ac,cashedOut:false,win:null,lost:false,
+// ── JSONBin helpers ───────────────────────────────────────────────────────────
+async function binGet(){
+  try{
+    const r=await fetch(`${JSONBIN}/b/${CFG.binId}/latest`,{
+      headers:{'X-Master-Key':CFG.jsonbinKey},
     });
-  }
+    const d=await r.json();
+    return d.record || {};
+  }catch(e){ return {}; }
 }
 
-function triggerFakeAutoCashouts(){
-  fakePlayers.forEach(p=>{
-    if(p.autoCashout&&p.autoCashout<=crashAt){
-      const delay=(Math.log(p.autoCashout)/rocketSpeed)*1000;
-      setTimeout(()=>{
-        if(phase==='flying'&&!p.cashedOut){
-          p.cashedOut=true; p.win=+(p.bet*p.autoCashout).toFixed(1);
-          renderPlayers();
-        }
-      },delay);
-    }
-  });
+async function binSet(data){
+  try{
+    await fetch(`${JSONBIN}/b/${CFG.binId}`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':CFG.jsonbinKey},
+      body:JSON.stringify(data),
+    });
+  }catch(e){}
 }
 
-function renderPlayers(){
-  const pl=document.getElementById('pl');
-  const rows=[];
-
-  // ── Реальний гравець — завжди перший, навіть без ставки ──
-  const tgUsername = tgUser?.username ? '@'+tgUser.username : '';
-  const tgPhoto    = tgUser?.photo_url || '';
-  const myRow = {
-    id: userId,
+// ── Player sync ───────────────────────────────────────────────────────────────
+async function syncMyPlayer(fields){
+  const state = await binGet();
+  if(!state.players) state.players = {};
+  state.players[userId] = {
     name: userName,
-    user: tgUsername,
-    photo: tgPhoto,
-    color: '#7c5cfc',
-    bet: betAmt,
-    hasBetNow: hasBet,
-    cashedOut: myWin !== null,
-    win: myWin,
-    lost: myLost,
-    isMe: true,
+    nick: userNick,
+    photo: userPhoto,
+    bal: balance,
+    ts: Date.now(),
+    ...(state.players[userId]||{}),
+    ...fields,
   };
-  rows.push(myRow);
+  await binSet(state);
+  return state;
+}
 
-  // ── Симульовані гравці ──
-  fakePlayers.forEach(p => rows.push(p));
+async function pushBet(amount){
+  const state = await binGet();
+  if(!state.players) state.players = {};
+  state.players[userId] = {
+    name:userName, nick:userNick, photo:userPhoto,
+    bal:balance,
+    bet:amount, win:null, lost:false,
+    round:roundId, ts:Date.now(),
+  };
+  await binSet(state);
+}
 
-  pl.innerHTML = rows.map(p => {
-    const init = (p.name||'?').slice(0,2).toUpperCase();
-    // Avatar: фото або ініціали
-    const avatarInner = p.photo
-      ? `<img src="${p.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`
-      : `<span>${init}</span>`;
+async function pushCashout(win, m){
+  const state = await binGet();
+  if(state.players?.[userId]){
+    state.players[userId].win = win;
+    state.players[userId].mult = m;
+    state.players[userId].bal  = balance;
+  }
+  await binSet(state);
+}
 
-    // Right side
-    let right = '';
-    if(p.isMe && !p.hasBetNow && !p.cashedOut && !p.lost){
-      // Не поставив ще
-      right = `<span class="pa" style="color:#333;font-size:10px">не грає</span>`;
-    } else if(p.cashedOut && p.win != null){
-      const m = p.isMe ? (p.win/p.bet).toFixed(2) : (p.win/p.bet).toFixed(2);
-      right = `<span style="font-size:9px;color:${p.color};margin-right:3px">${m}×</span>
-               <span class="pa" style="color:var(--green)">+${p.win}⭐</span>`;
+async function pushLost(){
+  const state = await binGet();
+  if(state.players?.[userId]){
+    state.players[userId].lost = true;
+    state.players[userId].bal  = balance;
+  }
+  await binSet(state);
+}
+
+// ── Render real players from JSONBin ─────────────────────────────────────────
+function strColor(s){
+  const COLS=['#ff8c42','#3ddc84','#ff3355','#44aaff','#ffd700','#cc88ff','#44ccff','#ff66aa','#66ccff'];
+  let h=0; for(let i=0;i<(s||'').length;i++) h=(h*31+s.charCodeAt(i))>>>0;
+  return COLS[h%COLS.length];
+}
+
+function renderPlayers(players){
+  const pl=document.getElementById('pl');
+  if(!players||!Object.keys(players).length){
+    pl.innerHTML='<div style="color:#1a1a2a;font-size:12px;padding:6px 0">Поки немає гравців</div>';
+    document.getElementById('pcnt').textContent='0';
+    return;
+  }
+
+  // Filter: show only players active in current round
+  const now=Date.now();
+  const rows=Object.entries(players)
+    .filter(([,p])=> p.round===roundId || +p.ts > now-30000)
+    .sort(([aid],[bid])=>{
+      if(+aid===userId) return -1;
+      if(+bid===userId) return 1;
+      if(players[aid].win!=null && players[bid].win==null) return -1;
+      if(players[bid].win!=null && players[aid].win==null) return 1;
+      return (players[bid].bet||0)-(players[aid].bet||0);
+    });
+
+  document.getElementById('pcnt').textContent=rows.length;
+
+  pl.innerHTML=rows.map(([uid,p])=>{
+    const isMe=+uid===userId;
+    const color=isMe?'#7c5cfc':strColor(p.name);
+    const init=(p.name||'?').slice(0,2).toUpperCase();
+    const ava=p.photo
+      ?`<img src="${p.photo}" alt="">`
+      :`<span>${init}</span>`;
+
+    let right='';
+    if(!p.bet && !p.win && !p.lost){
+      right=`<span class="pa" style="color:#252535;font-size:10px">${isMe?'не ставив':''}</span>`;
+    } else if(p.win!=null){
+      right=`<span class="pmx" style="background:${color}18;color:${color}">${(p.mult||1).toFixed(2)}×</span>
+             <span class="pa" style="color:var(--green)">+${p.win}⭐</span>`;
     } else if(p.lost){
-      right = `<span class="pa" style="color:var(--red)">-${p.bet}⭐</span>`;
-    } else if(p.hasBetNow || (!p.isMe && p.bet)){
-      right = `<span class="pa" style="color:#555">⭐${p.bet}</span>`;
+      right=`<span class="pa" style="color:var(--red)">-${p.bet}⭐</span>`;
+    } else if(p.bet){
+      right=`<span class="pa" style="color:#444">⭐${p.bet}</span>`;
     }
 
-    const namePart = p.isMe
-      ? `${p.name} <span style="font-size:8px;background:#7c5cfc22;color:var(--accent);padding:1px 5px;border-radius:6px;vertical-align:middle">ти</span>`
-      : p.name;
+    const nameTxt=p.name+(isMe?` <span style="font-size:8px;background:#7c5cfc22;color:var(--accent);padding:1px 5px;border-radius:5px;vertical-align:middle">ти</span>`:'');
+    const nickTxt=p.nick?`<span class="pu">@${p.nick}</span>`:'';
 
-    const border = p.isMe ? 'border:0.5px solid #7c5cfc44;' : '';
-    return `<div class="pr" style="${border}">
-      <div class="pav" style="background:${p.color}22;color:${p.color}">${avatarInner}</div>
-      <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-width:0">
-        <span class="pn" style="${p.isMe?'color:#fff;font-weight:600':''}">${namePart}</span>
-        ${p.user?`<span style="font-size:10px;color:#333;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.user}</span>`:''}
+    return `<div class="pr${isMe?' me':''}">
+      <div class="pav" style="background:${color}20;color:${color}">${ava}</div>
+      <div class="pi">
+        <span class="pn${isMe?' m':''}">${nameTxt}</span>
+        ${nickTxt}
       </div>
-      <div style="flex-shrink:0;display:flex;align-items:center;gap:3px">${right}</div>
+      <div class="pr-right">${right}</div>
     </div>`;
   }).join('');
 }
 
-// ── History ───────────────────────────────────────────────────────────────
-const INIT_HIST=[6.70,1.00,1.16,1.62,1.39,5.77,18.8,133.1,3.51,1.50];
-INIT_HIST.forEach(v=>addHistChip(v));
+// ── Poll JSONBin every 3s for other players ───────────────────────────────────
+let pollT=null;
+function startPoll(){
+  if(pollT) clearInterval(pollT);
+  pollT=setInterval(async()=>{
+    const state=await binGet();
+    if(state.players) renderPlayers(state.players);
+  },3000);
+}
 
+// ── History ───────────────────────────────────────────────────────────────────
 function addHistChip(v){
   const cls=v>=10?'hmoon':v>=3?'hh':v>=1.5?'hm':'hl';
   const c=document.createElement('div');
-  c.className=`hc ${cls}`;c.textContent=v.toFixed(2)+'×';
+  c.className=`hc ${cls}`; c.textContent=v.toFixed(2)+'×';
   document.getElementById('hist').prepend(c);
   const h=document.getElementById('hist');
-  while(h.children.length>20)h.removeChild(h.lastChild);
+  while(h.children.length>20) h.removeChild(h.lastChild);
 }
 
-// ── Game loop ─────────────────────────────────────────────────────────────
-function startCountdown(){
+// ── Game loop ─────────────────────────────────────────────────────────────────
+async function startCountdown(){
   phase='waiting'; hasBet=false; mult=1.0; myWin=null; myLost=false;
   points=[]; crashAt=genCrash(); roundId++;
   document.getElementById('rid').textContent=roundId;
   multEl.className='waiting'; multEl.innerHTML='Очікування...<small></small>';
-  rktWrap.style.display='none';
+  rktEl.style.display='none';
   resize(); ctx.clearRect(0,0,canvas.width,canvas.height);
-  betBtn().disabled=false; betBtn().textContent='🚀 ПОСТАВИТИ'; betBtn().className='';
-  genFakePlayers(); renderPlayers();
-  stats.rounds++;
+  BB().disabled=false; BB().textContent='🚀 ПОСТАВИТИ'; BB().className='';
+
+  // Clear this round's bet from JSONBin
+  const state=await binGet();
+  if(state.players?.[userId]){
+    delete state.players[userId].bet;
+    delete state.players[userId].win;
+    delete state.players[userId].lost;
+    delete state.players[userId].mult;
+    state.players[userId].round=null;
+  }
+  if(state) renderPlayers(state.players);
+  // Clear other players' round data
+  if(state.players){
+    Object.values(state.players).forEach(p=>{p.bet=null;p.win=null;p.lost=false;p.mult=null;p.round=null});
+    await binSet(state);
+    renderPlayers(state.players);
+  }
 
   let cd=5;
   multEl.innerHTML=`Старт через ${cd}<small></small>`;
@@ -701,115 +618,167 @@ function startCountdown(){
 }
 
 function startFlight(){
-  phase='flying'; startT=performance.now();
+  phase='flying';
+  const t0=performance.now();
   points=[{t:0,m:1}];
   multEl.className=''; multEl.innerHTML='1.00×<small></small>';
-  rktWrap.style.display='block';
+  rktEl.style.display='block';
   startSmoke();
 
-  // ← FIX: якщо є активна ставка — вмикаємо кнопку вивести
   if(hasBet){
-    betBtn().disabled=false;
-    betBtn().className='cashout';
-    betBtn().textContent=`💰 ВИВЕСТИ ${betAmt.toFixed(1)} ⭐`;
-  }
-
-  // Player auto-cashout
-  if(autoOn&&hasBet){
-    const av=parseFloat(document.getElementById('aval').value)||2;
-    if(av>1&&av<=crashAt){
-      const delay=(Math.log(av)/rocketSpeed)*1000;
-      setTimeout(()=>{if(phase==='flying'&&hasBet)doCashout();},delay);
+    BB().disabled=false; BB().className='co';
+    BB().textContent=`💰 ВИВЕСТИ ${betAmt.toFixed(1)} ⭐`;
+    if(autoOn){
+      const av=parseFloat(document.getElementById('aval').value)||2;
+      if(av>1&&av<=crashAt){
+        const delay=(Math.log(av)/rocketSpeed)*1000;
+        setTimeout(()=>{if(phase==='flying'&&hasBet)doCashout();},delay);
+      }
     }
   }
-  triggerFakeAutoCashouts();
 
   function tick(){
-    const el=(performance.now()-startT)/1000;
+    const el=(performance.now()-t0)/1000;
     mult=Math.round(Math.exp(el*rocketSpeed)*100)/100;
     if(mult>=crashAt){mult=crashAt;points.push({t:el,m:mult});doCrash();return;}
     points.push({t:el,m:mult});
     multEl.innerHTML=mult.toFixed(2)+'×<small></small>';
-    if(hasBet) betBtn().textContent=`💰 ВИВЕСТИ ${(betAmt*mult).toFixed(1)} ⭐`;
+    if(hasBet) BB().textContent=`💰 ВИВЕСТИ ${(betAmt*mult).toFixed(1)} ⭐`;
     drawGraph(false);
     loopId=requestAnimationFrame(tick);
   }
   loopId=requestAnimationFrame(tick);
 }
 
-function doCrash(){
+async function doCrash(){
   cancelAnimationFrame(loopId);
   phase='crashed';
   multEl.innerHTML=crashAt.toFixed(2)+'×<small>💥 CRASH</small>';
   multEl.className='crashed';
-  rktWrap.style.display='none';
+  rktEl.style.display='none';
   drawGraph(true);
   addHistChip(crashAt);
-
   if(hasBet){
     showToast(`💥 CRASH ${crashAt.toFixed(2)}×`);
-    stats.houseProfit=+(stats.houseProfit+betAmt).toFixed(1);
-    addTxn('loss',betAmt,`Програш раунд #${roundId}`);
     myLost=true; hasBet=false;
+    balance=+(balance).toFixed(1);
+    await pushLost();
   }
-  betBtn().disabled=true; betBtn().textContent='🚀 ПОСТАВИТИ'; betBtn().className='';
-  fakePlayers.forEach(p=>{if(!p.cashedOut)p.lost=true;});
-  renderPlayers();
-  updateAdminStats();
+  BB().disabled=true; BB().textContent='🚀 ПОСТАВИТИ'; BB().className='';
+
+  const state=await binGet();
+  if(state.players) renderPlayers(state.players);
   setTimeout(startCountdown,3000);
 }
 
-// ── Cashout ───────────────────────────────────────────────────────────────
-function doCashout(){
-  if(phase!=='flying'||!hasBet)return;
+async function doCashout(){
+  if(phase!=='flying'||!hasBet) return;
   const win=+(betAmt*mult).toFixed(1);
   balance=+(balance+win).toFixed(1);
   document.getElementById('bal').textContent=balance;
   myWin=win; hasBet=false;
-  stats.houseProfit=+(stats.houseProfit-(win-betAmt)).toFixed(1);
-  addTxn('win',win,`Вивід ×${mult.toFixed(2)} раунд #${roundId}`);
-  showWinPopup(mult,win);
+  showWinPop(mult,win);
   spawnStars(win);
-  betBtn().textContent='🚀 ПОСТАВИТИ'; betBtn().className='';
-  renderPlayers();
-  updateAdminStats();
+  BB().textContent='🚀 ПОСТАВИТИ'; BB().className='';
+  await pushCashout(win,mult);
+  const state=await binGet();
+  if(state.players) renderPlayers(state.players);
 }
 
-function showWinPopup(m,w){
-  const p=document.getElementById('win-popup');
-  document.getElementById('wp-mult').textContent=m.toFixed(2)+'×';
-  document.getElementById('wp-amt').textContent='+'+w+' ⭐';
-  p.className='show';
-  setTimeout(()=>p.className='',2200);
-}
-
-// ── Bet button ────────────────────────────────────────────────────────────
-function handleBet(){
+// ── Bet ───────────────────────────────────────────────────────────────────────
+async function handleBet(){
   if(phase==='flying'&&hasBet){doCashout();return;}
-  if(phase!=='waiting')return;
-  if(hasBet)return;
+  if(phase!=='waiting') return;
   betAmt=parseFloat(document.getElementById('bi').value)||10;
-  if(betAmt<minBet){showToast(`Мін. ставка ${minBet} ⭐`);return;}
+  if(betAmt<1){showToast('Мін. ставка 1 ⭐');return;}
   if(betAmt>balance){showToast('Недостатньо ⭐');return;}
   balance=+(balance-betAmt).toFixed(1);
   document.getElementById('bal').textContent=balance;
   hasBet=true;
-  stats.bets++; stats.wagered=+(stats.wagered+betAmt).toFixed(1);
-  addTxn('bet',betAmt,`Ставка раунд #${roundId}`);
-  betBtn().disabled=true; betBtn().textContent='✅ Ставка прийнята';
-  renderPlayers(); updateAdminStats();
+  BB().disabled=true; BB().textContent='✅ Ставка прийнята';
+  await pushBet(betAmt);
+  const state=await binGet();
+  if(state.players) renderPlayers(state.players);
 }
 
-function betBtn(){return document.getElementById('bet-btn')}
-function setBet(v){document.getElementById('bi').value=v}
-function halfBet(){const v=parseFloat(document.getElementById('bi').value)||10;document.getElementById('bi').value=Math.max(minBet,Math.floor(v/2))}
-function x2Bet(){const v=parseFloat(document.getElementById('bi').value)||10;document.getElementById('bi').value=Math.floor(v*2)}
-function toggleAuto(){autoOn=!autoOn;document.getElementById('atog').className=autoOn?'toggle on':'toggle'}
+function BB(){ return document.getElementById('betbtn'); }
+function setBet(v){ document.getElementById('bi').value=v; }
+function halfBet(){ const v=parseFloat(document.getElementById('bi').value)||10; document.getElementById('bi').value=Math.max(1,Math.floor(v/2)); }
+function x2Bet(){ const v=parseFloat(document.getElementById('bi').value)||10; document.getElementById('bi').value=Math.floor(v*2); }
+function toggleAuto(){ autoOn=!autoOn; document.getElementById('atog').className=autoOn?'tog on':'tog'; }
 
-// ── Stars particles ───────────────────────────────────────────────────────
-function spawnStars(amount){
-  const n=Math.min(15,Math.max(3,Math.floor(amount/5)));
-  for(let i=0;i<n;i++){
+// ── Telegram Stars payment (реальний) ─────────────────────────────────────────
+function openTopup(){ document.getElementById('mbg').className='open'; }
+function closeTopup(){ document.getElementById('mbg').className=''; }
+function pickS(el,n){
+  selStars=n;
+  document.querySelectorAll('.so').forEach(s=>s.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('cstars').value=n;
+}
+
+async function doPayment(){
+  const stars=parseInt(document.getElementById('cstars').value)||selStars;
+  if(!stars||stars<1) return;
+  closeTopup();
+
+  try{
+    // Create invoice via Telegram Bot API directly
+    const payload=`topup_${userId}_${stars}_${Date.now()}`;
+    const r=await fetch(`https://api.telegram.org/bot${CFG.botToken}/createInvoiceLink`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        title:'Поповнення 🚀 Rocket',
+        description:`Поповнити баланс на ${stars} ⭐`,
+        payload,
+        currency:'XTR',
+        prices:[{label:`${stars} Stars`,amount:stars}],
+      }),
+    });
+    const d=await r.json();
+    if(!d.ok) throw new Error(d.description||'Telegram error');
+
+    const link=d.result;
+
+    if(tg?.openInvoice){
+      // Native Telegram payment dialog (like in the screenshot!)
+      tg.openInvoice(link,async(status)=>{
+        if(status==='paid'){
+          balance=+(balance+stars).toFixed(1);
+          document.getElementById('bal').textContent=balance;
+          showToast(`⭐ +${stars} зірок зараховано!`,'win');
+          spawnStars(stars);
+          await syncMyPlayer({bal:balance});
+        }
+      });
+    } else {
+      window.open(link,'_blank');
+    }
+  } catch(e){
+    showToast('Помилка: '+e.message);
+    console.error(e);
+  }
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+function showWinPop(m,w){
+  document.getElementById('wpm').textContent=m.toFixed(2)+'×';
+  document.getElementById('wpa').textContent='+'+w+' ⭐';
+  const p=document.getElementById('winpop');
+  p.className='show'; setTimeout(()=>p.className='',2200);
+}
+
+let tT=null;
+function showToast(msg,type='crash'){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className=type==='win'?'win show':'show';
+  clearTimeout(tT); tT=setTimeout(()=>el.className=type==='win'?'win':'',2800);
+}
+
+function spawnStars(n){
+  const cnt=Math.min(14,Math.max(3,Math.floor(n/5)));
+  for(let i=0;i<cnt;i++){
     const s=document.createElement('div');
     s.className='sp'; s.textContent='⭐';
     s.style.left=15+Math.random()*70+'vw';
@@ -820,130 +789,34 @@ function spawnStars(amount){
   }
 }
 
-// ── Top-up ────────────────────────────────────────────────────────────────
-function openTopup(){document.getElementById('mbg').className='open'}
-function closeTopup(){document.getElementById('mbg').className=''}
-function bgClick(e){if(e.target===document.getElementById('mbg'))closeTopup()}
-function pickStars(el,n){
-  selStars=n;
-  document.querySelectorAll('.so').forEach(s=>s.classList.remove('sel'));
-  el.classList.add('sel');
-  document.getElementById('cstars').value=n;
-}
+// ── Boot ──────────────────────────────────────────────────────────────────────
+async function boot(){
+  document.getElementById('app').style.display='flex';
 
-async function processPayment(){
-  const stars=parseInt(document.getElementById('cstars').value)||selStars;
-  if(!stars||stars<1){showToast('Введи кількість зірок');return;}
-  closeTopup();
-
-  // Real Telegram Stars payment
-  if(tg?.openInvoice){
-    try{
-      const SERVER=window.location.origin;
-      const res=await fetch(`${SERVER}/api/create_invoice`,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({user_id:userId,stars}),
-      });
-      if(!res.ok) throw new Error();
-      const data=await res.json();
-      tg.openInvoice(data.invoice_link,(status)=>{
-        if(status==='paid'){
-          creditStars(stars);
-          showToast(`⭐ ${stars} зірок зараховано!`,'win');
-        }
-      });
-      return;
-    }catch(e){
-      // Demo fallback
-    }
+  // Load player balance from JSONBin
+  const state=await binGet();
+  if(state.players?.[userId]?.bal != null){
+    balance=state.players[userId].bal;
+  } else {
+    balance=100; // starting balance
+    await syncMyPlayer({bal:balance});
   }
-  // Demo mode
-  creditStars(stars);
-  showToast(`⭐ Демо: +${stars} зірок`,'win');
-}
-
-function creditStars(n){
-  balance=+(balance+n).toFixed(1);
   document.getElementById('bal').textContent=balance;
-  addTxn('topup',n,`Поповнення ⭐`);
-  spawnStars(Math.min(n,20));
-  updateAdminStats();
+
+  if(state.history?.length) state.history.slice().reverse().forEach(v=>addHistChip(v));
+  renderPlayers(state.players||{});
+
+  startPoll();
+  window.addEventListener('resize',resize);
+  resize();
+  startCountdown();
 }
 
-// ── Admin panel ───────────────────────────────────────────────────────────
-function openAdmin(){
-  // Show admin for everyone in demo; in prod check ADMIN_IDS
-  updateAdminStats();
-  document.getElementById('admin-bg').className='open';
-  document.getElementById('speed-sl').value=Math.round(rocketSpeed*100);
-  document.getElementById('speed-val').textContent=rocketSpeed.toFixed(2);
+// ── Init ──────────────────────────────────────────────────────────────────────
+if(loadCfg() && CFG.botToken && CFG.jsonbinKey && CFG.binId){
+  document.getElementById('setup').style.display='none';
+  boot();
 }
-function closeAdmin(){document.getElementById('admin-bg').className=''}
-
-function updateAdminStats(){
-  document.getElementById('st-rounds').textContent=stats.rounds;
-  document.getElementById('st-bets').textContent=stats.bets;
-  document.getElementById('st-wagered').textContent=stats.wagered;
-  document.getElementById('st-house').textContent=stats.houseProfit.toFixed(1);
-  // Transactions
-  const tl=document.getElementById('txn-list');
-  if(!transactions.length){tl.innerHTML='<div style="color:#333;font-size:12px">Немає транзакцій</div>';return;}
-  tl.innerHTML=transactions.map(t=>{
-    const color=t.type==='win'?'var(--green)':t.type==='loss'?'var(--red)':t.type==='topup'?'var(--gold)':'#555';
-    const sign=t.type==='win'||t.type==='topup'?'+':'-';
-    return `<div class="txn-row">
-      <span style="color:#666">${t.time} ${t.label}</span>
-      <span style="color:${color};font-family:Orbitron,monospace;font-size:11px">${sign}${t.amount}⭐</span>
-    </div>`;
-  }).join('');
-}
-
-function applySettings(){
-  minBet=parseInt(document.getElementById('min-bet-inp').value)||1;
-  showToast('Налаштування збережено','win');
-}
-
-function adminCredit(){
-  const amt=parseFloat(document.getElementById('adm-amt').value)||0;
-  if(amt<=0)return;
-  creditStars(amt);
-  showToast(`+${amt} ⭐ нараховано`,'win');
-}
-
-function adminDebit(){
-  const amt=parseFloat(document.getElementById('adm-amt').value)||0;
-  if(amt<=0||amt>balance)return;
-  balance=+(balance-amt).toFixed(1);
-  document.getElementById('bal').textContent=balance;
-  addTxn('debit',amt,'Адмін списання');
-  updateAdminStats();
-  showToast(`-${amt} ⭐ списано`);
-}
-
-function resetStats(){
-  stats={rounds:0,bets:0,wagered:0,houseProfit:0};
-  transactions=[];
-  updateAdminStats();
-  showToast('Статистику скинуто','win');
-}
-
-// ── Toast ─────────────────────────────────────────────────────────────────
-let tTimer=null;
-function showToast(msg,type='crash'){
-  const el=document.getElementById('toast');
-  el.textContent=msg;el.className=type==='win'?'win show':'show';
-  clearTimeout(tTimer);
-  tTimer=setTimeout(()=>el.className=type==='win'?'win':'',2800);
-}
-
-// ── Boot ──────────────────────────────────────────────────────────────────
-window.addEventListener('resize',resize);
-resize();
-startCountdown();
-
-// Show admin gear only for admins (or always in demo)
-document.getElementById('admin-btn').style.display='flex';
 </script>
 </body>
 </html>
