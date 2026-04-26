@@ -1,394 +1,622 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crash Game - Синхронізована</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* Всі стилі з попередньої версії */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #0b0e14 0%, #1a1f2e 100%);
-            color: #fff;
-            overflow: hidden;
-            height: 100vh;
-        }
-        
-        .app-container {
-            max-width: 400px;
-            margin: 0 auto;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background: rgba(18, 22, 33, 0.95);
-            backdrop-filter: blur(10px);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>🚀 Rocket</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  :root{
+    --bg:#0d0d1a;--bg2:#13131f;--bg3:#1a1a2e;
+    --accent:#7c5cfc;--accent2:#5c3ccc;
+    --green:#44cc88;--red:#ff4466;--orange:#ff8844;--gold:#ffcc44;
+    --text:#ffffff;--muted:#888;
+  }
+  html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden}
+  #app{display:flex;flex-direction:column;height:100vh;max-height:100vh}
 
-        /* Додайте всі стилі з попереднього коду */
-        /* ... (CSS з попередньої версії) ... */
-    </style>
+  /* ── SKY ── */
+  #sky{
+    position:relative;flex:0 0 240px;
+    background:radial-gradient(ellipse at 50% 110%,#1a1040,#080812 70%);
+    overflow:hidden;
+  }
+  #graph-canvas{position:absolute;inset:0;width:100%;height:100%}
+  #mult{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    font-family:'Orbitron',monospace;font-size:44px;font-weight:900;
+    color:#fff;letter-spacing:2px;pointer-events:none;z-index:5;
+    text-align:center;
+  }
+  #mult.crashed{color:var(--red)}
+  #mult small{display:block;font-size:13px;font-weight:400;color:var(--muted);font-family:'Inter',sans-serif;margin-top:4px}
+  #rocket{position:absolute;font-size:26px;pointer-events:none;z-index:6;transform:rotate(-45deg);filter:drop-shadow(0 0 6px #ff8844)}
+  #balance-pill{
+    position:absolute;top:10px;right:12px;z-index:10;
+    background:#00000066;border:0.5px solid #ffcc4430;border-radius:20px;
+    padding:5px 12px;font-family:'Orbitron',monospace;font-size:12px;color:var(--gold);
+  }
+
+  /* ── HISTORY BAR ── */
+  #hist{
+    display:flex;gap:5px;padding:8px 12px;overflow-x:auto;
+    background:#0a0a16;border-bottom:0.5px solid #ffffff10;
+    scrollbar-width:none;flex-shrink:0;
+  }
+  #hist::-webkit-scrollbar{display:none}
+  .hchip{
+    font-family:'Orbitron',monospace;font-size:10px;font-weight:700;
+    padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;
+  }
+  .hl{background:#1e1e2e;color:#666;border:0.5px solid #ffffff14}
+  .hm{background:#1a2a1a;color:var(--green);border:0.5px solid #44cc8830}
+  .hh{background:#2a1a10;color:var(--orange);border:0.5px solid #ff884430}
+  .hmoon{background:#2a1040;color:#cc88ff;border:0.5px solid #cc88ff40}
+
+  /* ── CONTROLS ── */
+  #controls{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-shrink:0}
+  .card{background:var(--bg2);border:0.5px solid #ffffff10;border-radius:12px;padding:10px 12px}
+  .clabel{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+  .bet-input{
+    width:100%;background:var(--bg);border:0.5px solid #ffffff20;border-radius:8px;
+    color:#fff;font-family:'Orbitron',monospace;font-size:15px;font-weight:700;
+    padding:7px 10px;outline:none;
+  }
+  .bet-input:focus{border-color:#7c5cfc66}
+  .qbtns{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+  .qbtn{
+    background:#1e1e2e;border:0.5px solid #ffffff14;border-radius:6px;
+    color:#999;font-size:10px;padding:3px 7px;cursor:pointer;font-family:'Inter',sans-serif;
+  }
+  .qbtn:active{background:#2a2a40}
+  .auto-row{display:flex;align-items:center;gap:6px}
+  .tog-label{font-size:12px;color:var(--muted);flex:1}
+  .toggle{width:36px;height:20px;background:#1e1e2e;border-radius:10px;border:0.5px solid #ffffff18;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+  .toggle.on{background:var(--accent)}
+  .toggle::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .2s}
+  .toggle.on::after{left:19px}
+  .auto-inp{
+    background:var(--bg);border:0.5px solid #ffffff20;border-radius:8px;
+    color:#fff;font-family:'Orbitron',monospace;font-size:12px;
+    padding:5px 8px;width:65px;outline:none;margin-top:8px;
+  }
+
+  /* ── BET BUTTON ── */
+  #bet-btn{
+    grid-column:1/-1;background:linear-gradient(135deg,var(--accent),var(--accent2));
+    border:none;border-radius:12px;color:#fff;font-family:'Orbitron',monospace;
+    font-size:14px;font-weight:700;padding:14px;cursor:pointer;letter-spacing:1px;
+    transition:opacity .2s,transform .1s;
+  }
+  #bet-btn:active{transform:scale(.98);opacity:.9}
+  #bet-btn.cashout{background:linear-gradient(135deg,var(--orange),#cc5522)}
+  #bet-btn:disabled{opacity:.35;cursor:not-allowed}
+
+  /* ── TOP-UP BUTTON ── */
+  #topup-btn{
+    display:block;width:calc(100% - 24px);margin:0 12px;
+    background:#1a1a2e;border:0.5px solid var(--gold);border-radius:10px;
+    color:var(--gold);font-family:'Orbitron',monospace;font-size:12px;
+    padding:10px;cursor:pointer;letter-spacing:1px;flex-shrink:0;
+  }
+  #topup-btn:active{opacity:.8}
+
+  /* ── PLAYERS ── */
+  #players-wrap{flex:1;overflow:hidden;padding:8px 12px 0;min-height:0}
+  .sec-title{font-size:10px;color:#444;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  #players-list{height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:4px;scrollbar-width:none;padding-bottom:8px}
+  #players-list::-webkit-scrollbar{display:none}
+  .prow{
+    display:flex;align-items:center;gap:8px;
+    background:var(--bg2);border:0.5px solid #ffffff08;border-radius:8px;padding:7px 10px;
+    flex-shrink:0;
+  }
+  .pav{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+  .pname{flex:1;font-size:12px;color:#bbb;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pbadge{font-size:9px;padding:2px 6px;border-radius:10px;margin-right:4px}
+  .pamt{font-family:'Orbitron',monospace;font-size:11px;font-weight:700}
+
+  /* ── TOP-UP MODAL ── */
+  #modal-bg{
+    display:none;position:fixed;inset:0;background:#00000088;z-index:100;
+    align-items:flex-end;justify-content:center;
+  }
+  #modal-bg.open{display:flex}
+  #modal{
+    background:var(--bg2);border-radius:20px 20px 0 0;border:0.5px solid #ffffff18;
+    padding:20px;width:100%;max-width:480px;
+  }
+  #modal h3{font-family:'Orbitron',monospace;font-size:16px;margin-bottom:4px}
+  #modal p{font-size:12px;color:var(--muted);margin-bottom:16px}
+  .star-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+  .star-opt{
+    background:var(--bg3);border:0.5px solid #ffffff14;border-radius:10px;
+    padding:10px 6px;text-align:center;cursor:pointer;
+  }
+  .star-opt:active{border-color:var(--accent)}
+  .star-opt .sa{font-size:18px}
+  .star-opt .sl{font-family:'Orbitron',monospace;font-size:11px;margin-top:4px;color:#ccc}
+  #custom-stars{
+    width:100%;background:var(--bg);border:0.5px solid #ffffff20;border-radius:8px;
+    color:#fff;font-family:'Orbitron',monospace;font-size:14px;padding:9px 12px;outline:none;margin-bottom:10px;
+  }
+  #pay-btn{
+    width:100%;background:linear-gradient(135deg,var(--gold),#cc9900);
+    border:none;border-radius:10px;color:#000;font-family:'Orbitron',monospace;
+    font-size:14px;font-weight:700;padding:13px;cursor:pointer;
+  }
+  #pay-btn:active{opacity:.85}
+  #modal-close{
+    width:100%;background:transparent;border:none;color:var(--muted);
+    font-size:13px;padding:10px;cursor:pointer;margin-top:4px;
+  }
+
+  /* ── TOAST ── */
+  #toast{
+    position:fixed;top:60px;left:50%;transform:translateX(-50%);
+    background:var(--red);color:#fff;font-family:'Orbitron',monospace;font-size:14px;
+    padding:10px 22px;border-radius:12px;z-index:200;pointer-events:none;
+    opacity:0;transition:opacity .3s;white-space:nowrap;
+  }
+  #toast.win{background:var(--green)}
+  #toast.show{opacity:1}
+
+  /* ── CONNECTING ── */
+  #connecting{
+    position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;
+    justify-content:center;flex-direction:column;gap:12px;z-index:300;
+  }
+  #connecting p{color:var(--muted);font-size:13px}
+  .spinner{width:32px;height:32px;border:2px solid #ffffff22;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </head>
 <body>
-    <!-- HTML з попередньої версії -->
-    <!-- ... -->
 
-    <script>
-        // Telegram
-        const tg = window.Telegram?.WebApp || {
-            initDataUnsafe: { user: { id: 123456, first_name: 'Гравець' } },
-            expand: () => {},
-            ready: () => {},
-            HapticFeedback: {
-                impactOccurred: () => {},
-                notificationOccurred: () => {},
-                selectionChanged: () => {}
-            }
-        };
-        tg.expand();
-        tg.ready();
+<div id="connecting">
+  <div class="spinner"></div>
+  <p>Підключення...</p>
+</div>
 
-        const user = tg.initDataUnsafe?.user || { id: 123456, first_name: 'Гравець' };
-        const SERVER_URL = "http://localhost:8001"; // Змініть на IP для інших пристроїв
+<div id="app" style="display:none">
+  <div id="sky">
+    <canvas id="graph-canvas"></canvas>
+    <div id="mult">1.00×<small id="phase-label">Очікування...</small></div>
+    <div id="rocket" style="display:none">🚀</div>
+    <div id="balance-pill">⭐ <span id="bal">0</span></div>
+  </div>
 
-        // Підключення до сервера
-        const socket = io(SERVER_URL, {
-            transports: ['websocket', 'polling']
-        });
+  <div id="hist"></div>
 
-        // Стан гри
-        const gameState = {
-            balance: 100,
-            currentMultiplier: 1.00,
-            isRunning: false,
-            isCrashed: false,
-            betAmount: 0,
-            hasBet: false,
-            autoCashout: false,
-            autoCashoutMultiplier: 2,
-            countdown: 5,
-            players: [],
-            graphPoints: [],
-            stats: {
-                totalGames: 0,
-                totalWon: 0,
-                maxWin: 0,
-                wins: 0,
-                losses: 0
-            }
-        };
+  <div id="controls">
+    <div class="card">
+      <div class="clabel">Ставка ⭐</div>
+      <input class="bet-input" id="bet-inp" type="number" value="10" min="1" step="1">
+      <div class="qbtns">
+        <button class="qbtn" onclick="setBet(5)">5</button>
+        <button class="qbtn" onclick="setBet(10)">10</button>
+        <button class="qbtn" onclick="setBet(50)">50</button>
+        <button class="qbtn" onclick="halfBet()">½</button>
+        <button class="qbtn" onclick="x2Bet()">×2</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="clabel">Авто-вивід</div>
+      <div class="auto-row">
+        <span class="tog-label">Авто</span>
+        <div class="toggle" id="auto-tog" onclick="toggleAuto()"></div>
+      </div>
+      <input class="auto-inp" id="auto-val" type="number" value="2.00" min="1.01" step="0.1" placeholder="2.00×">
+    </div>
+    <button id="bet-btn" onclick="handleBet()">🚀 ПОСТАВИТИ</button>
+  </div>
 
-        // Елементи DOM
-        const elements = {
-            loading: document.getElementById('loadingScreen'),
-            balance: document.getElementById('balanceAmount'),
-            multiplier: document.getElementById('multiplierValue'),
-            gameStatus: document.getElementById('gameStatus'),
-            timer: document.getElementById('timerContainer'),
-            timerDisplay: document.getElementById('timerDisplay'),
-            potentialWin: document.getElementById('potentialWin'),
-            rocket: document.getElementById('rocketContainer'),
-            placeBet: document.getElementById('placeBetBtn'),
-            cashout: document.getElementById('cashoutBtn'),
-            cancelBet: document.getElementById('cancelBetBtn'),
-            betInput: document.getElementById('betAmountInput'),
-            playersList: document.getElementById('playersList'),
-            playersCount: document.getElementById('playersCount'),
-            historyChips: document.getElementById('historyChips')
-        };
+  <button id="topup-btn" onclick="openTopup()">⭐ Поповнити баланс зірками</button>
 
-        // Оновлення UI
-        document.getElementById('userName').textContent = user.first_name;
-        document.getElementById('userAvatar').textContent = user.first_name.charAt(0).toUpperCase();
+  <div id="players-wrap">
+    <div class="sec-title">Гравці</div>
+    <div id="players-list"></div>
+  </div>
+</div>
 
-        // Socket.io події
-        socket.on('connect', () => {
-            console.log('Підключено до сервера');
-            elements.loading.style.display = 'none';
-            
-            socket.emit('register_player', {
-                user_id: user.id,
-                name: user.first_name
-            });
-        });
+<!-- TOP-UP MODAL -->
+<div id="modal-bg" onclick="closeTopup(event)">
+  <div id="modal">
+    <h3>⭐ Поповнення</h3>
+    <p>Вибери кількість зірок Telegram</p>
+    <div class="star-options">
+      <div class="star-opt" onclick="selectStars(50)"><div class="sa">⭐</div><div class="sl">50</div></div>
+      <div class="star-opt" onclick="selectStars(100)"><div class="sa">⭐⭐</div><div class="sl">100</div></div>
+      <div class="star-opt" onclick="selectStars(250)"><div class="sa">⭐⭐⭐</div><div class="sl">250</div></div>
+      <div class="star-opt" onclick="selectStars(500)"><div class="sa">🌟</div><div class="sl">500</div></div>
+      <div class="star-opt" onclick="selectStars(1000)"><div class="sa">🌟🌟</div><div class="sl">1 000</div></div>
+      <div class="star-opt" onclick="selectStars(5000)"><div class="sa">💫</div><div class="sl">5 000</div></div>
+    </div>
+    <input class="bet-input" id="custom-stars" type="number" min="1" placeholder="Своя кількість...">
+    <button id="pay-btn" onclick="processPayment()">Оплатити зірками ⭐</button>
+    <button id="modal-close" onclick="closeTopupBtn()">Скасувати</button>
+  </div>
+</div>
 
-        socket.on('game_state', (data) => {
-            gameState.currentMultiplier = data.multiplier;
-            gameState.isRunning = data.is_running;
-            gameState.isCrashed = data.is_crashed;
-            gameState.countdown = data.countdown;
-            gameState.players = data.players;
-            updateUI();
-        });
+<div id="toast"></div>
 
-        socket.on('game_update', (data) => {
-            gameState.currentMultiplier = data.multiplier;
-            gameState.players = data.players;
-            updateUI();
-            moveRocket();
-        });
+<script>
+const tg = window.Telegram?.WebApp;
+tg?.ready();
+tg?.expand();
+tg?.setHeaderColor('#0d0d1a');
+tg?.setBackgroundColor('#0d0d1a');
 
-        socket.on('countdown', (data) => {
-            gameState.countdown = data.time;
-            gameState.players = data.players;
-            updateUI();
-            
-            elements.timer.classList.remove('hidden');
-            elements.timerDisplay.textContent = data.time;
-        });
+// ── Config ─────────────────────────────────────────────────────────────────
+const SERVER = window.location.origin;    // same origin
+const WS_URL = SERVER.replace(/^http/, 'ws');
 
-        socket.on('game_started', (data) => {
-            gameState.isRunning = true;
-            gameState.isCrashed = false;
-            gameState.players = data.players;
-            updateUI();
-            elements.timer.classList.add('hidden');
-        });
+// ── State ──────────────────────────────────────────────────────────────────
+let userId = 0, balance = 0, userName = '';
+let ws = null;
+let phase = 'waiting';  // waiting | flying | crashed
+let multiplier = 1.0;
+let hasBet = false, betAmt = 0;
+let autoEnabled = false;
+let selectedStars = 100;
+let points = [];
+let animFrame = null;
+let lastTick = performance.now();
 
-        socket.on('game_crashed', (data) => {
-            gameState.isRunning = false;
-            gameState.isCrashed = true;
-            gameState.currentMultiplier = data.crash_point;
-            gameState.players = data.players;
-            updateUI();
-            
-            elements.multiplier.classList.add('crashed');
-            elements.multiplier.innerHTML = '💥 ' + data.crash_point.toFixed(2) + 'x';
-            elements.rocket.classList.add('rocket-crashed');
-            elements.gameStatus.textContent = 'CRASHED!';
-            elements.potentialWin.classList.add('hidden');
-            
-            if (gameState.hasBet) {
-                gameState.hasBet = false;
-                gameState.betAmount = 0;
-                elements.cashout.classList.add('hidden');
-                elements.placeBet.classList.remove('hidden');
-                elements.cancelBet.classList.add('hidden');
-            }
-        });
+// Canvas
+const canvas = document.getElementById('graph-canvas');
+const ctx = canvas.getContext('2d');
 
-        socket.on('players_update', (data) => {
-            gameState.players = data.players;
-            updatePlayersList();
-        });
+// ── Auth ───────────────────────────────────────────────────────────────────
+async function auth() {
+  const initData = tg?.initData || 'user=%7B%22id%22%3A12345%2C%22first_name%22%3A%22Demo%22%7D';
+  const res = await fetch(`${SERVER}/api/auth`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({init_data: initData}),
+  });
+  const data = await res.json();
+  userId = data.user_id;
+  userName = data.name;
+  balance = data.balance;
+  updateBalance();
+}
 
-        socket.on('cashout_result', (data) => {
-            const win = data.win;
-            gameState.balance += win;
-            gameState.betAmount = 0;
-            gameState.hasBet = false;
-            updateBalance();
-            
-            gameState.stats.totalGames++;
-            gameState.stats.wins++;
-            gameState.stats.totalWon += win;
-            if (win > gameState.stats.maxWin) {
-                gameState.stats.maxWin = win;
-            }
-            
-            elements.cashout.classList.add('hidden');
-            elements.placeBet.classList.remove('hidden');
-            elements.cancelBet.classList.add('hidden');
-            elements.potentialWin.classList.add('hidden');
-            
-            showToast(`Виграш ${win} ⭐ (x${data.multiplier})`, 'success');
-            updateStats();
-        });
+// ── WebSocket ──────────────────────────────────────────────────────────────
+function connectWS() {
+  ws = new WebSocket(`${WS_URL}/ws/${userId}`);
 
-        socket.on('bet_result', (data) => {
-            if (data.result === 'lost') {
-                gameState.betAmount = 0;
-                gameState.hasBet = false;
-                
-                gameState.stats.totalGames++;
-                gameState.stats.losses++;
-                
-                elements.cashout.classList.add('hidden');
-                elements.placeBet.classList.remove('hidden');
-                elements.cancelBet.classList.add('hidden');
-                elements.potentialWin.classList.add('hidden');
-                
-                showToast(`Програно ${data.amount} ⭐`, 'error');
-                updateStats();
-            }
-        });
+  ws.onopen = () => {
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+  };
 
-        socket.on('error', (data) => {
-            showToast(data.message, 'error');
-        });
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    handleMsg(msg);
+  };
 
-        // Функції інтерфейсу
-        function updateUI() {
-            updateMultiplier();
-            updatePlayersList();
-            updateGameStatus();
-            updatePotentialWin();
-        }
+  ws.onclose = () => {
+    setTimeout(connectWS, 2000);
+  };
+}
 
-        function updateMultiplier() {
-            if (gameState.isCrashed) {
-                elements.multiplier.innerHTML = '💥 ' + gameState.currentMultiplier.toFixed(2) + 'x';
-                elements.multiplier.classList.add('crashed');
-            } else {
-                elements.multiplier.innerHTML = gameState.currentMultiplier.toFixed(2) + 'x';
-                elements.multiplier.classList.remove('crashed');
-            }
-        }
+function send(data) {
+  if (ws && ws.readyState === 1) ws.send(JSON.stringify(data));
+}
 
-        function updatePlayersList() {
-            const activePlayers = gameState.players.filter(p => p.bet > 0);
-            elements.playersCount.textContent = activePlayers.length + ' гравців';
-            
-            if (activePlayers.length === 0) {
-                elements.playersList.innerHTML = '<div class="player-item" style="justify-content: center; color: #a0aec0;">Немає активних ставок</div>';
-                return;
-            }
-            
-            elements.playersList.innerHTML = activePlayers.map(p => `
-                <div class="player-item">
-                    <div class="player-info">
-                        <div class="player-avatar-small">${p.name.charAt(0)}</div>
-                        <span class="player-name">${p.name}</span>
-                    </div>
-                    <div class="player-bet-info">
-                        <span class="player-bet">${p.bet} ⭐</span>
-                        <span class="player-status ${p.status}">
-                            ${p.status === 'waiting' ? 'Очікує' : 
-                              p.status === 'won' ? `x${p.cashed_out_at?.toFixed(2)}` : 'Програв'}
-                        </span>
-                    </div>
-                </div>
-            `).join('');
-        }
+// ── Message handler ────────────────────────────────────────────────────────
+const roundBets = {};  // user_id -> {name, amount, cashedOut, win}
 
-        function updateGameStatus() {
-            if (gameState.isCrashed) {
-                elements.gameStatus.textContent = 'CRASHED!';
-            } else if (gameState.isRunning) {
-                elements.gameStatus.textContent = 'ГРА ТРИВАЄ';
-            } else {
-                elements.gameStatus.textContent = `СТАВКИ НА ${gameState.countdown} СЕКУНД`;
-            }
-        }
+function handleMsg(msg) {
+  switch(msg.type) {
+    case 'init':
+      phase = msg.phase;
+      multiplier = msg.multiplier;
+      balance = msg.balance;
+      updateBalance();
+      renderHistory(msg.history);
+      setPhaseUI();
+      break;
 
-        function updatePotentialWin() {
-            if (gameState.hasBet && gameState.isRunning && !gameState.isCrashed) {
-                const win = Math.floor(gameState.betAmount * gameState.currentMultiplier);
-                elements.potentialWin.classList.remove('hidden');
-                elements.potentialWin.innerHTML = `💰 ${win} ⭐`;
-            } else {
-                elements.potentialWin.classList.add('hidden');
-            }
-        }
+    case 'countdown':
+      phase = 'waiting';
+      hasBet = false;
+      points = [];
+      Object.keys(roundBets).forEach(k => delete roundBets[k]);
+      document.getElementById('mult').className = '';
+      document.getElementById('mult').innerHTML = `Старт через ${msg.seconds}...<small></small>`;
+      document.getElementById('rocket').style.display = 'none';
+      betBtn().disabled = false;
+      betBtn().textContent = '🚀 ПОСТАВИТИ';
+      betBtn().className = '';
+      resizeCanvas(); ctx.clearRect(0,0,canvas.width,canvas.height);
+      renderPlayers();
+      break;
 
-        function moveRocket() {
-            const gameArea = document.getElementById('gameArea');
-            const maxWidth = gameArea.clientWidth - 120;
-            const maxHeight = gameArea.clientHeight - 120;
-            
-            const progress = (gameState.currentMultiplier - 1) * 50;
-            const x = Math.min(progress * 2, Math.max(0, maxWidth));
-            const y = Math.max(30, maxHeight - progress * 1.5);
-            const rotation = 10 + progress * 0.2;
-            
-            elements.rocket.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
-        }
+    case 'start':
+      phase = 'flying';
+      setPhaseUI();
+      break;
 
-        function updateBalance() {
-            elements.balance.textContent = gameState.balance.toFixed(2);
-        }
+    case 'tick':
+      multiplier = msg.multiplier;
+      points.push({t: performance.now(), m: multiplier});
+      document.getElementById('mult').innerHTML = multiplier.toFixed(2) + '×<small></small>';
+      if (hasBet) {
+        betBtn().textContent = `💰 ВИВЕСТИ ${(betAmt * multiplier).toFixed(1)} ⭐`;
+      }
+      drawGraph(false);
+      break;
 
-        function updateStats() {
-            // Оновлення статистики в профілі
-        }
+    case 'crash':
+      phase = 'crashed';
+      multiplier = msg.crash_at;
+      document.getElementById('mult').innerHTML = msg.crash_at.toFixed(2) + '×<small>CRASH 💥</small>';
+      document.getElementById('mult').className = 'crashed';
+      document.getElementById('rocket').style.display = 'none';
+      drawGraph(true);
+      addHistory(msg.crash_at);
+      if (hasBet) { hasBet = false; showToast(`💥 CRASH ${msg.crash_at.toFixed(2)}×`); }
+      betBtn().disabled = true;
+      betBtn().textContent = '🚀 ПОСТАВИТИ';
+      betBtn().className = '';
+      // mark all remaining bets as lost
+      Object.values(roundBets).forEach(p => { if(!p.cashedOut) p.lost = true; });
+      renderPlayers();
+      break;
 
-        function showToast(message, type) {
-            // Ваш код для тостів
-        }
+    case 'new_bet':
+      roundBets[msg.user_id] = {name: msg.name, amount: msg.amount, cashedOut: false};
+      renderPlayers();
+      break;
 
-        // Функції ставок
-        function placeBet() {
-            const amount = parseInt(elements.betInput.value) || 10;
-            
-            if (amount > gameState.balance) {
-                showToast('Недостатньо коштів', 'error');
-                return;
-            }
-            
-            if (gameState.isRunning || gameState.isCrashed) {
-                showToast('Ставки тільки під час таймера!', 'error');
-                return;
-            }
-            
-            gameState.balance -= amount;
-            gameState.betAmount = amount;
-            gameState.hasBet = true;
-            updateBalance();
-            
-            socket.emit('place_bet', { amount: amount });
-            
-            elements.placeBet.classList.add('hidden');
-            elements.cancelBet.classList.remove('hidden');
-            
-            tg.HapticFeedback?.impactOccurred('medium');
-        }
+    case 'cashout':
+      if (roundBets[msg.user_id]) {
+        roundBets[msg.user_id].cashedOut = true;
+        roundBets[msg.user_id].win = msg.win;
+        roundBets[msg.user_id].mult = msg.multiplier;
+      }
+      renderPlayers();
+      break;
 
-        function cashOut() {
-            if (!gameState.hasBet || !gameState.isRunning || gameState.isCrashed) return;
-            
-            socket.emit('cash_out');
-            elements.cashout.classList.add('hidden');
-            
-            tg.HapticFeedback?.notificationOccurred('success');
-        }
+    case 'bet_accepted':
+      hasBet = true;
+      betAmt = msg.amount;
+      balance = msg.balance;
+      updateBalance();
+      betBtn().textContent = `💰 ВИВЕСТИ ${betAmt.toFixed(1)} ⭐`;
+      betBtn().className = 'cashout';
+      betBtn().disabled = false;
+      break;
 
-        function cancelBet() {
-            if (gameState.isRunning) {
-                showToast('Не можна скасувати під час гри', 'error');
-                return;
-            }
-            
-            gameState.balance += gameState.betAmount;
-            gameState.betAmount = 0;
-            gameState.hasBet = false;
-            updateBalance();
-            
-            socket.emit('cancel_bet');
-            
-            elements.placeBet.classList.remove('hidden');
-            elements.cancelBet.classList.add('hidden');
-            
-            tg.HapticFeedback?.impactOccurred('light');
-        }
+    case 'your_cashout':
+      hasBet = false;
+      balance = msg.balance;
+      updateBalance();
+      showToast(`🎉 +${msg.win} ⭐ (${msg.multiplier.toFixed(2)}×)`, 'win');
+      betBtn().textContent = '🚀 ПОСТАВИТИ';
+      betBtn().className = '';
+      break;
 
-        // Обробники кнопок
-        elements.placeBet.addEventListener('click', placeBet);
-        elements.cashout.addEventListener('click', cashOut);
-        elements.cancelBet.addEventListener('click', cancelBet);
+    case 'balance_update':
+      balance = msg.balance;
+      updateBalance();
+      showToast(`⭐ +${msg.credited} зірок зараховано!`, 'win');
+      break;
 
-        document.getElementById('maxBtn').addEventListener('click', () => {
-            elements.betInput.value = gameState.balance;
-        });
+    case 'error':
+      showToast(msg.msg);
+      break;
+  }
+}
 
-        document.querySelectorAll('.quick-amount-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const amount = parseInt(btn.dataset.amount);
-                const current = parseInt(elements.betInput.value) || 0;
-                elements.betInput.value = current + amount;
-            });
-        });
+// ── UI helpers ─────────────────────────────────────────────────────────────
+function betBtn() { return document.getElementById('bet-btn'); }
 
-        // Ініціалізація
-        updateBalance();
-    </script>
+function updateBalance() {
+  document.getElementById('bal').textContent = balance.toFixed(1);
+}
+
+function setPhaseUI() {
+  if (phase === 'flying') {
+    document.getElementById('rocket').style.display = 'block';
+    betBtn().disabled = false;
+  }
+}
+
+function renderHistory(arr) {
+  const hist = document.getElementById('hist');
+  hist.innerHTML = '';
+  arr.forEach(v => addHistoryChip(v));
+}
+
+function addHistory(v) {
+  addHistoryChip(v);
+}
+
+function addHistoryChip(v) {
+  const hist = document.getElementById('hist');
+  const chip = document.createElement('div');
+  const cls = v >= 10 ? 'hmoon' : v >= 3 ? 'hh' : v >= 1.5 ? 'hm' : 'hl';
+  chip.className = `hchip ${cls}`;
+  chip.textContent = v.toFixed(2) + '×';
+  hist.prepend(chip);
+  while (hist.children.length > 20) hist.removeChild(hist.lastChild);
+}
+
+const COLORS = ['#7c5cfc','#ff8844','#44cc88','#ff4466','#44aaff','#ffcc44','#cc88ff','#44ccff'];
+function colorFor(id) { return COLORS[Math.abs(id % COLORS.length)]; }
+
+function renderPlayers() {
+  const list = document.getElementById('players-list');
+  list.innerHTML = '';
+  const entries = Object.entries(roundBets);
+  if (!entries.length) {
+    list.innerHTML = '<div style="color:#444;font-size:12px;padding:8px 0">Поки немає ставок</div>';
+    return;
+  }
+  entries.forEach(([uid, p]) => {
+    const color = colorFor(parseInt(uid));
+    const init = (p.name||'?').slice(0,2).toUpperCase();
+    let rightHTML;
+    if (p.cashedOut && p.win) {
+      rightHTML = `<span style="font-size:9px;color:${color};margin-right:4px">${p.mult?.toFixed(2)}×</span>
+                   <span class="pamt" style="color:var(--green)">+${p.win.toFixed(1)} ⭐</span>`;
+    } else if (p.lost) {
+      rightHTML = `<span class="pamt" style="color:var(--red)">-${p.amount.toFixed(1)} ⭐</span>`;
+    } else {
+      rightHTML = `<span class="pamt" style="color:var(--muted)">⭐ ${p.amount.toFixed(1)}</span>`;
+    }
+    const row = document.createElement('div');
+    row.className = 'prow';
+    row.innerHTML = `
+      <div class="pav" style="background:${color}22;color:${color}">${init}</div>
+      <span class="pname">${p.name}</span>
+      ${rightHTML}
+    `;
+    list.appendChild(row);
+  });
+}
+
+// ── Graph ──────────────────────────────────────────────────────────────────
+function resizeCanvas() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+
+function drawGraph(crashed) {
+  resizeCanvas();
+  if (points.length < 2) return;
+  const W = canvas.width, H = canvas.height;
+  const maxM = Math.max(multiplier, 1.5);
+  const dur = points[points.length-1].t - points[0].t;
+  if (dur <= 0) return;
+  const scaleX = (W - 20) / dur;
+  const scaleY = (H - 40) / (maxM - 1);
+
+  function px(p) {
+    return {
+      x: 10 + (p.t - points[0].t) * scaleX,
+      y: H - 20 - (p.m - 1) * scaleY
+    };
+  }
+
+  const color = crashed ? '#ff4466' : '#7c5cfc';
+  ctx.clearRect(0, 0, W, H);
+
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, color + '55');
+  grad.addColorStop(1, color + '00');
+
+  ctx.beginPath();
+  const p0 = px(points[0]);
+  ctx.moveTo(p0.x, p0.y);
+  for (let i = 1; i < points.length; i++) ctx.lineTo(px(points[i]).x, px(points[i]).y);
+  const last = px(points[points.length-1]);
+  ctx.lineTo(last.x, H - 20);
+  ctx.lineTo(p0.x, H - 20);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(p0.x, p0.y);
+  for (let i = 1; i < points.length; i++) ctx.lineTo(px(points[i]).x, px(points[i]).y);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  if (!crashed) {
+    const rk = document.getElementById('rocket');
+    rk.style.left = (last.x - 18) + 'px';
+    rk.style.bottom = (H - last.y - 18) + 'px';
+  }
+}
+
+// ── Bet / cashout ──────────────────────────────────────────────────────────
+function handleBet() {
+  if (phase === 'flying' && hasBet) {
+    send({action: 'cashout'});
+    return;
+  }
+  if (phase !== 'waiting') return;
+  const amount = parseFloat(document.getElementById('bet-inp').value) || 10;
+  if (amount > balance) { showToast('Недостатньо ⭐'); return; }
+  const autoVal = autoEnabled ? parseFloat(document.getElementById('auto-val').value) : null;
+  betBtn().disabled = true;
+  betBtn().textContent = '✅ Ставка прийнята';
+  send({action: 'bet', amount, auto_cashout: autoVal || null});
+}
+
+function toggleAuto() {
+  autoEnabled = !autoEnabled;
+  document.getElementById('auto-tog').className = autoEnabled ? 'toggle on' : 'toggle';
+}
+function setBet(v) { document.getElementById('bet-inp').value = v; }
+function halfBet() { const v = parseFloat(document.getElementById('bet-inp').value)||10; document.getElementById('bet-inp').value = Math.max(1, Math.floor(v/2)); }
+function x2Bet() { const v = parseFloat(document.getElementById('bet-inp').value)||10; document.getElementById('bet-inp').value = Math.floor(v*2); }
+
+// ── Top-up ─────────────────────────────────────────────────────────────────
+function openTopup() {
+  document.getElementById('modal-bg').className = 'open';
+}
+function closeTopup(e) {
+  if (e.target === document.getElementById('modal-bg')) closeTopupBtn();
+}
+function closeTopupBtn() {
+  document.getElementById('modal-bg').className = '';
+}
+function selectStars(n) {
+  selectedStars = n;
+  document.getElementById('custom-stars').value = n;
+}
+
+async function processPayment() {
+  const stars = parseInt(document.getElementById('custom-stars').value) || selectedStars;
+  if (!stars || stars < 1) return;
+
+  const res = await fetch(`${SERVER}/api/create_invoice`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({user_id: userId, stars}),
+  });
+  const data = await res.json();
+
+  if (data.invoice_link) {
+    closeTopupBtn();
+    // Open Telegram payment dialog
+    tg?.openInvoice(data.invoice_link, (status) => {
+      if (status === 'paid') {
+        showToast('⭐ Оплата отримана!', 'win');
+        // balance will update via WebSocket
+      }
+    });
+  } else {
+    showToast('Помилка створення рахунку');
+  }
+}
+
+// ── Toast ──────────────────────────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg, type='crash') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = type === 'win' ? 'win show' : 'show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = type === 'win' ? 'win' : '', 2800);
+}
+
+// ── Boot ───────────────────────────────────────────────────────────────────
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+(async () => {
+  await auth();
+  connectWS();
+})();
+</script>
 </body>
 </html>
-
