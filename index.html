@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -572,25 +573,44 @@ async function doPayment(){
       return;
     }
 
-    // Викликаємо Telegram API через CORS proxy
-    const PROXY = 'https://corsproxy.io/?url=';
-    const TG    = `https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`;
-
-    const r = await fetch(PROXY + encodeURIComponent(TG), {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        title:          'Поповнення 🚀 Rocket',
-        description:    `Поповнити баланс на ${stars} ⭐`,
-        payload:        `topup_${userId}_${stars}_${Date.now()}`,
-        provider_token: '',      // ← пусто для Stars
-        currency:       'XTR',  // ← обов'язково для Stars
-        prices:         [{label:`${stars} Stars`, amount: stars}],
-      }),
+    // Пробуємо кілька proxy по черзі
+    const TG_URL = `https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`;
+    const BODY = JSON.stringify({
+      title:          'Поповнення 🚀 Rocket',
+      description:    `Поповнити баланс на ${stars} ⭐`,
+      payload:        `topup_${userId}_${stars}_${Date.now()}`,
+      provider_token: '',
+      currency:       'XTR',
+      prices:         [{label:`${stars} Stars`, amount: stars}],
     });
 
-    const d = await r.json();
-    if(!d.ok) throw new Error(d.description||'Telegram error');
+    let d = null;
+    const proxies = [
+      async () => {
+        const r = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(TG_URL)}`, {
+          method:'POST', headers:{'Content-Type':'application/json'}, body:BODY
+        });
+        return r.json();
+      },
+      async () => {
+        const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(TG_URL)}`, {
+          method:'POST', headers:{'Content-Type':'application/json'}, body:BODY
+        });
+        return r.json();
+      },
+      async () => {
+        const r = await fetch(`https://proxy.cors.sh/${TG_URL}`, {
+          method:'POST', headers:{'Content-Type':'application/json','x-cors-api-key':'temp_'}, body:BODY
+        });
+        return r.json();
+      },
+    ];
+
+    for(const proxy of proxies){
+      try{ d = await proxy(); if(d?.ok) break; }catch(e){ continue; }
+    }
+
+    if(!d?.ok) throw new Error(d?.description || 'Всі proxy недоступні');
 
     // Відкриває нативний діалог оплати зірками (як на скріншоті!)
     tg.openInvoice(d.result, (status)=>{
