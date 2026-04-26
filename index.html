@@ -267,7 +267,7 @@ const userPhoto = tgUser?.photo_url  || '';
 let balance  = parseFloat(localStorage.getItem('rkt_bal_'+userId)||'100');
 let phase    = 'waiting';
 let mult     = 1.0, crashAt = 1.0;
-let hasBet   = false, betAmt = 0, myWin = null, myLost = false;
+let hasBet   = false, betAmt = 0, lastBetAmt = 0, myWin = null, myLost = false;
 let autoOn   = false, selStars = 100;
 let roundId  = 1;
 let points   = [], loopId = null, cdTimer = null, smokeT = null;
@@ -361,13 +361,14 @@ function strColor(s){
 function renderPlayers(){
   const pl=document.getElementById('pl');
 
-  // Завжди показуємо реального гравця першим
+  // Реальний гравець — завжди перший
   allPlayers[userId]={
     name:userName, nick:userNick, photo:userPhoto,
-    bet:hasBet?betAmt:null,
-    win:myWin, lost:myLost,
-    mult:myWin&&betAmt?+(myWin/betAmt).toFixed(2):null,
-    ts:Date.now(), isMe:true,
+    bet: hasBet ? betAmt : (myLost||myWin!=null ? lastBetAmt : null),
+    win: myWin,
+    lost: myLost,
+    mult: myWin!=null && lastBetAmt>0 ? +(myWin/lastBetAmt).toFixed(2) : null,
+    ts: Date.now(), isMe: true,
   };
 
   const entries=Object.entries(allPlayers)
@@ -464,7 +465,10 @@ function startFlight(){
   const t0=performance.now();
   points=[{t:0,m:1}];
   multEl.className=''; multEl.innerHTML='1.00×<small></small>';
-  rktEl.style.display='block';
+  rktEl.style.display='block'; // ← показати ракету одразу
+  rktEl.style.left='12px';
+  rktEl.style.bottom='22px';
+  rktEl.style.transform='rotate(-45deg)';
   startSmoke();
 
   if(hasBet){
@@ -531,6 +535,7 @@ function handleBet(){
   document.getElementById('bal').textContent=balance;
   saveBal();
   hasBet=true;
+  lastBetAmt=betAmt; // зберігаємо для відображення після краша
   BB().disabled=true; BB().textContent='✅ Ставка прийнята';
   renderPlayers();
 }
