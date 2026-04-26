@@ -242,12 +242,10 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 
 <script>
 // ╔══════════════════════════════════════════════════════╗
-// ║  НАЛАШТУВАННЯ — змінити тільки цей рядок            ║
+// ║  ЄДИНЕ що треба змінити — вставити свій токен нижче ║
 // ╚══════════════════════════════════════════════════════╝
-const BOT_URL = "https://ТУТ_URL_ТВОГО_БОТА";
-// Наприклад: "https://rocket-bot.railway.app"
-// Бот має мати ендпоінт POST /invoice що повертає { link: "..." }
-// Дивись bot_addon.py — додай 5 рядків до свого aiogram бота
+const BOT_TOKEN = "8757352545:AAGlu9yQu97JHfGljZH4ocqOBU_-sJm1KR8";
+// Наприклад: "7123456789:AAFxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 // ═══════════════════════════════════════════════════════
 // Telegram WebApp init
@@ -564,19 +562,33 @@ async function doPayment(){
   closeTopup();
 
   try{
-    // Запит до твого aiogram бота — він повертає invoice link
-    const r=await fetch(`${BOT_URL}/invoice`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({user_id:userId, stars, init_data:tg?.initData||''}),
+    if(BOT_TOKEN==='ТУТ_ТОКЕН_ВІД_BOTFATHER'){
+      showToast('Вставте токен бота в рядок BOT_TOKEN');
+      return;
+    }
+
+    // Викликаємо Telegram API через CORS proxy
+    const PROXY = 'https://corsproxy.io/?url=';
+    const TG    = `https://api.telegram.org/bot${BOT_TOKEN}/createInvoiceLink`;
+
+    const r = await fetch(PROXY + encodeURIComponent(TG), {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        title:          'Поповнення 🚀 Rocket',
+        description:    `Поповнити баланс на ${stars} ⭐`,
+        payload:        `topup_${userId}_${stars}_${Date.now()}`,
+        provider_token: '',      // ← пусто для Stars
+        currency:       'XTR',  // ← обов'язково для Stars
+        prices:         [{label:`${stars} Stars`, amount: stars}],
+      }),
     });
 
-    if(!r.ok) throw new Error(`HTTP ${r.status}`);
-    const d=await r.json();
-    if(!d.link) throw new Error(d.error||'Немає link у відповіді');
+    const d = await r.json();
+    if(!d.ok) throw new Error(d.description||'Telegram error');
 
-    // Відкриваємо нативний Telegram Stars діалог
-    tg.openInvoice(d.link, (status)=>{
+    // Відкриває нативний діалог оплати зірками (як на скріншоті!)
+    tg.openInvoice(d.result, (status)=>{
       if(status==='paid'){
         balance=+(balance+stars).toFixed(1);
         document.getElementById('bal').textContent=balance;
@@ -590,13 +602,8 @@ async function doPayment(){
       }
     });
 
-  }catch(e){
-    // Якщо бот ще не налаштований — показуємо підказку
-    if(BOT_URL.includes('ТУТ_URL')){
-      showToast('Встав URL бота в код (рядок BOT_URL)');
-    } else {
-      showToast('Помилка: '+e.message);
-    }
+  } catch(e){
+    showToast('Помилка: '+e.message);
     console.error(e);
   } finally {
     btn.disabled=false; btn.textContent='Оплатити ⭐ зірками';
