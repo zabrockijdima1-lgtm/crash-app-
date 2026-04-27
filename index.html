@@ -172,7 +172,18 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 #toast.show{opacity:1}
 .sp{position:fixed;pointer-events:none;z-index:200;font-size:16px;animation:spf 1s ease-out forwards}
 @keyframes spf{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-80px) scale(.3)}}
-#conn{position:fixed;bottom:6px;right:8px;font-size:8px;color:#222;z-index:50}
+/* INVENTORY */
+.inv-card{background:var(--bg2);border:0.5px solid #ffffff0a;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.inv-card img{width:100%;aspect-ratio:1;object-fit:cover;background:#0a0a1a}
+.inv-card-body{padding:8px}
+.inv-card-name{font-size:11px;font-weight:700;color:#ccc;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.inv-card-floor{font-size:10px;color:#555;margin-bottom:6px}
+.inv-card-rarity{font-size:8px;padding:2px 6px;border-radius:5px;display:inline-block;margin-bottom:6px}
+.inv-withdraw{width:100%;background:linear-gradient(135deg,var(--ton),#006db3);border:none;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;padding:7px;cursor:pointer}
+.inv-withdraw:active{opacity:.85}
+#tab-game-content{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 12px}
+#tab-inv-content{flex:1;overflow-y:auto;padding:12px;scrollbar-width:none}
+#tab-inv-content::-webkit-scrollbar{display:none}
 </style>
 </head>
 <body>
@@ -279,11 +290,33 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
     <button id="bb" onclick="handleBet()">🚀 ПОСТАВИТИ</button>
   </div>
 
-  <div id="nft-hint">Виграш ≥2.8 TON → отримаєш <span>NFT</span> замість TON</div>
+  <div id="nft-hint">Виграш ≥2.8 TON → отримаєш <span>NFT Gift</span> замість TON</div>
 
-  <div id="pw">
-    <div class="st">ГРАВЦІ <span class="pc" id="pcnt">0</span></div>
-    <div id="pl"></div>
+  <!-- НИЖНЯ НАВІГАЦІЯ -->
+  <div id="bottomnav" style="display:flex;flex-shrink:0;background:var(--bg2);border-top:0.5px solid #ffffff0a">
+    <button onclick="switchTab('game')" id="tab-game" style="flex:1;background:none;border:none;color:var(--acc);font-size:10px;padding:8px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px">
+      <span style="font-size:18px">🚀</span><span>Гра</span>
+    </button>
+    <button onclick="switchTab('inv')" id="tab-inv" style="flex:1;background:none;border:none;color:#444;font-size:10px;padding:8px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px">
+      <span style="font-size:18px">🎁</span><span>Інвентар</span>
+    </button>
+  </div>
+
+  <!-- ВКЛАДКА ГРА -->
+  <div id="tab-game-content">
+    <div id="pw">
+      <div class="st">ГРАВЦІ <span class="pc" id="pcnt">0</span></div>
+      <div id="pl"></div>
+    </div>
+  </div>
+
+  <!-- ВКЛАДКА ІНВЕНТАР -->
+  <div id="tab-inv-content" style="display:none;flex:1;overflow-y:auto;padding:12px">
+    <div style="font-size:10px;color:#333;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">МОЇ NFT GIFTS</div>
+    <div id="inv-list" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-bottom:10px"></div>
+    <div id="inv-empty" style="text-align:center;color:#2a2a3a;font-size:13px;padding:30px 0">
+      Тут будуть твої NFT<br><span style="font-size:11px;color:#1a1a2a">Виграй ≥2.8 TON щоб отримати</span>
+    </div>
   </div>
 </div>
 
@@ -598,6 +631,7 @@ function connect(){
     else if(d.t==='your_co'){
       myWin=d.win;hasBet=false;balance=d.bal;updBal();saveBal();
       hideNFTPreview();
+      if(d.nft) addNFTToInventory(d.nft, d.win, d.mx);
       showWinPopup(d.mx,d.win,d.nft);
       BB().className='';BB().innerHTML='🚀 ПОСТАВИТИ';
     }
@@ -743,14 +777,74 @@ function confirmPaid(){
     });
 }
 
-// UI
-let tT=null;
+// ІНВЕНТАР
+let myNFTs = [];
+
+function switchTab(tab){
+  const isGame = tab==='game';
+  document.getElementById('tab-game-content').style.display=isGame?'flex':'none';
+  document.getElementById('tab-inv-content').style.display=isGame?'none':'block';
+  document.getElementById('tab-game').style.color=isGame?'var(--acc)':'#444';
+  document.getElementById('tab-inv').style.color=isGame?'#444':'var(--acc)';
+  if(!isGame) renderInventory();
+}
+
+function addNFTToInventory(nft, winTon, mult){
+  myNFTs.push({...nft, winTon, mult, ts: Date.now()});
+  // Оновлюємо лічильник
+  const cnt = myNFTs.length;
+  document.getElementById('tab-inv').querySelector('span:last-child').textContent=
+    cnt > 0 ? `Інвентар (${cnt})` : 'Інвентар';
+  localStorage.setItem('rkt_nfts_'+userId, JSON.stringify(myNFTs));
+}
+
+function renderInventory(){
+  const list = document.getElementById('inv-list');
+  const empty = document.getElementById('inv-empty');
+  // Завантажуємо з localStorage
+  try{
+    const saved = localStorage.getItem('rkt_nfts_'+userId);
+    if(saved) myNFTs = JSON.parse(saved);
+  }catch(e){}
+
+  if(!myNFTs.length){
+    list.innerHTML=''; empty.style.display='block'; return;
+  }
+  empty.style.display='none';
+  list.innerHTML = myNFTs.slice().reverse().map((nft,i)=>`
+    <div class="inv-card">
+      <img src="${nft.img}" alt="${nft.name}" onerror="this.src=''">
+      <div class="inv-card-body">
+        <div class="inv-card-name">${nft.emoji} ${nft.name}</div>
+        <span class="inv-card-rarity rare-${nft.rarity}">${nft.rarity}</span>
+        <div class="inv-card-floor">⭐ ${nft.stars} · ${nft.floor} TON</div>
+        <div class="inv-card-floor" style="color:#6c4fff;font-size:9px">×${(+nft.mult).toFixed(2)} · +${(+nft.winTon).toFixed(2)} TON</div>
+        <button class="inv-withdraw" onclick="withdrawNFT(${myNFTs.length-1-i})">
+          Вивести на Fragment
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function withdrawNFT(idx){
+  const nft = myNFTs[idx];
+  if(!nft) return;
+  // Відкриваємо Fragment для продажу
+  const fragUrl = `https://fragment.com/gifts`;
+  if(tg?.openLink) tg.openLink(fragUrl);
+  else window.open(fragUrl, '_blank');
+  showToast(`Відкриваємо Fragment для виводу ${nft.name}`, 'info');
+}
 function showToast(msg,type='crash'){const el=document.getElementById('toast');el.textContent=msg;el.className=[type==='win'?'win':type==='info'?'info':'','show'].join(' ');clearTimeout(tT);tT=setTimeout(()=>el.className=type==='win'?'win':type==='info'?'info':'',2800);}
 function spawnGems(n,emoji='⬦'){const cnt=Math.min(12,Math.max(2,n));for(let i=0;i<cnt;i++){const s=document.createElement('div');s.className='sp';s.textContent=emoji;s.style.left=15+Math.random()*70+'vw';s.style.top=30+Math.random()*30+'vh';s.style.animationDelay=Math.random()*0.3+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),1200);}}
 
 // BOOT
 window.addEventListener('resize',resize);
 resize();updBal();
+// Завантажуємо збережені NFT
+try{const s=localStorage.getItem('rkt_nfts_'+userId);if(s)myNFTs=JSON.parse(s);}catch(e){}
+if(myNFTs.length) document.getElementById('tab-inv').querySelector('span:last-child').textContent=`Інвентар (${myNFTs.length})`;
 setTimeout(()=>{try{initTon();}catch(e){}},300);
 connect();
 </script>
