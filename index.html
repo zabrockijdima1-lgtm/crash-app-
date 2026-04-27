@@ -312,8 +312,8 @@ function genCrash(seed){
 let ably,channel;
 function initAbly(){
   if(ABLY_KEY==='ВСТАВИТИ_ABLY_KEY'||!ABLY_KEY){
-    showToast('⚠ Встав Ably Key для синхронізації','info');
-    isMaster=true;startCountdown();return;
+    showToast('⚠ Встав Ably Key — зараз локальний режим','info');
+    return; // гра вже запущена в boot
   }
   try{
     ably=new Ably.Realtime({key:ABLY_KEY,clientId:String(userId)});
@@ -332,13 +332,19 @@ function initAbly(){
       channel.presence.enter();
       setTimeout(()=>{
         channel.presence.get((err,members)=>{
+          const wasAlreadyMaster=isMaster;
           isMaster=!err&&members.length<=1;
-          if(isMaster)startCountdown();
-          else{publish({t:'sync',from:userId});setTimeout(()=>{if(phase==='waiting'&&points.length===0)startCountdown();},4000);}
+          if(!isMaster&&wasAlreadyMaster){
+            // Стали не-майстром — очікуємо синхронізацію
+            clearInterval(cdTimer);cancelAnimationFrame(loopId);
+            publish({t:'sync',from:userId});
+          } else if(isMaster&&!wasAlreadyMaster){
+            startCountdown();
+          }
         });
-      },500);
+      },800);
     });
-  }catch(e){console.error(e);isMaster=true;startCountdown();}
+  }catch(e){console.error(e);}
 }
 function publish(d){if(channel)channel.publish('g',d);}
 
@@ -551,8 +557,19 @@ function spawnGems(n){const cnt=Math.min(12,Math.max(2,Math.floor(n*3)));for(let
 // BOOT
 window.addEventListener('resize',resize);
 resize();updateBalUI();applyLang();
-initTonConnect();
-initAbly();
+
+// Запускаємо гру одразу — не чекаємо SDK
+isMaster=true;
+startCountdown();
+
+// Потім підключаємо TON та Ably асинхронно
+setTimeout(()=>{
+  try{ initTonConnect(); }catch(e){ console.warn('TON Connect failed:',e); }
+},500);
+
+setTimeout(()=>{
+  try{ initAbly(); }catch(e){ console.warn('Ably failed:',e); }
+},1000);
 </script>
 </body>
 </html>
