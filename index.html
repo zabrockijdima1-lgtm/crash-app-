@@ -320,8 +320,9 @@ function genCrash(seed){
 
 // ABLY SYNC
 let ably,channel;
-// Час-корекція: різниця між локальним часом і часом майстра
-let timeOffset = 0; // мс
+// Час-корекція
+let timeOffset = 0;
+let masterHeartbeat = null; // таймер heartbeat майстра
 
 function initAbly(){
   if(ABLY_KEY==='ВСТАВИТИ_ABLY_KEY'||!ABLY_KEY){
@@ -334,56 +335,80 @@ function initAbly(){
 
     channel.subscribe('g',(msg)=>{
       const d=msg.data;
-      if(+d.from===userId)return;
+      if(+d.from===userId)return; // ігноруємо власні
       if(d.now) timeOffset=d.now-Date.now();
-      if(d.t==='cd'){rcvCountdown(d);}       // ← всі отримують countdown
-      else if(d.t==='st'){rcvStart(d);}       // ← всі отримують start
-      else if(d.t==='cr'){rcvCrash(d);}       // ← всі отримують crash
+
+      // Якщо отримали будь-яке повідомлення від майстра — ми не майстер
+      if(d.t==='cd'||d.t==='st'||d.t==='cr'){
+        if(isMaster){
+          // Інший майстер — відступаємо, стаємо клієнтом
+          isMaster=false;
+          clearInterval(masterHeartbeat); masterHeartbeat=null;
+        }
+      }
+
+      if(d.t==='cd')      rcvCountdown(d);
+      else if(d.t==='st') rcvStart(d);
+      else if(d.t==='cr') rcvCrash(d);
       else if(d.t==='bet'){addRP(d);renderPlayers();}
       else if(d.t==='co'){
-        if(roundPlayers[d.uid]){roundPlayers[d.uid].win=d.win;roundPlayers[d.uid].mult=d.mx;roundPlayers[d.uid].cashed=true;}
+        if(roundPlayers[d.uid]){
+          roundPlayers[d.uid].win=d.win;
+          roundPlayers[d.uid].mult=d.mx;
+          roundPlayers[d.uid].cashed=true;
+        }
         renderPlayers();
       }
-      else if(d.t==='sync'){
-        // Тільки майстер відповідає на sync
-        if(isMaster){
-          if(phase==='flying'){
-            publish({t:'st',ts:syncStartTime,ca:crashAt,rid:roundId,from:userId,now:Date.now()});
-          } else {
-            publish({t:'cd',sec:2,ca:crashAt,rid:roundId,from:userId,now:Date.now()});
-          }
+      else if(d.t==='sync' && isMaster){
+        // Клієнт просить стан — майстер відповідає
+        if(phase==='flying'){
+          publish({t:'st',ts:syncStartTime,ca:crashAt,rid:roundId,from:userId});
+        } else if(phase==='waiting'){
+          publish({t:'cd',sec:3,ca:crashAt,rid:roundId,from:userId});
         }
       }
     });
 
     ably.connection.on('connected',()=>{
-      // Перевіряємо чи є вже активна гра через останнє повідомлення в каналі
+      // Дивимось останнє повідомлення в каналі
       channel.history({limit:1},(err,page)=>{
-        const last=page?.items?.[0]?.data;
-        const isActive = last && (Date.now()-(last.now||0)) < 30000;
+        const last = page?.items?.[0]?.data;
+        const age  = last ? Date.now()-(last.now||0) : 99999;
+        const gameActive = !err && last && age < 20000; // повідомлення молодше 20с
 
-        if(!isActive){
+        if(gameActive){
+          // Хтось вже керує грою — ми клієнт
+          isMaster=false;
+          cancelAnimationFrame(loopId); loopId=null;
+          clearInterval(cdTimer); cdTimer=null;
+          // Запитуємо поточний стан у майстра
+          setTimeout(()=>publish({t:'sync',from:userId,now:Date.now()}),500);
+          // Якщо за 5с не отримали відповідь — стаємо майстром самі
+          setTimeout(()=>{
+            if(!isMaster && phase==='waiting' && !loopId){
+              isMaster=true;
+              startCountdown();
+            }
+          },5000);
+        } else {
           // Немає активної гри — стаємо майстром
           isMaster=true;
-          clearInterval(cdTimer);cancelAnimationFrame(loopId);
+          cancelAnimationFrame(loopId); loopId=null;
+          clearInterval(cdTimer); cdTimer=null;
           startCountdown();
-        } else {
-          // Є активна гра — стаємо клієнтом
-          isMaster=false;
-          clearInterval(cdTimer);cancelAnimationFrame(loopId);
-          // Запитуємо поточний стан
-          setTimeout(()=>publish({t:'sync',from:userId,now:Date.now()}), 300);
-          // Запасний варіант якщо майстер мовчить
-          setTimeout(()=>{
-            if(phase==='waiting'&&points.length===0){isMaster=true;startCountdown();}
-          },4000);
         }
       });
     });
 
-  }catch(e){console.error('Ably error:',e);isMaster=true;startCountdown();}
+  }catch(e){
+    console.error('Ably error:',e);
+    // Fallback — локальна гра
+  }
 }
-function publish(d){if(channel)try{channel.publish('g',{...d,now:Date.now()});}catch(e){}}
+
+function publish(d){
+  if(channel)try{channel.publish('g',{...d,now:Date.now()});}catch(e){}
+}
 
 function rcvCountdown(d){
   cancelAnimationFrame(loopId); loopId=null;
@@ -426,7 +451,7 @@ function rcvCrash(d){
   BB().disabled=true;BB().className='';document.getElementById('l-bet-btn').textContent=L('betBtn');
   Object.values(roundPlayers).forEach(p=>{if(!p.cashed)p.lost=true;});
   renderPlayers();
-  if(isMaster)setTimeout(()=>startCountdown(),3000);
+  // Клієнти чекають наступний 'cd' від майстра — нічого не запускають самі
 }
 
 // GAME LOOP (MASTER)
@@ -464,13 +489,15 @@ function doStartFlight(){
 }
 
 function flyTick(){
-  if(phase!=='flying'){return;} // захист від зависання
+  if(phase!=='flying'){return;}
   const el=(Date.now()-syncStartTime)/1000;
   mult=Math.round(Math.exp(el*SPEED)*100)/100;
   if(mult>=crashAt){
     mult=crashAt;points.push({t:el,m:mult});
-    if(isMaster)publish({t:'cr',ca:crashAt,rid:roundId,from:userId,now:Date.now()});
-    doCrash();return;
+    // Майстер спочатку публікує crash, потім сам обробляє
+    if(isMaster) publish({t:'cr',ca:crashAt,rid:roundId,from:userId,now:Date.now()});
+    doCrash();
+    return;
   }
   points.push({t:el,m:mult});
   ME().textContent=mult.toFixed(2)+'×';
@@ -486,7 +513,8 @@ function scheduleAuto(){
 }
 
 function doCrash(){
-  cancelAnimationFrame(loopId);phase='crashed';
+  cancelAnimationFrame(loopId); loopId=null;
+  phase='crashed';
   ME().textContent=crashAt.toFixed(2)+'×';ME().className='crashed';
   RKT().style.display='none';
   if(points.length>1)drawGraph(true);
@@ -495,7 +523,8 @@ function doCrash(){
   BB().disabled=true;BB().className='';document.getElementById('l-bet-btn').textContent=L('betBtn');
   Object.values(roundPlayers).forEach(p=>{if(!p.cashed)p.lost=true;});
   renderPlayers();
-  setTimeout(()=>{if(isMaster)startCountdown();},3000);
+  // Майстер завжди перезапускає через 3с
+  if(isMaster) setTimeout(()=>startCountdown(), 3000);
 }
 
 function doCashout(){
@@ -613,18 +642,30 @@ function spawnGems(n){const cnt=Math.min(12,Math.max(2,Math.floor(n*3)));for(let
 window.addEventListener('resize',resize);
 resize();updateBalUI();applyLang();
 
-// Запускаємо гру одразу — не чекаємо SDK
-isMaster=true;
-startCountdown();
+// Показуємо "Підключення..."
+ME().className='waiting';
+ME().textContent='Підключення...';
 
-// Потім підключаємо TON та Ably асинхронно
+// Спочатку TON Connect
 setTimeout(()=>{
-  try{ initTonConnect(); }catch(e){ console.warn('TON Connect failed:',e); }
-},500);
+  try{ initTonConnect(); }catch(e){ console.warn('TON:',e); }
+},300);
 
+// Потім Ably — він вирішить хто майстер і запустить гру
 setTimeout(()=>{
-  try{ initAbly(); }catch(e){ console.warn('Ably failed:',e); }
-},1000);
+  try{
+    initAbly();
+    // Якщо Ably key не вставлено — запускаємо локально
+    if(ABLY_KEY==='ВСТАВИТИ_ABLY_KEY'||!ABLY_KEY){
+      isMaster=true;
+      startCountdown();
+    }
+  }catch(e){
+    console.warn('Ably failed:',e);
+    isMaster=true;
+    startCountdown();
+  }
+},600);
 </script>
 </body>
 </html>
