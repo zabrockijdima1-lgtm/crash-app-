@@ -5,637 +5,554 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>🚀 Rocket</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.ably.com/lib/ably.min-2.js"></script>
+<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#0a0a14;--bg2:#111120;--bg3:#181830;
-  --accent:#7c5cfc;--accent2:#5c3ccc;
-  --green:#3ddc84;--red:#ff3355;--orange:#ff8c42;--gold:#ffd700;
-}
+:root{--bg:#07070f;--bg2:#0e0e1c;--bg3:#151528;--accent:#6c4fff;--accent2:#4a2fcc;--green:#00e676;--red:#ff1744;--orange:#ff6d00;--gold:#ffd600;--ton:#0098ea}
 html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-serif;overflow:hidden}
-#app{display:flex;flex-direction:column;height:100vh}
-
-/* SKY */
-#sky{position:relative;flex:0 0 228px;overflow:hidden;background:#060610}
-#sky::before{content:'';position:absolute;inset:0;background-image:
-  radial-gradient(1px 1px at 8% 15%,#fff9,transparent),
-  radial-gradient(1px 1px at 22% 65%,#fff6,transparent),
-  radial-gradient(1px 1px at 38% 12%,#fff8,transparent),
-  radial-gradient(1px 1px at 55% 78%,#fff5,transparent),
-  radial-gradient(1px 1px at 70% 28%,#fff7,transparent),
-  radial-gradient(1px 1px at 85% 52%,#fff6,transparent),
-  radial-gradient(1.5px 1.5px at 76% 70%,#fffd,transparent),
-  radial-gradient(1px 1px at 93% 8%,#fffa,transparent),
-  radial-gradient(1px 1px at 15% 88%,#fff7,transparent),
-  radial-gradient(1px 1px at 46% 44%,#fff5,transparent)}
+#app{display:flex;flex-direction:column;height:100vh;max-height:100vh}
+#sky{position:relative;flex:0 0 225px;overflow:hidden;background:#04040c}
+#sky::before{content:'';position:absolute;inset:0;background-image:radial-gradient(1px 1px at 7% 14%,#fff8,transparent),radial-gradient(1px 1px at 21% 67%,#fff5,transparent),radial-gradient(1px 1px at 37% 11%,#fff7,transparent),radial-gradient(1px 1px at 54% 79%,#fff4,transparent),radial-gradient(1px 1px at 69% 27%,#fff6,transparent),radial-gradient(1px 1px at 84% 53%,#fff5,transparent),radial-gradient(1.5px 1.5px at 75% 71%,#fffc,transparent),radial-gradient(1px 1px at 92% 7%,#fff9,transparent),radial-gradient(1px 1px at 14% 89%,#fff6,transparent),radial-gradient(1px 1px at 47% 43%,#fff4,transparent)}
 #gc{position:absolute;inset:0;width:100%;height:100%}
-#mult{
-  position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);
-  font-family:'Orbitron',monospace;font-size:46px;font-weight:900;
-  color:#fff;letter-spacing:3px;pointer-events:none;z-index:5;text-align:center;
-  text-shadow:0 0 30px #7c5cfc55;
-}
-#mult.crashed{color:var(--red);text-shadow:0 0 30px #ff335566}
-#mult.waiting{font-size:20px;color:#555;text-shadow:none}
-#mult small{display:block;font-size:11px;font-weight:400;color:#444;font-family:'Inter',sans-serif;margin-top:2px;letter-spacing:0}
-
-/* ROCKET */
+#mult{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);font-family:'Orbitron',monospace;font-size:44px;font-weight:900;color:#fff;letter-spacing:3px;pointer-events:none;z-index:5;text-align:center;text-shadow:0 0 40px #6c4fff44}
+#mult.crashed{color:var(--red);text-shadow:0 0 40px #ff174444;animation:shake .3s ease}
+#mult.waiting{font-size:18px;color:#444;text-shadow:none;letter-spacing:1px}
+#mult small{display:block;font-size:11px;font-weight:400;color:#333;font-family:'Inter',sans-serif;margin-top:3px;letter-spacing:0}
+@keyframes shake{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(-52%,-50%)}75%{transform:translate(-48%,-50%)}}
 #rkt{position:absolute;pointer-events:none;z-index:6;display:none}
-.rb{position:relative;width:44px;height:70px;animation:rwob .4s ease-in-out infinite alternate}
-@keyframes rwob{0%{transform:rotate(-2deg)}100%{transform:rotate(2deg) scale(1.03)}}
+.rb{position:relative;width:44px;height:70px;animation:rwob .35s ease-in-out infinite alternate}
+@keyframes rwob{0%{transform:rotate(-2.5deg)}100%{transform:rotate(2.5deg) scale(1.04)}}
 .rsv{width:44px;height:70px;display:block}
-.fw{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
-.fl{border-radius:50% 50% 30% 30%;animation:flk .08s ease-in-out infinite alternate;transform-origin:center top}
-.f1{width:16px;height:28px;background:linear-gradient(180deg,#fff 0%,#ffe066 30%,#ff8c42 70%,transparent)}
-.f2{width:10px;height:20px;background:linear-gradient(180deg,#ffe066,#ff8c42 50%,transparent);margin-top:-18px;animation-delay:.04s}
-.f3{width:6px;height:14px;background:linear-gradient(180deg,#ff8c42,transparent);margin-top:-12px;animation-delay:.02s}
-@keyframes flk{0%{transform:scaleX(1)}100%{transform:scaleX(.78) scaleY(1.15)}}
-.smk{position:absolute;border-radius:50%;animation:smkr .6s ease-out forwards;pointer-events:none}
-@keyframes smkr{0%{opacity:.25;transform:scale(.5)}100%{opacity:0;transform:scale(2.2) translateY(16px)}}
-
-#bp{position:absolute;top:10px;right:12px;z-index:10;background:#00000077;border:0.5px solid #ffd70030;border-radius:20px;padding:5px 12px;font-family:'Orbitron',monospace;font-size:12px;color:var(--gold)}
-#rl{position:absolute;top:10px;left:12px;z-index:10;font-size:10px;color:#252535}
-
-/* HISTORY */
-#hist{display:flex;gap:5px;padding:7px 10px;overflow-x:auto;background:#07070f;border-bottom:0.5px solid #ffffff08;scrollbar-width:none;flex-shrink:0}
+.fw{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.fl{border-radius:50% 50% 30% 30%;animation:flk .07s ease-in-out infinite alternate;transform-origin:center top}
+.f1{width:18px;height:30px;background:linear-gradient(180deg,#fff 0%,#ffe066 25%,#ff6d00 70%,transparent)}
+.f2{width:11px;height:22px;background:linear-gradient(180deg,#ffe066,#ff6d00 50%,transparent);margin-top:-20px;animation-delay:.03s}
+.f3{width:7px;height:15px;background:linear-gradient(180deg,#ff6d00,transparent);margin-top:-13px;animation-delay:.015s}
+@keyframes flk{0%{transform:scaleX(1) scaleY(1)}100%{transform:scaleX(.75) scaleY(1.2)}}
+.smk{position:absolute;border-radius:50%;animation:smkr .7s ease-out forwards;pointer-events:none}
+@keyframes smkr{0%{opacity:.2;transform:scale(.4)}100%{opacity:0;transform:scale(2.5) translateY(20px)}}
+#topbar{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:8px 12px}
+#balpill{background:#00000088;border:0.5px solid #ffd60030;border-radius:20px;padding:5px 12px;font-family:'Orbitron',monospace;font-size:11px;color:var(--gold);backdrop-filter:blur(8px)}
+#rlbl{font-size:9px;color:#252535;background:#00000066;padding:4px 8px;border-radius:10px}
+#lang-btn{background:#00000066;border:0.5px solid #ffffff15;border-radius:10px;color:#666;font-size:11px;padding:4px 10px;cursor:pointer}
+#hist{display:flex;gap:5px;padding:6px 10px;overflow-x:auto;background:#060610;border-bottom:0.5px solid #ffffff06;scrollbar-width:none;flex-shrink:0}
 #hist::-webkit-scrollbar{display:none}
-.hc{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0}
-.hl{background:#151525;color:#383858;border:0.5px solid #ffffff08}
-.hm{background:#0c1a10;color:var(--green);border:0.5px solid #3ddc8418}
-.hh{background:#1a0f06;color:var(--orange);border:0.5px solid #ff8c4218}
-.hmoon{background:#150d30;color:#cc88ff;border:0.5px solid #cc88ff28}
-
-/* CONTROLS */
+.hc{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.hl{background:#111122;color:#333355;border:0.5px solid #ffffff07}
+.hm{background:#0a1a10;color:var(--green);border:0.5px solid #00e67615}
+.hh{background:#1a0e06;color:var(--orange);border:0.5px solid #ff6d0015}
+.hmoon{background:#120c30;color:#aa77ff;border:0.5px solid #aa77ff25}
 #ctrls{padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-shrink:0}
-.card{background:var(--bg2);border:0.5px solid #ffffff0a;border-radius:12px;padding:10px 12px}
-.cl{font-size:10px;color:#353555;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.inp{width:100%;background:var(--bg);border:0.5px solid #ffffff12;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:15px;font-weight:700;padding:7px 10px;outline:none}
-.inp:focus{border-color:#7c5cfc44}
-.qbtns{display:flex;gap:4px;margin-top:6px}
-.qb{background:#14142a;border:0.5px solid #ffffff0a;border-radius:6px;color:#555;font-size:10px;padding:3px 7px;cursor:pointer}
-.qb:active{background:#1e1e3a;color:#ccc}
+.card{background:var(--bg2);border:0.5px solid #ffffff09;border-radius:12px;padding:10px 12px}
+.cl{font-size:9px;color:#303050;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.inp{width:100%;background:var(--bg);border:0.5px solid #ffffff10;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:15px;font-weight:700;padding:7px 10px;outline:none}
+.inp:focus{border-color:#6c4fff44}
+.qbtns{display:flex;gap:3px;margin-top:6px}
+.qb{background:#111125;border:0.5px solid #ffffff08;border-radius:6px;color:#444;font-size:10px;padding:3px 0;cursor:pointer;flex:1;text-align:center}
+.qb:active{background:#1a1a35;color:#ccc}
 .ar{display:flex;align-items:center;gap:6px}
-.tl{font-size:12px;color:#444;flex:1}
-.tog{width:36px;height:20px;background:#14142a;border-radius:10px;border:0.5px solid #ffffff0d;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.tl{font-size:12px;color:#333;flex:1}
+.tog{width:36px;height:20px;background:#111125;border-radius:10px;border:0.5px solid #ffffff0c;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
 .tog.on{background:var(--accent)}
 .tog::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .2s}
 .tog.on::after{left:19px}
-.ai{background:var(--bg);border:0.5px solid #ffffff12;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:12px;padding:5px 8px;width:65px;outline:none;margin-top:8px}
-
-/* BET BTN */
-#bb{
-  grid-column:1/-1;background:linear-gradient(135deg,var(--accent),var(--accent2));
-  border:none;border-radius:12px;color:#fff;font-family:'Orbitron',monospace;
-  font-size:14px;font-weight:700;padding:14px;cursor:pointer;letter-spacing:1px;
-  transition:opacity .15s,transform .1s;
-}
+.ai{background:var(--bg);border:0.5px solid #ffffff10;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:12px;padding:5px 8px;width:70px;outline:none;margin-top:8px}
+#bb{grid-column:1/-1;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;color:#fff;font-family:'Orbitron',monospace;font-size:14px;font-weight:700;padding:14px;cursor:pointer;letter-spacing:1px;transition:opacity .15s,transform .1s}
 #bb:active{transform:scale(.98)}
-#bb.co{background:linear-gradient(135deg,var(--orange),#cc5522)}
-#bb:disabled{opacity:.25;cursor:not-allowed}
-
-/* TOPUP BTN */
-#tub{display:block;width:calc(100% - 24px);margin:0 12px 6px;background:var(--bg2);border:0.5px solid #ffd70035;border-radius:10px;color:var(--gold);font-family:'Orbitron',monospace;font-size:11px;padding:9px;cursor:pointer;letter-spacing:1px;text-align:center;flex-shrink:0}
-#tub:active{opacity:.75}
-
-/* PLAYERS */
+#bb.co{background:linear-gradient(135deg,var(--orange),#cc4400)}
+#bb:disabled{opacity:.2;cursor:not-allowed}
+#ton-wrap{padding:0 12px 6px;flex-shrink:0}
+#tc-btn{width:100%;background:var(--ton);border:none;border-radius:10px;color:#fff;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;padding:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:1px}
+#tc-btn:active{opacity:.85}
 #pw{flex:1;overflow:hidden;padding:0 12px;min-height:0;display:flex;flex-direction:column}
-.st{font-size:10px;color:#252535;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;flex-shrink:0;display:flex;align-items:center;gap:6px}
-.pc{background:var(--bg3);border-radius:8px;padding:1px 6px;font-size:9px;color:#444}
-#pl{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px;scrollbar-width:none;padding-bottom:6px}
+.st{font-size:9px;color:#1e1e30;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;flex-shrink:0;display:flex;align-items:center;gap:6px}
+.pc{background:var(--bg3);border-radius:8px;padding:1px 6px;font-size:9px;color:#333}
+#pl{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:3px;scrollbar-width:none;padding-bottom:6px}
 #pl::-webkit-scrollbar{display:none}
-.pr{display:flex;align-items:center;gap:8px;background:var(--bg2);border:0.5px solid #ffffff06;border-radius:8px;padding:7px 10px;flex-shrink:0}
-.pr.me{border-color:#7c5cfc44}
-.pav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;overflow:hidden}
+.pr{display:flex;align-items:center;gap:8px;background:var(--bg2);border:0.5px solid #ffffff05;border-radius:8px;padding:7px 10px;flex-shrink:0}
+.pr.me{border-color:#6c4fff44}
+.pav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;overflow:hidden}
 .pav img{width:100%;height:100%;border-radius:50%;object-fit:cover}
 .pi{display:flex;flex-direction:column;flex:1;overflow:hidden;min-width:0}
-.pn{font-size:12px;color:#999;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pn{font-size:12px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pn.m{color:#fff;font-weight:600}
-.pu{font-size:10px;color:#2a2a3a;margin-top:1px}
+.pu{font-size:9px;color:#1e1e30;margin-top:1px}
 .pa{font-family:'Orbitron',monospace;font-size:11px;font-weight:700}
-.pmx{font-size:9px;padding:2px 5px;border-radius:6px;font-family:'Orbitron',monospace;margin-right:2px}
-
-/* TOPUP MODAL */
-#mbg{display:none;position:fixed;inset:0;background:#000000aa;z-index:100;align-items:flex-end;justify-content:center}
+.pmx{font-size:9px;padding:2px 5px;border-radius:5px;font-family:'Orbitron',monospace;margin-right:2px}
+#mbg{display:none;position:fixed;inset:0;background:#000000bb;z-index:100;align-items:flex-end;justify-content:center}
 #mbg.open{display:flex}
-#mod{background:var(--bg2);border-radius:20px 20px 0 0;border:0.5px solid #ffffff12;padding:20px;width:100%;max-width:480px}
+#mod{background:var(--bg2);border-radius:20px 20px 0 0;border:0.5px solid #ffffff10;padding:20px;width:100%;max-width:480px}
 #mod h3{font-family:'Orbitron',monospace;font-size:15px;margin-bottom:3px}
-#mod p{font-size:12px;color:#444;margin-bottom:14px}
-.sos{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px}
-.so{background:var(--bg3);border:0.5px solid #ffffff0e;border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:border-color .15s}
-.so.sel,.so:active{border-color:var(--accent)}
-.so .sa{font-size:18px}
-.so .sl{font-family:'Orbitron',monospace;font-size:11px;margin-top:4px;color:#ccc}
-#cst{width:100%;background:var(--bg);border:0.5px solid #ffffff12;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:14px;padding:9px 12px;outline:none;margin-bottom:10px}
-#pbtn{width:100%;background:linear-gradient(135deg,var(--gold),#bb8800);border:none;border-radius:10px;color:#000;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;padding:13px;cursor:pointer}
+#mod p{font-size:12px;color:#333;margin-bottom:14px}
+.sos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+.so{background:var(--bg3);border:0.5px solid #ffffff0c;border-radius:10px;padding:10px 4px;text-align:center;cursor:pointer;transition:border-color .15s}
+.so.sel,.so:active{border-color:var(--ton)}
+.so .sa{font-size:16px}
+.so .sl{font-family:'Orbitron',monospace;font-size:10px;margin-top:4px;color:#aaa}
+#cton{width:100%;background:var(--bg);border:0.5px solid #ffffff10;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:14px;padding:9px 12px;outline:none;margin-bottom:10px}
+#pbtn{width:100%;background:var(--ton);border:none;border-radius:10px;color:#fff;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;padding:13px;cursor:pointer}
 #pbtn:active{opacity:.85}
-#pbtn:disabled{opacity:.5;cursor:not-allowed}
-#mcl{width:100%;background:transparent;border:none;color:#444;font-size:12px;padding:10px;cursor:pointer;margin-top:2px}
-
-/* WIN POPUP */
-#wp{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#192a19,#0f1f0f);border:1px solid var(--green);border-radius:16px;padding:24px 32px;text-align:center;z-index:250}
-#wp.show{display:block;animation:popin .3s cubic-bezier(.34,1.56,.64,1)}
-@keyframes popin{0%{transform:translate(-50%,-50%) scale(.5)}100%{transform:translate(-50%,-50%) scale(1)}}
-.wm{font-family:'Orbitron',monospace;font-size:36px;font-weight:900;color:var(--green)}
-.wa{font-family:'Orbitron',monospace;font-size:20px;color:#fff;margin-top:4px}
-.wl{font-size:12px;color:#444;margin-top:6px}
-
-/* TOAST */
-#toast{position:fixed;top:52px;left:50%;transform:translateX(-50%);background:var(--red);color:#fff;font-family:'Orbitron',monospace;font-size:12px;padding:8px 18px;border-radius:12px;z-index:300;pointer-events:none;opacity:0;transition:opacity .25s;white-space:nowrap}
+#mcl{width:100%;background:transparent;border:none;color:#333;font-size:12px;padding:10px;cursor:pointer;margin-top:2px}
+#wp{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#0d2010,#081508);border:1px solid var(--green);border-radius:18px;padding:28px 36px;text-align:center;z-index:250;box-shadow:0 0 40px #00e67620}
+#wp.show{display:block;animation:popin .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popin{0%{transform:translate(-50%,-50%) scale(.4);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.wm{font-family:'Orbitron',monospace;font-size:40px;font-weight:900;color:var(--green);text-shadow:0 0 20px #00e67655}
+.wa{font-family:'Orbitron',monospace;font-size:22px;color:#fff;margin-top:6px}
+.wl{font-size:11px;color:#333;margin-top:8px}
+#toast{position:fixed;top:50px;left:50%;transform:translateX(-50%);background:var(--red);color:#fff;font-family:'Orbitron',monospace;font-size:11px;padding:8px 18px;border-radius:12px;z-index:300;pointer-events:none;opacity:0;transition:opacity .25s;white-space:nowrap;max-width:90vw;text-align:center}
 #toast.win{background:var(--green);color:#000}
+#toast.info{background:var(--ton)}
 #toast.show{opacity:1}
-
-/* STARS FX */
-.sp{position:fixed;pointer-events:none;z-index:200;font-size:14px;animation:spf 1s ease-out forwards}
-@keyframes spf{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-70px) scale(.3)}}
+.sp{position:fixed;pointer-events:none;z-index:200;font-size:16px;animation:spf 1s ease-out forwards}
+@keyframes spf{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(.2)}}
 </style>
 </head>
 <body>
 <div id="app">
   <div id="sky">
     <canvas id="gc"></canvas>
-    <div id="mult" class="waiting">Очікування...<small></small></div>
+    <div id="mult" class="waiting"></div>
     <div id="rkt">
       <div class="rb">
-        <svg class="rsv" viewBox="0 0 44 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M22 4C14 4 8 18 8 36L36 36C36 18 30 4 22 4Z" fill="#e8d5ff"/>
-          <path d="M22 4C18 4 14 12 12 22L32 22C30 12 26 4 22 4Z" fill="#f0e8ff"/>
-          <circle cx="22" cy="22" r="6" fill="#7c5cfc" opacity=".9"/>
-          <circle cx="22" cy="22" r="4" fill="#a88fff"/>
-          <circle cx="20" cy="20" r="1.5" fill="#fff" opacity=".6"/>
-          <path d="M8 36L2 50L10 44L8 36Z" fill="#cc88ff"/>
-          <path d="M36 36L42 50L34 44L36 36Z" fill="#cc88ff"/>
-          <path d="M19 6Q22 2 25 6" stroke="#c8a8ff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <rect x="9" y="34" width="26" height="4" rx="2" fill="#b888ff"/>
-          <text x="5" y="18" font-size="7" fill="#ffd700" opacity=".8">★</text>
-          <text x="32" y="24" font-size="5" fill="#ffd700" opacity=".6">★</text>
+        <svg class="rsv" viewBox="0 0 44 70" fill="none">
+          <path d="M22 4C14 4 8 18 8 36L36 36C36 18 30 4 22 4Z" fill="#ddd0ff"/>
+          <path d="M22 4C18 4 14 12 12 22L32 22C30 12 26 4 22 4Z" fill="#ece6ff"/>
+          <circle cx="22" cy="22" r="6" fill="#6c4fff" opacity=".95"/>
+          <circle cx="22" cy="22" r="4" fill="#9a80ff"/>
+          <circle cx="20" cy="20" r="1.5" fill="#fff" opacity=".7"/>
+          <path d="M8 36L1 52L10 45L8 36Z" fill="#aa88ff"/>
+          <path d="M36 36L43 52L34 45L36 36Z" fill="#aa88ff"/>
+          <path d="M18 6Q22 1 26 6" stroke="#bbaaff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <rect x="8" y="34" width="28" height="4" rx="2" fill="#9966ff"/>
+          <text x="4" y="18" font-size="7" fill="#ffd600" opacity=".9">★</text>
+          <text x="31" y="25" font-size="5" fill="#ffd600" opacity=".6">★</text>
         </svg>
-        <div class="fw">
-          <div class="fl f1"></div>
-          <div class="fl f2"></div>
-          <div class="fl f3"></div>
-        </div>
+        <div class="fw"><div class="fl f1"></div><div class="fl f2"></div><div class="fl f3"></div></div>
       </div>
     </div>
-    <div id="bp">⭐ <span id="bal">100</span></div>
-    <div id="rl">Раунд #<span id="rid">1</span></div>
+    <div id="topbar">
+      <div id="rlbl">Round #<span id="rid">1</span></div>
+      <div id="balpill">💎 <span id="bal">1.00</span> TON</div>
+      <button id="lang-btn" onclick="toggleLang()">🌐 UK</button>
+    </div>
   </div>
-
   <div id="hist"></div>
-
   <div id="ctrls">
     <div class="card">
-      <div class="cl">Ставка ⭐</div>
-      <input class="inp" id="bi" type="number" value="10" min="1" step="1">
+      <div class="cl" id="l-bet">СТАВКА</div>
+      <input class="inp" id="bi" type="number" value="0.1" min="0.1" step="0.1">
       <div class="qbtns">
-        <button class="qb" onclick="sB(5)">5</button>
-        <button class="qb" onclick="sB(10)">10</button>
-        <button class="qb" onclick="sB(25)">25</button>
+        <button class="qb" onclick="sB(.1)">0.1</button>
+        <button class="qb" onclick="sB(.5)">0.5</button>
+        <button class="qb" onclick="sB(1)">1</button>
         <button class="qb" onclick="hB()">½</button>
         <button class="qb" onclick="x2B()">×2</button>
       </div>
     </div>
     <div class="card">
-      <div class="cl">Авто-вивід</div>
-      <div class="ar">
-        <span class="tl">Авто</span>
-        <div class="tog" id="atog" onclick="toggleAuto()"></div>
-      </div>
-      <input class="ai" id="av" type="number" value="2.00" min="1.01" step="0.1">
+      <div class="cl" id="l-auto">АВТО-ВИВІД</div>
+      <div class="ar"><span class="tl" id="l-auto-lbl">Авто</span><div class="tog" id="atog" onclick="toggleAuto()"></div></div>
+      <input class="ai" id="av" type="number" value="2.0" min="1.1" step="0.1">
     </div>
-    <button id="bb" onclick="handleBet()">🚀 ПОСТАВИТИ</button>
+    <button id="bb" onclick="handleBet()">🚀 <span id="l-bet-btn">ПОСТАВИТИ</span></button>
   </div>
-
-  <button id="tub" onclick="openTopup()">⭐ Поповнити зірками Telegram</button>
-
+  <div id="ton-wrap">
+    <button id="tc-btn" onclick="handleTonBtn()">💎 <span id="l-ton-btn">Поповнити через TON</span></button>
+  </div>
   <div id="pw">
-    <div class="st">Гравці <span class="pc" id="pcnt">0</span></div>
+    <div class="st"><span id="l-players">ГРАВЦІ</span> <span class="pc" id="pcnt">0</span></div>
     <div id="pl"></div>
   </div>
 </div>
 
-<!-- TOPUP MODAL -->
 <div id="mbg" onclick="if(event.target===this)closeTopup()">
   <div id="mod">
-    <h3>⭐ Поповнення зірками</h3>
-    <p>Реальна оплата через Telegram Stars</p>
+    <h3 id="l-modal-title">💎 Поповнення TON</h3>
+    <p id="l-modal-sub">Мінімум 0.1 TON</p>
     <div class="sos">
-      <div class="so" onclick="pickS(this,50)"><div class="sa">⭐</div><div class="sl">50</div></div>
-      <div class="so sel" onclick="pickS(this,100)"><div class="sa">⭐⭐</div><div class="sl">100</div></div>
-      <div class="so" onclick="pickS(this,250)"><div class="sa">⭐⭐⭐</div><div class="sl">250</div></div>
-      <div class="so" onclick="pickS(this,500)"><div class="sa">🌟</div><div class="sl">500</div></div>
-      <div class="so" onclick="pickS(this,1000)"><div class="sa">🌟🌟</div><div class="sl">1 000</div></div>
-      <div class="so" onclick="pickS(this,5000)"><div class="sa">💫</div><div class="sl">5 000</div></div>
+      <div class="so" onclick="pickT(this,.5)"><div class="sa">💎</div><div class="sl">0.5 TON</div></div>
+      <div class="so sel" onclick="pickT(this,1)"><div class="sa">💎💎</div><div class="sl">1 TON</div></div>
+      <div class="so" onclick="pickT(this,5)"><div class="sa">💎💎💎</div><div class="sl">5 TON</div></div>
+      <div class="so" onclick="pickT(this,10)"><div class="sa">🔷</div><div class="sl">10 TON</div></div>
+      <div class="so" onclick="pickT(this,50)"><div class="sa">🔷🔷</div><div class="sl">50 TON</div></div>
+      <div class="so" onclick="pickT(this,100)"><div class="sa">💠</div><div class="sl">100 TON</div></div>
     </div>
-    <input class="inp" id="cst" type="number" min="1" placeholder="Інша кількість...">
-    <button id="pbtn" onclick="doPayment()">Оплатити ⭐ зірками</button>
-    <button id="mcl" onclick="closeTopup()">Скасувати</button>
+    <input class="inp" id="cton" type="number" min="0.1" step="0.1" placeholder="Інша сума...">
+    <button id="pbtn" onclick="doTonPayment()"><span id="l-pay-btn">Відправити TON</span></button>
+    <button id="mcl" onclick="closeTopup()"><span id="l-cancel">Скасувати</span></button>
   </div>
 </div>
-
-<div id="wp">
-  <div class="wm" id="wm">2.00×</div>
-  <div class="wa" id="wa">+20 ⭐</div>
-  <div class="wl">Виведено успішно!</div>
-</div>
+<div id="wp"><div class="wm" id="wm">2.00×</div><div class="wa" id="wa">+0.20 TON</div><div class="wl" id="wl">Виведено!</div></div>
 <div id="toast"></div>
 
 <script>
-// ╔══════════════════════════════════════════════════════╗
-// ║  Оплата йде через бота — додай handler нижче в бот  ║
-// ╚══════════════════════════════════════════════════════╝
+// ╔══════════════════════════════════════════════════╗
+// ║  НАЛАШТУВАННЯ — змінити 2 рядки нижче           ║
+// ╚══════════════════════════════════════════════════╝
+const ABLY_KEY   = "1BF6Pw.W3mLxQ:WtwUu_bRf2yh0Ow8j7tH0a3kmQWE7p6CJzU9AZTJ0R0";
+// ably.com → Apps → API Keys → Root Key
+// Приклад: "xVLRjA.AbCdEf:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-// ═══════════════════════════════════════════════════════
-// Telegram WebApp init
-// ═══════════════════════════════════════════════════════
+const TON_WALLET = "UQAfazCyjGjugOf73_LrxUuLvxSmExM_8loArhgATwKXU6yA";
+// Твій TON адрес для отримання платежів
+// Приклад: "UQBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+// ════════════════════════════════════════════════════
+
+const MIN_BET = 0.1;
+const SPEED   = 0.18;
+
 const tg      = window.Telegram?.WebApp;
 tg?.ready(); tg?.expand();
-tg?.setHeaderColor?.('#0a0a14');
-tg?.setBackgroundColor?.('#0a0a14');
+tg?.setHeaderColor?.('#07070f');
+tg?.setBackgroundColor?.('#07070f');
 const tgUser  = tg?.initDataUnsafe?.user;
-
-const userId    = tgUser?.id        || 0;
-const userName  = tgUser?.first_name || 'Гравець';
+const userId    = tgUser?.id        || Math.floor(Math.random()*999999);
+const userName  = tgUser?.first_name || 'Player';
 const userNick  = tgUser?.username   || '';
 const userPhoto = tgUser?.photo_url  || '';
 
-// ═══════════════════════════════════════════════════════
-// Game state
-// ═══════════════════════════════════════════════════════
-let balance  = parseFloat(localStorage.getItem('rkt_bal_'+userId)||'100');
-let phase    = 'waiting';
-let mult     = 1.0, crashAt = 1.0;
-let hasBet   = false, betAmt = 0, lastBetAmt = 0, myWin = null, myLost = false;
-let autoOn   = false, selStars = 100;
-let roundId  = 1;
-let points   = [], loopId = null, cdTimer = null, smokeT = null;
-const SPEED  = 0.18; // швидкість росту (менше = повільніше)
+// МОВА
+const LANG={
+  uk:{bet:'СТАВКА',auto:'АВТО-ВИВІД',autoLbl:'Авто',betBtn:'ПОСТАВИТИ',cashBtn:'ВИВЕСТИ',betAccepted:'✅ Ставка прийнята',waiting:'Очікування...',crash:'💥 CRASH',start:'Старт через',players:'ГРАВЦІ',tonBtn:'Поповнити через TON',modalTitle:'💎 Поповнення TON',modalSub:'Мінімум 0.1 TON',payBtn:'Відправити TON',cancel:'Скасувати',winLbl:'Виведено!',notEnough:'Недостатньо TON',minBet:'Мін. ставка 0.1 TON',connectWallet:'Підключи TON гаманець',walletConnected:'Гаманець підключено ✓',noWallet:'Спочатку підключи гаманець',you:'ти',watching:'не грає'},
+  en:{bet:'BET',auto:'AUTO CASHOUT',autoLbl:'Auto',betBtn:'PLACE BET',cashBtn:'CASH OUT',betAccepted:'✅ Bet placed',waiting:'Waiting...',crash:'💥 CRASH',start:'Starting in',players:'PLAYERS',tonBtn:'Deposit TON',modalTitle:'💎 TON Deposit',modalSub:'Minimum 0.1 TON',payBtn:'Send TON',cancel:'Cancel',winLbl:'Cashed out!',notEnough:'Not enough TON',minBet:'Min bet 0.1 TON',connectWallet:'Connect TON wallet',walletConnected:'Wallet connected ✓',noWallet:'Connect wallet first',you:'you',watching:'watching'},
+  ru:{bet:'СТАВКА',auto:'АВТО-ВЫВОД',autoLbl:'Авто',betBtn:'ПОСТАВИТЬ',cashBtn:'ВЫВЕСТИ',betAccepted:'✅ Ставка принята',waiting:'Ожидание...',crash:'💥 КРАШ',start:'Старт через',players:'ИГРОКИ',tonBtn:'Пополнить TON',modalTitle:'💎 Пополнение TON',modalSub:'Минимум 0.1 TON',payBtn:'Отправить TON',cancel:'Отмена',winLbl:'Выведено!',notEnough:'Недостаточно TON',minBet:'Мин. ставка 0.1 TON',connectWallet:'Подключи TON кошелёк',walletConnected:'Кошелёк подключён ✓',noWallet:'Сначала подключи кошелёк',you:'ты',watching:'наблюдает'},
+};
+let lang=localStorage.getItem('rkt_lang')||'uk';
+function L(k){return LANG[lang]?.[k]||LANG.uk[k];}
+function toggleLang(){const o=['uk','en','ru'];lang=o[(o.indexOf(lang)+1)%3];localStorage.setItem('rkt_lang',lang);applyLang();}
+function applyLang(){
+  document.getElementById('lang-btn').textContent='🌐 '+lang.toUpperCase();
+  document.getElementById('l-bet').textContent=L('bet');
+  document.getElementById('l-auto').textContent=L('auto');
+  document.getElementById('l-auto-lbl').textContent=L('autoLbl');
+  document.getElementById('l-players').textContent=L('players');
+  document.getElementById('l-ton-btn').textContent=L('tonBtn');
+  document.getElementById('l-modal-title').textContent=L('modalTitle');
+  document.getElementById('l-modal-sub').textContent=L('modalSub');
+  document.getElementById('l-pay-btn').textContent=L('payBtn');
+  document.getElementById('l-cancel').textContent=L('cancel');
+  document.getElementById('wl').textContent=L('winLbl');
+  if(!hasBet&&phase==='waiting') document.getElementById('l-bet-btn').textContent=L('betBtn');
+}
 
-// Збережені гравці (LocalStorage — видно тільки тобі, але для демо вистачить)
-// Для реальної мультиплеєрності потрібен бекенд
-let allPlayers = {};  // uid -> {name,nick,photo,bet,win,lost,mult,ts}
+// СТАН
+let balance=parseFloat(localStorage.getItem('rkt_ton_'+userId)||'1.0');
+let phase='waiting',mult=1.0,crashAt=1.0;
+let hasBet=false,betAmt=0,lastBetAmt=0,myWin=null,myLost=false;
+let autoOn=false,selTon=1,roundId=1;
+let points=[],loopId=null,cdTimer=null,smokeT=null;
+let isMaster=false,syncStartTime=0;
+let tonConnected=false,tonUI=null;
+let roundPlayers={};
+function saveBal(){localStorage.setItem('rkt_ton_'+userId,balance.toFixed(4));}
+function updateBalUI(){document.getElementById('bal').textContent=balance.toFixed(2);}
 
-function saveBal(){ localStorage.setItem('rkt_bal_'+userId, balance); }
-
-// ═══════════════════════════════════════════════════════
-// Canvas
-// ═══════════════════════════════════════════════════════
-const canvas = document.getElementById('gc');
-const ctx    = canvas.getContext('2d');
-const multEl = document.getElementById('mult');
-const rktEl  = document.getElementById('rkt');
-
-function resize(){ canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight; }
+// CANVAS
+const canvas=document.getElementById('gc');
+const ctx=canvas.getContext('2d');
+const ME=()=>document.getElementById('mult');
+const RKT=()=>document.getElementById('rkt');
+const BB=()=>document.getElementById('bb');
+function resize(){canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;}
 
 function drawGraph(crashed){
   resize();
   if(points.length<2)return;
-  const W=canvas.width, H=canvas.height;
+  const W=canvas.width,H=canvas.height;
   const maxM=Math.max(mult,1.5);
   const dur=points[points.length-1].t-points[0].t;
   if(dur<=0)return;
-  const sx=(W-24)/dur, sy=(H-44)/(maxM-1);
-  const px=p=>({x:12+(p.t-points[0].t)*sx, y:H-22-(p.m-1)*sy});
-  const col=crashed?'#ff3355':'#7c5cfc';
+  const sx=(W-24)/dur,sy=(H-44)/(maxM-1);
+  const px=p=>({x:12+(p.t-points[0].t)*sx,y:H-22-(p.m-1)*sy});
+  const col=crashed?'#ff1744':'#6c4fff';
   ctx.clearRect(0,0,W,H);
   const p0=px(points[0]);
   const g=ctx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0,col+'44'); g.addColorStop(1,col+'00');
-  ctx.beginPath(); ctx.moveTo(p0.x,p0.y);
+  g.addColorStop(0,col+'55');g.addColorStop(1,col+'00');
+  ctx.beginPath();ctx.moveTo(p0.x,p0.y);
   for(let i=1;i<points.length;i++){const p=px(points[i]);ctx.lineTo(p.x,p.y)}
   const last=px(points[points.length-1]);
-  ctx.lineTo(last.x,H-22); ctx.lineTo(p0.x,H-22); ctx.closePath();
-  ctx.fillStyle=g; ctx.fill();
-  ctx.beginPath(); ctx.moveTo(p0.x,p0.y);
+  ctx.lineTo(last.x,H-22);ctx.lineTo(p0.x,H-22);ctx.closePath();
+  ctx.fillStyle=g;ctx.fill();
+  ctx.beginPath();ctx.moveTo(p0.x,p0.y);
   for(let i=1;i<points.length;i++){const p=px(points[i]);ctx.lineTo(p.x,p.y)}
-  ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.stroke();
+  ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
   if(!crashed){
-    ctx.beginPath(); ctx.arc(last.x,last.y,4,0,Math.PI*2);
-    ctx.fillStyle='#fff'; ctx.fill();
-    rktEl.style.display='block';
+    ctx.beginPath();ctx.arc(last.x,last.y,4,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+    const rk=RKT();rk.style.display='block';
     const prev=points.length>3?px(points[points.length-3]):p0;
     const ang=Math.atan2(last.y-prev.y,last.x-prev.x)*180/Math.PI;
-    rktEl.style.left=(last.x-22)+'px';
-    rktEl.style.bottom=(H-last.y-18)+'px';
-    rktEl.style.transform=`rotate(${Math.max(-80,Math.min(0,ang-45))}deg)`;
+    rk.style.left=(last.x-22)+'px';rk.style.bottom=(H-last.y-18)+'px';
+    rk.style.transform=`rotate(${Math.max(-80,Math.min(0,ang-45))}deg)`;
   }
 }
 
-// ═══════════════════════════════════════════════════════
-// Smoke
-// ═══════════════════════════════════════════════════════
 function startSmoke(){
   if(smokeT)return;
   smokeT=setInterval(()=>{
     if(phase!=='flying'){clearInterval(smokeT);smokeT=null;return;}
     const sky=document.getElementById('sky');
-    const rr=rktEl.getBoundingClientRect(), sr=sky.getBoundingClientRect();
-    const s=document.createElement('div');
-    const sz=5+Math.random()*7;
-    s.className='smk';
-    s.style.cssText=`width:${sz}px;height:${sz}px;background:rgba(180,140,255,.1);left:${rr.left-sr.left+14+Math.random()*6-3}px;top:${rr.top-sr.top+62}px`;
-    sky.appendChild(s); setTimeout(()=>s.remove(),600);
-  },90);
+    const rk=RKT(),rr=rk.getBoundingClientRect(),sr=sky.getBoundingClientRect();
+    const s=document.createElement('div');const sz=4+Math.random()*6;
+    s.className='smk';s.style.cssText=`width:${sz}px;height:${sz}px;background:rgba(160,120,255,.1);left:${rr.left-sr.left+14+Math.random()*5-2}px;top:${rr.top-sr.top+65}px`;
+    sky.appendChild(s);setTimeout(()=>s.remove(),700);
+  },100);
 }
 
-// ═══════════════════════════════════════════════════════
-// Crash point (house edge 5%)
-// ═══════════════════════════════════════════════════════
-function genCrash(){
-  const r=Math.random();
+function genCrash(seed){
+  let x=Math.sin((seed||Date.now())+1)*10000;
+  const r=x-Math.floor(x);
   if(r<0.05)return 1.00;
   return Math.round(Math.min(0.95/(1-r),500)*100)/100;
 }
 
-// ═══════════════════════════════════════════════════════
-// Players render
-// ═══════════════════════════════════════════════════════
-function strColor(s){
-  const C=['#ff8c42','#3ddc84','#ff3355','#44aaff','#ffd700','#cc88ff','#44ccff','#ff66aa','#66ccff','#ffaa44'];
-  let h=0; for(let i=0;i<(s||'').length;i++) h=(h*31+s.charCodeAt(i))>>>0;
-  return C[h%C.length];
-}
-
-function renderPlayers(){
-  const pl=document.getElementById('pl');
-
-  // Реальний гравець — завжди перший
-  allPlayers[userId]={
-    name:userName, nick:userNick, photo:userPhoto,
-    bet: hasBet ? betAmt : (myLost||myWin!=null ? lastBetAmt : null),
-    win: myWin,
-    lost: myLost,
-    mult: myWin!=null && lastBetAmt>0 ? +(myWin/lastBetAmt).toFixed(2) : null,
-    ts: Date.now(), isMe: true,
-  };
-
-  const entries=Object.entries(allPlayers)
-    .filter(([,p])=> Date.now()-p.ts < 60000) // показуємо тільки активних за 60с
-    .sort(([aid],[bid])=>{
-      if(+aid===userId)return -1;
-      if(+bid===userId)return 1;
-      const a=allPlayers[aid], b=allPlayers[bid];
-      if(a.win!=null&&b.win==null)return -1;
-      if(b.win!=null&&a.win==null)return 1;
-      return (b.bet||0)-(a.bet||0);
-    });
-
-  document.getElementById('pcnt').textContent=entries.length;
-
-  if(!entries.length){
-    pl.innerHTML='<div style="color:#1a1a2a;font-size:12px;padding:6px 0">Немає гравців</div>';
-    return;
+// ABLY SYNC
+let ably,channel;
+function initAbly(){
+  if(ABLY_KEY==='ВСТАВИТИ_ABLY_KEY'||!ABLY_KEY){
+    showToast('⚠ Встав Ably Key для синхронізації','info');
+    isMaster=true;startCountdown();return;
   }
-
-  pl.innerHTML=entries.map(([uid,p])=>{
-    const isMe=+uid===userId;
-    const col=isMe?'#7c5cfc':strColor(p.name);
-    const ava=p.photo
-      ?`<img src="${p.photo}" alt="">`
-      :`<span>${(p.name||'?').slice(0,2).toUpperCase()}</span>`;
-
-    let right='';
-    if(p.win!=null){
-      right=`<span class="pmx" style="background:${col}18;color:${col}">${p.mult||'?'}×</span>
-             <span class="pa" style="color:var(--green)">+${p.win}⭐</span>`;
-    } else if(p.lost){
-      right=`<span class="pa" style="color:var(--red)">-${p.bet||0}⭐</span>`;
-    } else if(p.bet){
-      right=`<span class="pa" style="color:#444">⭐${p.bet}</span>`;
-    } else if(isMe){
-      right=`<span style="font-size:10px;color:#252535">не ставив</span>`;
-    }
-
-    const badge=isMe?` <span style="font-size:8px;background:#7c5cfc22;color:var(--accent);padding:1px 5px;border-radius:5px;vertical-align:middle">ти</span>`:'';
-    const nick=p.nick?`<span class="pu">@${p.nick}</span>`:'';
-
-    return `<div class="pr${isMe?' me':''}">
-      <div class="pav" style="background:${col}20;color:${col}">${ava}</div>
-      <div class="pi">
-        <span class="pn${isMe?' m':''}">${p.name}${badge}</span>
-        ${nick}
-      </div>
-      <div style="display:flex;align-items:center;gap:3px;flex-shrink:0">${right}</div>
-    </div>`;
-  }).join('');
+  try{
+    ably=new Ably.Realtime({key:ABLY_KEY,clientId:String(userId)});
+    channel=ably.channels.get('rocket-v1');
+    channel.subscribe('g',(msg)=>{
+      const d=msg.data;
+      if(+d.from===userId)return;
+      if(d.t==='cd'){if(!isMaster)rcvCountdown(d);}
+      else if(d.t==='st'){if(!isMaster)rcvStart(d);}
+      else if(d.t==='cr'){if(!isMaster)rcvCrash(d);}
+      else if(d.t==='bet'){addRP(d);renderPlayers();}
+      else if(d.t==='co'){if(roundPlayers[d.uid]){roundPlayers[d.uid].win=d.win;roundPlayers[d.uid].mult=d.mx;roundPlayers[d.uid].cashed=true;}renderPlayers();}
+      else if(d.t==='sync'&&isMaster){publish({t:'cd',sec:3,ca:crashAt,rid:roundId,from:userId});}
+    });
+    ably.connection.on('connected',()=>{
+      channel.presence.enter();
+      setTimeout(()=>{
+        channel.presence.get((err,members)=>{
+          isMaster=!err&&members.length<=1;
+          if(isMaster)startCountdown();
+          else{publish({t:'sync',from:userId});setTimeout(()=>{if(phase==='waiting'&&points.length===0)startCountdown();},4000);}
+        });
+      },500);
+    });
+  }catch(e){console.error(e);isMaster=true;startCountdown();}
 }
+function publish(d){if(channel)channel.publish('g',d);}
 
-// ═══════════════════════════════════════════════════════
-// History
-// ═══════════════════════════════════════════════════════
-const INIT=[6.70,1.00,1.16,1.62,5.77,18.8,133.1,3.51,1.50,2.35];
-INIT.forEach(v=>addH(v));
-function addH(v){
-  const cls=v>=10?'hmoon':v>=3?'hh':v>=1.5?'hm':'hl';
-  const c=document.createElement('div');
-  c.className=`hc ${cls}`; c.textContent=v.toFixed(2)+'×';
-  document.getElementById('hist').prepend(c);
-  const h=document.getElementById('hist');
-  while(h.children.length>20)h.removeChild(h.lastChild);
-}
-
-// ═══════════════════════════════════════════════════════
-// Game loop
-// ═══════════════════════════════════════════════════════
-function startCountdown(){
-  phase='waiting'; hasBet=false; mult=1.0; myWin=null; myLost=false;
-  points=[]; crashAt=genCrash(); roundId++;
+function rcvCountdown(d){
+  clearInterval(cdTimer);
+  phase='waiting';hasBet=false;mult=1.0;myWin=null;myLost=false;
+  points=[];crashAt=d.ca;roundId=d.rid;roundPlayers={};
   document.getElementById('rid').textContent=roundId;
-  multEl.className='waiting'; multEl.innerHTML='Очікування...<small></small>';
-  rktEl.style.display='none';
-  resize(); ctx.clearRect(0,0,canvas.width,canvas.height);
-  BB().disabled=false; BB().textContent='🚀 ПОСТАВИТИ'; BB().className='';
-  // Reset current round bets for all players
-  Object.values(allPlayers).forEach(p=>{p.bet=null;p.win=null;p.lost=false;p.mult=null});
+  ME().className='waiting';ME().textContent=`${L('start')} ${d.sec}...`;
+  RKT().style.display='none';
+  resize();ctx.clearRect(0,0,canvas.width,canvas.height);
+  BB().disabled=false;BB().className='';
+  document.getElementById('l-bet-btn').textContent=L('betBtn');
   renderPlayers();
+  let cd=d.sec;
+  cdTimer=setInterval(()=>{cd--;if(cd<=0){clearInterval(cdTimer);rcvStart({ts:Date.now()});}else ME().textContent=`${L('start')} ${cd}...`;},1000);
+}
 
+function rcvStart(d){
+  phase='flying';syncStartTime=d.ts||Date.now();points=[{t:0,m:1}];
+  ME().className='';ME().textContent='1.00×';
+  RKT().style.display='block';RKT().style.left='12px';RKT().style.bottom='22px';
+  startSmoke();
+  if(hasBet){BB().disabled=false;BB().className='co';BB().textContent=`💰 ${L('cashBtn')} ${betAmt.toFixed(2)} TON`;scheduleAuto();}
+  flyTick();
+}
+
+function rcvCrash(d){
+  cancelAnimationFrame(loopId);phase='crashed';mult=d.ca;crashAt=d.ca;
+  ME().textContent=d.ca.toFixed(2)+'×';ME().className='crashed';
+  RKT().style.display='none';
+  if(points.length>1)drawGraph(true);
+  addH(d.ca);
+  if(hasBet){showToast(`${L('crash')} ${d.ca.toFixed(2)}×`);myLost=true;hasBet=false;}
+  BB().disabled=true;BB().className='';document.getElementById('l-bet-btn').textContent=L('betBtn');
+  Object.values(roundPlayers).forEach(p=>{if(!p.cashed)p.lost=true;});
+  renderPlayers();
+}
+
+// GAME LOOP (MASTER)
+function startCountdown(){
+  phase='waiting';hasBet=false;mult=1.0;myWin=null;myLost=false;roundPlayers={};
+  const seed=Date.now();crashAt=genCrash(seed);roundId++;
+  document.getElementById('rid').textContent=roundId;
+  ME().className='waiting';RKT().style.display='none';
+  resize();ctx.clearRect(0,0,canvas.width,canvas.height);
+  BB().disabled=false;BB().className='';document.getElementById('l-bet-btn').textContent=L('betBtn');
+  renderPlayers();
   let cd=5;
-  multEl.innerHTML=`Старт через ${cd}<small></small>`;
+  ME().textContent=`${L('start')} ${cd}...`;
+  publish({t:'cd',sec:cd,ca:crashAt,rid:roundId,from:userId});
   cdTimer=setInterval(()=>{
     cd--;
-    if(cd<=0){clearInterval(cdTimer);startFlight();}
-    else multEl.innerHTML=`Старт через ${cd}<small></small>`;
+    if(cd<=0){clearInterval(cdTimer);doStartFlight();}
+    else{ME().textContent=`${L('start')} ${cd}...`;publish({t:'cd',sec:cd,ca:crashAt,rid:roundId,from:userId});}
   },1000);
 }
 
-function startFlight(){
-  phase='flying';
-  const t0=performance.now();
-  points=[{t:0,m:1}];
-  multEl.className=''; multEl.innerHTML='1.00×<small></small>';
-  rktEl.style.display='block'; // ← показати ракету одразу
-  rktEl.style.left='12px';
-  rktEl.style.bottom='22px';
-  rktEl.style.transform='rotate(-45deg)';
+function doStartFlight(){
+  const ts=Date.now();publish({t:'st',ts,rid:roundId,from:userId});
+  syncStartTime=ts;phase='flying';points=[{t:0,m:1}];
+  ME().className='';ME().textContent='1.00×';
+  RKT().style.display='block';RKT().style.left='12px';RKT().style.bottom='22px';
   startSmoke();
+  if(hasBet){BB().disabled=false;BB().className='co';BB().textContent=`💰 ${L('cashBtn')} ${betAmt.toFixed(2)} TON`;scheduleAuto();}
+  flyTick();
+}
 
-  if(hasBet){
-    BB().disabled=false; BB().className='co';
-    BB().textContent=`💰 ВИВЕСТИ ${betAmt.toFixed(1)} ⭐`;
-    if(autoOn){
-      const av=parseFloat(document.getElementById('av').value)||2;
-      if(av>1&&av<=crashAt){
-        const delay=(Math.log(av)/SPEED)*1000;
-        setTimeout(()=>{if(phase==='flying'&&hasBet)doCashout();},delay);
-      }
-    }
-  }
+function flyTick(){
+  const el=(Date.now()-syncStartTime)/1000;
+  mult=Math.round(Math.exp(el*SPEED)*100)/100;
+  if(mult>=crashAt){mult=crashAt;points.push({t:el,m:mult});if(isMaster)publish({t:'cr',ca:crashAt,rid:roundId,from:userId});doCrash();return;}
+  points.push({t:el,m:mult});
+  ME().textContent=mult.toFixed(2)+'×';
+  if(hasBet)BB().textContent=`💰 ${L('cashBtn')} ${(betAmt*mult).toFixed(3)} TON`;
+  drawGraph(false);
+  loopId=requestAnimationFrame(flyTick);
+}
 
-  function tick(){
-    const el=(performance.now()-t0)/1000;
-    mult=Math.round(Math.exp(el*SPEED)*100)/100;
-    if(mult>=crashAt){mult=crashAt;points.push({t:el,m:mult});doCrash();return;}
-    points.push({t:el,m:mult});
-    multEl.innerHTML=mult.toFixed(2)+'×<small></small>';
-    if(hasBet) BB().textContent=`💰 ВИВЕСТИ ${(betAmt*mult).toFixed(1)} ⭐`;
-    drawGraph(false);
-    loopId=requestAnimationFrame(tick);
-  }
-  loopId=requestAnimationFrame(tick);
+function scheduleAuto(){
+  if(!autoOn)return;
+  const av=parseFloat(document.getElementById('av').value)||2;
+  if(av>1&&av<=crashAt){const delay=(Math.log(av)/SPEED)*1000;setTimeout(()=>{if(phase==='flying'&&hasBet)doCashout();},delay);}
 }
 
 function doCrash(){
-  cancelAnimationFrame(loopId);
-  phase='crashed';
-  multEl.innerHTML=crashAt.toFixed(2)+'×<small>💥 CRASH</small>';
-  multEl.className='crashed';
-  rktEl.style.display='none';
-  drawGraph(true);
+  cancelAnimationFrame(loopId);phase='crashed';
+  ME().textContent=crashAt.toFixed(2)+'×';ME().className='crashed';
+  RKT().style.display='none';
+  if(points.length>1)drawGraph(true);
   addH(crashAt);
-  if(hasBet){ showToast(`💥 CRASH ${crashAt.toFixed(2)}×`); myLost=true; hasBet=false; }
-  BB().disabled=true; BB().textContent='🚀 ПОСТАВИТИ'; BB().className='';
+  if(hasBet){showToast(`${L('crash')} ${crashAt.toFixed(2)}×`);myLost=true;hasBet=false;}
+  BB().disabled=true;BB().className='';document.getElementById('l-bet-btn').textContent=L('betBtn');
+  Object.values(roundPlayers).forEach(p=>{if(!p.cashed)p.lost=true;});
   renderPlayers();
-  setTimeout(startCountdown,3000);
+  setTimeout(()=>{if(isMaster)startCountdown();},3000);
 }
 
 function doCashout(){
   if(phase!=='flying'||!hasBet)return;
-  const win=+(betAmt*mult).toFixed(1);
-  balance=+(balance+win).toFixed(1);
-  document.getElementById('bal').textContent=balance;
-  saveBal();
-  myWin=win; hasBet=false;
-  showWinPop(mult,win); spawnStars(win);
-  BB().textContent='🚀 ПОСТАВИТИ'; BB().className='';
+  const win=+(betAmt*mult).toFixed(4);
+  balance=+(balance+win).toFixed(4);updateBalUI();saveBal();
+  myWin=win;hasBet=false;
+  const mx=+(win/lastBetAmt).toFixed(2);
+  publish({t:'co',uid:userId,name:userName,nick:userNick,win,mx,rid:roundId,from:userId});
+  if(roundPlayers[userId]){roundPlayers[userId].win=win;roundPlayers[userId].mult=mx;roundPlayers[userId].cashed=true;}
+  showWinPop(mult,win);spawnGems(win);
+  BB().className='';document.getElementById('l-bet-btn').textContent=L('betBtn');
   renderPlayers();
 }
 
-// ═══════════════════════════════════════════════════════
-// Bet controls
-// ═══════════════════════════════════════════════════════
+// BET
 function handleBet(){
   if(phase==='flying'&&hasBet){doCashout();return;}
   if(phase!=='waiting')return;
-  betAmt=parseFloat(document.getElementById('bi').value)||10;
-  if(betAmt<1){showToast('Мін. ставка 1 ⭐');return;}
-  if(betAmt>balance){showToast('Недостатньо ⭐');return;}
-  balance=+(balance-betAmt).toFixed(1);
-  document.getElementById('bal').textContent=balance;
-  saveBal();
-  hasBet=true;
-  lastBetAmt=betAmt; // зберігаємо для відображення після краша
-  BB().disabled=true; BB().textContent='✅ Ставка прийнята';
-  renderPlayers();
+  betAmt=parseFloat(document.getElementById('bi').value)||MIN_BET;
+  if(betAmt<MIN_BET){showToast(L('minBet'));return;}
+  if(betAmt>balance){showToast(L('notEnough'));return;}
+  balance=+(balance-betAmt).toFixed(4);updateBalUI();saveBal();
+  hasBet=true;lastBetAmt=betAmt;
+  BB().disabled=true;document.getElementById('l-bet-btn').textContent=L('betAccepted');
+  const pd={t:'bet',uid:userId,name:userName,nick:userNick,photo:userPhoto,bet:betAmt,rid:roundId,from:userId};
+  publish(pd);addRP(pd);renderPlayers();
 }
 
-function BB(){ return document.getElementById('bb'); }
-function sB(v){ document.getElementById('bi').value=v; }
-function hB(){ const v=parseFloat(document.getElementById('bi').value)||10; document.getElementById('bi').value=Math.max(1,Math.floor(v/2)); }
-function x2B(){ const v=parseFloat(document.getElementById('bi').value)||10; document.getElementById('bi').value=Math.floor(v*2); }
-function toggleAuto(){ autoOn=!autoOn; document.getElementById('atog').className=autoOn?'tog on':'tog'; }
+function addRP(d){roundPlayers[d.uid]={name:d.name,nick:d.nick,photo:d.photo,bet:d.bet,win:null,lost:false,cashed:false,mult:null};}
+function sB(v){document.getElementById('bi').value=v;}
+function hB(){const v=parseFloat(document.getElementById('bi').value)||MIN_BET;document.getElementById('bi').value=Math.max(MIN_BET,(v/2).toFixed(2));}
+function x2B(){const v=parseFloat(document.getElementById('bi').value)||MIN_BET;document.getElementById('bi').value=(v*2).toFixed(2);}
+function toggleAuto(){autoOn=!autoOn;document.getElementById('atog').className=autoOn?'tog on':'tog';}
 
-// ═══════════════════════════════════════════════════════
-// Telegram Stars payment
-// ═══════════════════════════════════════════════════════
-function openTopup(){ document.getElementById('mbg').className='open'; }
-function closeTopup(){ document.getElementById('mbg').className=''; }
-function pickS(el,n){
-  selStars=n;
-  document.querySelectorAll('.so').forEach(s=>s.classList.remove('sel'));
-  el.classList.add('sel');
-  document.getElementById('cst').value=n;
+// TON CONNECT
+function initTonConnect(){
+  try{
+    tonUI=new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl:'https://raw.githubusercontent.com/ton-connect/demo-dapp/master/public/tonconnect-manifest.json',
+      buttonRootId:null,
+    });
+    tonUI.onStatusChange(w=>{
+      tonConnected=!!w;
+      document.getElementById('tc-btn').style.background=tonConnected?'#003a5a':null;
+      document.getElementById('l-ton-btn').textContent=tonConnected?L('walletConnected'):L('tonBtn');
+      if(w)showToast(L('walletConnected'),'win');
+    });
+  }catch(e){console.warn('TON Connect:',e);}
 }
 
-async function doPayment(){
-  const stars=parseInt(document.getElementById('cst').value)||selStars;
-  if(!stars||stars<1)return;
+function handleTonBtn(){
+  if(!tonConnected){if(tonUI)tonUI.openModal();else showToast(L('connectWallet'));}
+  else openTopup();
+}
+
+function openTopup(){if(!tonConnected){showToast(L('noWallet'),'info');return;}document.getElementById('mbg').className='open';}
+function closeTopup(){document.getElementById('mbg').className='';}
+function pickT(el,n){selTon=n;document.querySelectorAll('.so').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');document.getElementById('cton').value=n;}
+
+async function doTonPayment(){
+  const amount=parseFloat(document.getElementById('cton').value)||selTon;
+  if(!amount||amount<0.1){showToast('Min 0.1 TON');return;}
+  if(!tonConnected){showToast(L('noWallet'));return;}
   closeTopup();
-
-  // Надсилаємо запит боту через Telegram WebApp API
-  // Бот отримує це через @dp.message(F.web_app_data) і надсилає invoice в чат
-  tg.sendData(JSON.stringify({action:'topup', stars}));
-
-  showToast(`Бот надішле рахунок на ${stars} ⭐ в чат`, 'win');
-}
-
-// ═══════════════════════════════════════════════════════
-// UI helpers
-// ═══════════════════════════════════════════════════════
-function showWinPop(m,w){
-  document.getElementById('wm').textContent=m.toFixed(2)+'×';
-  document.getElementById('wa').textContent='+'+w+' ⭐';
-  const p=document.getElementById('wp');
-  p.className='show'; setTimeout(()=>p.className='',2200);
-}
-
-let tT=null;
-function showToast(msg,type='crash'){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.className=type==='win'?'win show':'show';
-  clearTimeout(tT); tT=setTimeout(()=>el.className=type==='win'?'win':'',2800);
-}
-
-function spawnStars(n){
-  const cnt=Math.min(14,Math.max(3,Math.floor(n/5)));
-  for(let i=0;i<cnt;i++){
-    const s=document.createElement('div');
-    s.className='sp'; s.textContent='⭐';
-    s.style.left=15+Math.random()*70+'vw';
-    s.style.top=30+Math.random()*30+'vh';
-    s.style.animationDelay=Math.random()*0.3+'s';
-    document.body.appendChild(s);
-    setTimeout(()=>s.remove(),1200);
+  try{
+    const nanos=Math.floor(amount*1e9).toString();
+    await tonUI.sendTransaction({
+      validUntil:Math.floor(Date.now()/1000)+600,
+      messages:[{address:TON_WALLET,amount:nanos}]
+    });
+    balance=+(balance+amount).toFixed(4);updateBalUI();saveBal();
+    showToast(`💎 +${amount} TON ${lang==='ru'?'зачислено':lang==='en'?'credited':'зараховано'}!`,'win');
+    spawnGems(amount*5);
+  }catch(e){
+    if(e?.message?.includes('User rejects')||e?.message?.includes('cancel'))showToast(L('cancel'));
+    else{console.error(e);showToast('Error: '+(e?.message||'unknown'));}
   }
 }
 
-// ═══════════════════════════════════════════════════════
-// Boot
-// ═══════════════════════════════════════════════════════
-document.getElementById('bal').textContent=balance;
+// PLAYERS
+function strColor(s){const C=['#ff6d00','#00e676','#ff1744','#40c4ff','#ffd600','#aa77ff','#00e5ff','#ff4081'];let h=0;for(let i=0;i<(s||'').length;i++)h=(h*31+s.charCodeAt(i))>>>0;return C[h%C.length];}
+
+function renderPlayers(){
+  roundPlayers[userId]={name:userName,nick:userNick,photo:userPhoto,bet:hasBet?betAmt:(myLost||myWin!=null?lastBetAmt:null),win:myWin,lost:myLost,cashed:myWin!=null,mult:myWin&&lastBetAmt>0?+(myWin/lastBetAmt).toFixed(2):null,isMe:true};
+  const entries=Object.entries(roundPlayers).sort(([a],[b])=>{if(+a===userId)return -1;if(+b===userId)return 1;const pa=roundPlayers[a],pb=roundPlayers[b];if(pa.cashed&&!pb.cashed)return -1;if(pb.cashed&&!pa.cashed)return 1;return (pb.bet||0)-(pa.bet||0);});
+  document.getElementById('pcnt').textContent=entries.length;
+  const pl=document.getElementById('pl');
+  pl.innerHTML=entries.map(([uid,p])=>{
+    const isMe=+uid===userId;
+    const col=isMe?'#6c4fff':strColor(p.name);
+    const ava=p.photo?`<img src="${p.photo}">`:`<span>${(p.name||'?').slice(0,2).toUpperCase()}</span>`;
+    let right='';
+    if(p.cashed&&p.win!=null)right=`<span class="pmx" style="background:${col}18;color:${col}">${p.mult||'?'}×</span><span class="pa" style="color:var(--green)">+${(+p.win).toFixed(3)}💎</span>`;
+    else if(p.lost)right=`<span class="pa" style="color:var(--red)">-${(+(p.bet||0)).toFixed(2)}💎</span>`;
+    else if(p.bet)right=`<span class="pa" style="color:#2a2a4a">💎${(+p.bet).toFixed(2)}</span>`;
+    else if(isMe)right=`<span style="font-size:9px;color:#1a1a30">${L('watching')}</span>`;
+    const badge=isMe?` <span style="font-size:7px;background:#6c4fff22;color:var(--accent);padding:1px 4px;border-radius:4px;vertical-align:middle">${L('you')}</span>`:'';
+    const nick=p.nick?`<span class="pu">@${p.nick}</span>`:'';
+    return `<div class="pr${isMe?' me':''}"><div class="pav" style="background:${col}18;color:${col}">${ava}</div><div class="pi"><span class="pn${isMe?' m':''}">${p.name}${badge}</span>${nick}</div><div style="display:flex;align-items:center;gap:2px;flex-shrink:0">${right}</div></div>`;
+  }).join('');
+}
+
+// HISTORY
+function addH(v){const cls=v>=10?'hmoon':v>=3?'hh':v>=1.5?'hm':'hl';const c=document.createElement('div');c.className=`hc ${cls}`;c.textContent=v.toFixed(2)+'×';const h=document.getElementById('hist');h.prepend(c);while(h.children.length>20)h.removeChild(h.lastChild);}
+[6.70,1.00,1.62,5.77,18.8,133.1,3.51,1.50,2.35].forEach(v=>addH(v));
+
+// UI
+function showWinPop(m,w){document.getElementById('wm').textContent=m.toFixed(2)+'×';document.getElementById('wa').textContent=`+${w.toFixed(3)} TON`;document.getElementById('wl').textContent=L('winLbl');const p=document.getElementById('wp');p.className='show';setTimeout(()=>p.className='',2400);}
+let tT=null;
+function showToast(msg,type='crash'){const el=document.getElementById('toast');el.textContent=msg;el.className=[type==='win'?'win':type==='info'?'info':'','show'].join(' ');clearTimeout(tT);tT=setTimeout(()=>el.className=type==='win'?'win':type==='info'?'info':'',2800);}
+function spawnGems(n){const cnt=Math.min(12,Math.max(2,Math.floor(n*3)));for(let i=0;i<cnt;i++){const s=document.createElement('div');s.className='sp';s.textContent='💎';s.style.left=15+Math.random()*70+'vw';s.style.top=30+Math.random()*30+'vh';s.style.animationDelay=Math.random()*0.3+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),1200);}}
+
+// BOOT
 window.addEventListener('resize',resize);
-resize();
-startCountdown();
+resize();updateBalUI();applyLang();
+initTonConnect();
+initAbly();
 </script>
-
-<!-- ═══════════════════════════════════════════════════
-  ЩО ДОДАТИ В AIOGRAM БОТ (bot_addon.py):
-
-  from aiohttp import web
-  import asyncio
-
-  async def invoice_handler(request):
-      data = await request.json()
-      user_id = data['user_id']
-      stars = data['stars']
-      result = await bot.create_invoice_link(
-          title="Поповнення 🚀 Rocket",
-          description=f"Поповнити баланс на {stars} ⭐",
-          payload=f"topup_{user_id}_{stars}",
-          provider_token="",
-          currency="XTR",
-          prices=[LabeledPrice(label=f"{stars} Stars", amount=stars)],
-      )
-      return web.json_response({"link": result})
-
-  # Додай до свого запуску:
-  app = web.Application()
-  app.router.add_post('/invoice', invoice_handler)
-  runner = web.AppRunner(app)
-  await runner.setup()
-  site = web.TCPSite(runner, '0.0.0.0', 8080)
-  await site.start()
-
-  # Після деплою на Railway/Render встав URL в BOT_URL вище
-═══════════════════════════════════════════════════ -->
 </body>
 </html>
