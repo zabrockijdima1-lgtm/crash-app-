@@ -188,27 +188,17 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 <div id="toast"></div>
 
 <script>
-
 // ╔══════════════════════════════════════════════════╗
-
 // ║  НАЛАШТУВАННЯ — змінити 2 рядки нижче           ║
-
 // ╚══════════════════════════════════════════════════╝
-
 const ABLY_KEY   = "1BF6Pw.W3mLxQ:WtwUu_bRf2yh0Ow8j7tH0a3kmQWE7p6CJzU9AZTJ0R0";
-
 // ably.com → Apps → API Keys → Root Key
-
 // Приклад: "xVLRjA.AbCdEf:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 const TON_WALLET = "UQAfazCyjGjugOf73_LrxUuLvxSmExM_8loArhgATwKXU6yA";
-
 // Твій TON адрес для отримання платежів
-
-// Приклад: ""
-
+// Приклад: "UQBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 // ════════════════════════════════════════════════════
-
 
 const MIN_BET = 0.1;
 const SPEED   = 0.18;
@@ -335,16 +325,16 @@ function initAbly(){
 
     channel.subscribe('g',(msg)=>{
       const d=msg.data;
-      if(+d.from===userId)return; // ігноруємо власні
+      // Ігноруємо власні повідомлення
+      if(String(d.from)===String(userId))return;
       if(d.now) timeOffset=d.now-Date.now();
 
-      // Якщо отримали будь-яке повідомлення від майстра — ми не майстер
-      if(d.t==='cd'||d.t==='st'||d.t==='cr'){
-        if(isMaster){
-          // Інший майстер — відступаємо, стаємо клієнтом
-          isMaster=false;
-          clearInterval(masterHeartbeat); masterHeartbeat=null;
-        }
+      // Отримали повідомлення від іншого майстра — стаємо клієнтом
+      if((d.t==='cd'||d.t==='st'||d.t==='cr') && isMaster){
+        isMaster=false;
+        clearInterval(masterHeartbeat); masterHeartbeat=null;
+        clearInterval(cdTimer); cdTimer=null;
+        cancelAnimationFrame(loopId); loopId=null;
       }
 
       if(d.t==='cd')      rcvCountdown(d);
@@ -360,7 +350,6 @@ function initAbly(){
         renderPlayers();
       }
       else if(d.t==='sync' && isMaster){
-        // Клієнт просить стан — майстер відповідає
         if(phase==='flying'){
           publish({t:'st',ts:syncStartTime,ca:crashAt,rid:roundId,from:userId});
         } else if(phase==='waiting'){
@@ -489,16 +478,20 @@ function doStartFlight(){
 }
 
 function flyTick(){
-  if(phase!=='flying'){return;}
+  if(phase!=='flying') return;
   const el=(Date.now()-syncStartTime)/1000;
   mult=Math.round(Math.exp(el*SPEED)*100)/100;
-  if(mult>=crashAt){
-    mult=crashAt;points.push({t:el,m:mult});
-    // Майстер спочатку публікує crash, потім сам обробляє
-    if(isMaster) publish({t:'cr',ca:crashAt,rid:roundId,from:userId,now:Date.now()});
+
+  if(isMaster && mult>=crashAt){
+    mult=crashAt; points.push({t:el,m:mult});
+    publish({t:'cr',ca:crashAt,rid:roundId,from:userId,now:Date.now()});
     doCrash();
     return;
   }
+
+  // Клієнт зупиняє відображення коли досягнуто crashAt (чекає 'cr' від майстра)
+  if(!isMaster && mult>=crashAt) return;
+
   points.push({t:el,m:mult});
   ME().textContent=mult.toFixed(2)+'×';
   if(hasBet)BB().textContent=`💰 ${L('cashBtn')} ${(betAmt*mult).toFixed(3)} TON`;
