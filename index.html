@@ -188,17 +188,27 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 <div id="toast"></div>
 
 <script>
+
 // ╔══════════════════════════════════════════════════╗
+
 // ║  НАЛАШТУВАННЯ — змінити 2 рядки нижче           ║
+
 // ╚══════════════════════════════════════════════════╝
+
 const ABLY_KEY   = "1BF6Pw.W3mLxQ:WtwUu_bRf2yh0Ow8j7tH0a3kmQWE7p6CJzU9AZTJ0R0";
+
 // ably.com → Apps → API Keys → Root Key
+
 // Приклад: "xVLRjA.AbCdEf:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 const TON_WALLET = "UQAfazCyjGjugOf73_LrxUuLvxSmExM_8loArhgATwKXU6yA";
+
 // Твій TON адрес для отримання платежів
+
 // Приклад: ""
+
 // ════════════════════════════════════════════════════
+
 
 const MIN_BET = 0.1;
 const SPEED   = 0.18;
@@ -376,7 +386,8 @@ function initAbly(){
 function publish(d){if(channel)try{channel.publish('g',{...d,now:Date.now()});}catch(e){}}
 
 function rcvCountdown(d){
-  clearInterval(cdTimer);cancelAnimationFrame(loopId);
+  cancelAnimationFrame(loopId); loopId=null;
+  clearInterval(cdTimer); cdTimer=null;
   phase='waiting';hasBet=false;mult=1.0;myWin=null;myLost=false;
   points=[];crashAt=d.ca;roundId=d.rid;roundPlayers={};
   document.getElementById('rid').textContent=roundId;
@@ -386,17 +397,16 @@ function rcvCountdown(d){
   BB().disabled=false;BB().className='';
   document.getElementById('l-bet-btn').textContent=L('betBtn');
   renderPlayers();
-  // НЕ рахуємо самі — просто показуємо текст, чекаємо 'st' від майстра
 }
 
 function rcvStart(d){
-  clearInterval(cdTimer);cancelAnimationFrame(loopId);
+  cancelAnimationFrame(loopId); loopId=null;
+  clearInterval(cdTimer); cdTimer=null;
   phase='flying';
-  // Компенсуємо мережеву затримку: якщо повідомлення йшло 200мс — ракета вже летить 200мс
-  const msgLatency = d.now ? Math.max(0, Date.now() - d.now) : 0;
-  syncStartTime = d.ts - msgLatency; // корекція: ракета вже в польоті на latency мс
-  if(d.ca) crashAt=d.ca;
-  if(d.rid) roundId=d.rid;
+  const msgLatency=d.now?Math.max(0,Math.min(Date.now()-d.now,2000)):0;
+  syncStartTime=d.ts-msgLatency;
+  if(d.ca)crashAt=d.ca;
+  if(d.rid)roundId=d.rid;
   points=[{t:0,m:1}];
   ME().className='';ME().textContent='1.00×';
   RKT().style.display='block';RKT().style.left='12px';RKT().style.bottom='22px';
@@ -406,7 +416,8 @@ function rcvStart(d){
 }
 
 function rcvCrash(d){
-  cancelAnimationFrame(loopId);phase='crashed';mult=d.ca;crashAt=d.ca;
+  cancelAnimationFrame(loopId); loopId=null;
+  phase='crashed';mult=d.ca;crashAt=d.ca;
   ME().textContent=d.ca.toFixed(2)+'×';ME().className='crashed';
   RKT().style.display='none';
   if(points.length>1)drawGraph(true);
@@ -415,12 +426,13 @@ function rcvCrash(d){
   BB().disabled=true;BB().className='';document.getElementById('l-bet-btn').textContent=L('betBtn');
   Object.values(roundPlayers).forEach(p=>{if(!p.cashed)p.lost=true;});
   renderPlayers();
-  // Після краша — тільки майстер запускає новий раунд
-  if(isMaster) setTimeout(()=>startCountdown(),3000);
+  if(isMaster)setTimeout(()=>startCountdown(),3000);
 }
 
 // GAME LOOP (MASTER)
 function startCountdown(){
+  cancelAnimationFrame(loopId); loopId=null;
+  clearInterval(cdTimer);
   phase='waiting';hasBet=false;mult=1.0;myWin=null;myLost=false;roundPlayers={};
   const seed=Date.now();crashAt=genCrash(seed);roundId++;
   document.getElementById('rid').textContent=roundId;
@@ -430,19 +442,20 @@ function startCountdown(){
   renderPlayers();
   let cd=5;
   ME().textContent=`${L('start')} ${cd}...`;
-  publish({t:'cd',sec:cd,ca:crashAt,rid:roundId,from:userId});
+  publish({t:'cd',sec:cd,ca:crashAt,rid:roundId,from:userId,now:Date.now()});
   cdTimer=setInterval(()=>{
     cd--;
     if(cd<=0){clearInterval(cdTimer);doStartFlight();}
-    else{ME().textContent=`${L('start')} ${cd}...`;publish({t:'cd',sec:cd,ca:crashAt,rid:roundId,from:userId});}
+    else{ME().textContent=`${L('start')} ${cd}...`;publish({t:'cd',sec:cd,ca:crashAt,rid:roundId,from:userId,now:Date.now()});}
   },1000);
 }
 
 function doStartFlight(){
+  cancelAnimationFrame(loopId); loopId=null;
   const ts=Date.now();
   syncStartTime=ts;
   phase='flying';points=[{t:0,m:1}];
-  publish({t:'st',ts,ca:crashAt,rid:roundId,from:userId});
+  publish({t:'st',ts,ca:crashAt,rid:roundId,from:userId,now:Date.now()});
   ME().className='';ME().textContent='1.00×';
   RKT().style.display='block';RKT().style.left='12px';RKT().style.bottom='22px';
   startSmoke();
@@ -451,9 +464,14 @@ function doStartFlight(){
 }
 
 function flyTick(){
+  if(phase!=='flying'){return;} // захист від зависання
   const el=(Date.now()-syncStartTime)/1000;
   mult=Math.round(Math.exp(el*SPEED)*100)/100;
-  if(mult>=crashAt){mult=crashAt;points.push({t:el,m:mult});if(isMaster)publish({t:'cr',ca:crashAt,rid:roundId,from:userId});doCrash();return;}
+  if(mult>=crashAt){
+    mult=crashAt;points.push({t:el,m:mult});
+    if(isMaster)publish({t:'cr',ca:crashAt,rid:roundId,from:userId,now:Date.now()});
+    doCrash();return;
+  }
   points.push({t:el,m:mult});
   ME().textContent=mult.toFixed(2)+'×';
   if(hasBet)BB().textContent=`💰 ${L('cashBtn')} ${(betAmt*mult).toFixed(3)} TON`;
