@@ -24,9 +24,9 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 #mult.waiting{font-size:18px;color:#444;text-shadow:none;letter-spacing:1px}
 @keyframes shake{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(-52%,-50%)}75%{transform:translate(-48%,-50%)}}
 #rkt{position:absolute;pointer-events:none;z-index:6;display:none}
-.rb{position:relative;width:44px;height:70px;animation:rwob .4s ease-in-out infinite alternate}
+.rb{position:relative;width:54px;height:82px;animation:rwob .4s ease-in-out infinite alternate}
 @keyframes rwob{0%{transform:rotate(-2deg)}100%{transform:rotate(2deg) scale(1.03)}}
-.rsv{width:44px;height:70px;display:block}
+.rsv{width:54px;height:82px;display:block}
 .fw{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
 .fl{border-radius:50% 50% 30% 30%;animation:flk .08s ease-in-out infinite alternate;transform-origin:center top}
 .f1{width:18px;height:30px;background:linear-gradient(180deg,#fff,#ffe066 25%,#ff6d00 70%,transparent)}
@@ -119,20 +119,78 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
     <div id="mult" class="waiting">...</div>
     <div id="rkt">
       <div class="rb">
-        <svg class="rsv" viewBox="0 0 44 70" fill="none">
-          <path d="M22 4C14 4 8 18 8 36L36 36C36 18 30 4 22 4Z" fill="#ddd0ff"/>
-          <path d="M22 4C18 4 14 12 12 22L32 22C30 12 26 4 22 4Z" fill="#ece6ff"/>
-          <circle cx="22" cy="22" r="6" fill="#6c4fff" opacity=".95"/>
-          <circle cx="22" cy="22" r="4" fill="#9a80ff"/>
-          <circle cx="20" cy="20" r="1.5" fill="#fff" opacity=".7"/>
-          <path d="M8 36L1 52L10 45L8 36Z" fill="#aa88ff"/>
-          <path d="M36 36L43 52L34 45L36 36Z" fill="#aa88ff"/>
-          <path d="M18 6Q22 1 26 6" stroke="#bbaaff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <rect x="8" y="34" width="28" height="4" rx="2" fill="#9966ff"/>
-          <text x="4" y="18" font-size="7" fill="#ffd600" opacity=".9">★</text>
-          <text x="31" y="25" font-size="5" fill="#ffd600" opacity=".6">★</text>
+        <!-- Красива ракета як на фото — яскрава з єдинорогом -->
+        <svg class="rsv" viewBox="0 0 50 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Тіло ракети — яскраво-біле з рожевим -->
+          <path d="M25 3C17 3 10 20 10 42L40 42C40 20 33 3 25 3Z" fill="url(#bodyGrad)"/>
+          <!-- Блиск зліва -->
+          <path d="M25 3C21 3 16 14 14 28L25 28C25 14 25 5 25 3Z" fill="url(#shineGrad)" opacity=".6"/>
+          <!-- Ніс -->
+          <path d="M22 5Q25 0 28 5" stroke="#ff88cc" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <!-- Вікно — велике яскраве -->
+          <circle cx="25" cy="24" r="7" fill="url(#windowGrad)"/>
+          <circle cx="25" cy="24" r="5.5" fill="url(#windowInner)"/>
+          <circle cx="22.5" cy="21.5" r="2" fill="#fff" opacity=".7"/>
+          <!-- Обличчя єдинорога -->
+          <circle cx="23" cy="23" r="1" fill="#ff6699" opacity=".8"/>
+          <circle cx="27" cy="23" r="1" fill="#ff6699" opacity=".8"/>
+          <path d="M22 27 Q25 29 28 27" stroke="#ff6699" stroke-width=".8" fill="none" stroke-linecap="round"/>
+          <!-- Ріг єдинорога -->
+          <path d="M25 17L23 12L27 12Z" fill="url(#hornGrad)"/>
+          <!-- Крила/плавники -->
+          <path d="M10 42L3 56L12 50L10 42Z" fill="url(#finGrad)"/>
+          <path d="M40 42L47 56L38 50L40 42Z" fill="url(#finGrad)"/>
+          <!-- Смуги декор -->
+          <path d="M14 30 Q25 28 36 30" stroke="#ffaadd" stroke-width="1" fill="none" opacity=".5"/>
+          <path d="M13 35 Q25 33 37 35" stroke="#aaddff" stroke-width="1" fill="none" opacity=".4"/>
+          <!-- Двигун -->
+          <rect x="11" y="40" width="28" height="5" rx="2.5" fill="url(#engineGrad)"/>
+          <!-- Зірки декор -->
+          <text x="3" y="22" font-size="7" fill="#ffe066" opacity=".9">★</text>
+          <text x="39" y="28" font-size="5" fill="#ffe066" opacity=".7">★</text>
+          <text x="6" y="35" font-size="4" fill="#ff99cc" opacity=".6">✦</text>
+          <!-- Градієнти -->
+          <defs>
+            <linearGradient id="bodyGrad" x1="10" y1="3" x2="40" y2="42" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#fff0f8"/>
+              <stop offset="50%" stop-color="#ffe4f4"/>
+              <stop offset="100%" stop-color="#ffd0ee"/>
+            </linearGradient>
+            <linearGradient id="shineGrad" x1="14" y1="3" x2="25" y2="28" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#fff" stop-opacity=".8"/>
+              <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+            </linearGradient>
+            <radialGradient id="windowGrad" cx="50%" cy="40%" r="50%">
+              <stop offset="0%" stop-color="#66eeff"/>
+              <stop offset="100%" stop-color="#2244cc"/>
+            </radialGradient>
+            <radialGradient id="windowInner" cx="40%" cy="35%" r="60%">
+              <stop offset="0%" stop-color="#aaffff"/>
+              <stop offset="60%" stop-color="#4488ff"/>
+              <stop offset="100%" stop-color="#1133aa"/>
+            </radialGradient>
+            <linearGradient id="hornGrad" x1="25" y1="12" x2="25" y2="17" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ffe066"/>
+              <stop offset="100%" stop-color="#ffaa00"/>
+            </linearGradient>
+            <linearGradient id="finGrad" x1="0" y1="42" x2="0" y2="56" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#cc88ff"/>
+              <stop offset="100%" stop-color="#aa44ff"/>
+            </linearGradient>
+            <linearGradient id="engineGrad" x1="11" y1="42" x2="39" y2="42" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#cc88ff"/>
+              <stop offset="50%" stop-color="#ff88cc"/>
+              <stop offset="100%" stop-color="#cc88ff"/>
+            </linearGradient>
+          </defs>
         </svg>
-        <div class="fw"><div class="fl f1"></div><div class="fl f2"></div><div class="fl f3"></div></div>
+        <!-- Вогонь — яскравий жовтий як на фото -->
+        <div class="fw">
+          <div class="fl f1"></div>
+          <div class="fl f2"></div>
+          <div class="fl f3"></div>
+          <div class="fl f4"></div>
+        </div>
       </div>
     </div>
     <div id="topbar">
@@ -286,21 +344,25 @@ function startSmoke(){
   },100);
 }
 
-// АНІМАЦІЯ — клієнт анімує на основі tick від сервера
+// АНІМАЦІЯ
 function startClientAnim(){
-  cancelAnimationFrame(loopId);loopId=null;
-  points=[{t:0,m:1}];
-  const t0=startTs*1000; // сервер надсилає Unix timestamp в секундах
+  cancelAnimationFrame(loopId); loopId=null;
+  points=[];
+  // startTs від сервера — Unix секунди, конвертуємо в мс
+  const t0 = startTs * 1000;
 
   function tick(){
-    if(phase!=='flying'){return;}
-    const el=(Date.now()-t0)/1000;
-    const m=Math.round(Math.exp(el*0.18)*100)/100;
-    if(m>crashAt*1.05){return;} // чекаємо 'cr' від сервера
+    if(phase!=='flying'){ loopId=null; return; }
+    const el = Math.max(0,(Date.now()-t0)/1000);
+    const m  = Math.round(Math.exp(el*0.18)*100)/100;
     mult=m;
     points.push({t:el,m});
     ME().textContent=m.toFixed(2)+'×';
-    if(hasBet)BB().textContent=`💰 ${L('cashBtn')} ${(betAmt*m).toFixed(3)} TON`;
+    if(hasBet){
+      BB().disabled=false;
+      BB().className='co';
+      BB().innerHTML=`💰 ${L('cashBtn')} ${(betAmt*m).toFixed(3)} TON`;
+    }
     drawGraph(false);
     loopId=requestAnimationFrame(tick);
   }
@@ -376,23 +438,39 @@ function connect(){
     }
 
     else if(d.t==='cd'){
-      if(phase==='flying'){cancelAnimationFrame(loopId);loopId=null;}
-      phase='waiting';crashAt=d.ca;hasBet=false;myWin=null;myLost=false;
+      cancelAnimationFrame(loopId); loopId=null;
+      const isNewRound = d.rid !== parseInt(document.getElementById('rid').textContent||'0');
+      if(isNewRound){ hasBet=false; myWin=null; myLost=false; }
+      phase='waiting'; crashAt=d.ca;
       document.getElementById('rid').textContent=d.rid;
-      ME().className='waiting';ME().textContent=`${L('start')} ${d.sec}...`;
+      ME().className='waiting'; ME().textContent=`${L('start')} ${d.sec}...`;
       RKT().style.display='none';
-      resize();ctx.clearRect(0,0,canvas.width,canvas.height);
-      BB().disabled=false;BB().className='';document.getElementById('l-bet-btn').textContent=L('betBtn');
+      resize(); ctx.clearRect(0,0,canvas.width,canvas.height);
+      if(isNewRound){
+        BB().disabled=false; BB().className='';
+        BB().innerHTML=`🚀 <span id="l-bet-btn">${L('betBtn')}</span>`;
+      } else if(hasBet){
+        BB().disabled=true;
+        BB().innerHTML=`🚀 <span id="l-bet-btn">${L('betOk')}</span>`;
+      } else {
+        BB().disabled=false; BB().className='';
+        BB().innerHTML=`🚀 <span id="l-bet-btn">${L('betBtn')}</span>`;
+      }
     }
 
     else if(d.t==='st'){
-      phase='flying';startTs=d.ts;crashAt=d.ca;
+      phase='flying'; startTs=d.ts; crashAt=d.ca;
       document.getElementById('rid').textContent=d.rid;
-      ME().className='';ME().textContent='1.00×';
-      RKT().style.display='block';RKT().style.left='12px';RKT().style.bottom='22px';
-      points=[{t:0,m:1}];
-      startSmoke();startClientAnim();
-      if(hasBet){BB().disabled=false;BB().className='co';BB().textContent=`💰 ${L('cashBtn')} ${betAmt.toFixed(2)} TON`;}
+      ME().className=''; ME().textContent='1.00×';
+      RKT().style.display='block'; RKT().style.left='12px'; RKT().style.bottom='22px';
+      points=[]; startSmoke(); startClientAnim();
+      if(hasBet){
+        BB().disabled=false; BB().className='co';
+        BB().innerHTML=`💰 ${L('cashBtn')} ${betAmt.toFixed(2)} TON`;
+      } else {
+        BB().disabled=true; BB().className='';
+        BB().innerHTML=`🚀 <span id="l-bet-btn">${L('betBtn')}</span>`;
+      }
     }
 
     else if(d.t==='tick'){
@@ -402,14 +480,15 @@ function connect(){
     }
 
     else if(d.t==='cr'){
-      cancelAnimationFrame(loopId);loopId=null;
-      phase='crashed';mult=d.ca;
-      ME().textContent=d.ca.toFixed(2)+'×';ME().className='crashed';
+      cancelAnimationFrame(loopId); loopId=null;
+      phase='crashed'; mult=d.ca;
+      ME().textContent=d.ca.toFixed(2)+'×'; ME().className='crashed';
       RKT().style.display='none';
-      if(points.length>1)drawGraph(true);
+      if(points.length>1) drawGraph(true);
       addH(d.ca);
-      if(hasBet){showToast(`${L('crash')} ${d.ca.toFixed(2)}×`);myLost=true;hasBet=false;}
-      BB().disabled=true;BB().className='';document.getElementById('l-bet-btn').textContent=L('betBtn');
+      if(hasBet){ showToast(`${L('crash')} ${d.ca.toFixed(2)}×`); myLost=true; hasBet=false; }
+      BB().disabled=true; BB().className='';
+      BB().innerHTML=`🚀 <span id="l-bet-btn">${L('betBtn')}</span>`;
       renderPlayers(d.pl);
     }
 
@@ -418,8 +497,10 @@ function connect(){
     }
 
     else if(d.t==='bet_ok'){
-      hasBet=true;betAmt=d.amt;balance=d.bal;updBal();saveBal();
-      BB().disabled=true;document.getElementById('l-bet-btn').textContent=L('betOk');
+      hasBet=true; betAmt=d.amt; lastBetAmt=d.amt; balance=d.bal; updBal(); saveBal();
+      BB().disabled=true;
+      BB().className='';
+      BB().innerHTML=`✅ <span id="l-bet-btn">${L('betOk')}</span>`;
     }
 
     else if(d.t==='your_co'){
