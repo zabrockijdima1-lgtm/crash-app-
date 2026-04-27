@@ -193,11 +193,11 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 // ╚══════════════════════════════════════════════════╝
 const ABLY_KEY   = "1BF6Pw.W3mLxQ:WtwUu_bRf2yh0Ow8j7tH0a3kmQWE7p6CJzU9AZTJ0R0";
 // ably.com → Apps → API Keys → Root Key
-// Приклад: "1BF6Pw.W3mLxQ:WtwUu_bRf2yh0Ow8j7tH0a3kmQWE7p6CJzU9AZTJ0R0"
+// Приклад: "xVLRjA.AbCdEf:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 const TON_WALLET = "UQAfazCyjGjugOf73_LrxUuLvxSmExM_8loArhgATwKXU6yA";
 // Твій TON адрес для отримання платежів
-// Приклад: "UQAfazCyjGjugOf73_LrxUuLvxSmExM_8loArhgATwKXU6yA"
+// Приклад: "UQBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 // ════════════════════════════════════════════════════
 
 const MIN_BET = 0.1;
@@ -310,6 +310,9 @@ function genCrash(seed){
 
 // ABLY SYNC
 let ably,channel;
+// Час-корекція: різниця між локальним часом і часом майстра
+let timeOffset = 0; // мс
+
 function initAbly(){
   if(ABLY_KEY==='ВСТАВИТИ_ABLY_KEY'||!ABLY_KEY){
     showToast('⚠ Ably Key не вставлено — локальний режим','info');
@@ -321,6 +324,8 @@ function initAbly(){
     channel.subscribe('g',(msg)=>{
       const d=msg.data;
       if(+d.from===userId)return;
+      // Рахуємо offset між нашим часом і часом повідомлення
+      if(d.now) timeOffset = d.now - Date.now();
       if(d.t==='cd'){if(!isMaster)rcvCountdown(d);}
       else if(d.t==='st'){if(!isMaster)rcvStart(d);}
       else if(d.t==='cr'){if(!isMaster)rcvCrash(d);}
@@ -330,33 +335,27 @@ function initAbly(){
         renderPlayers();
       }
       else if(d.t==='sync'){
-        // Новий клієнт просить стан — майстер відповідає
         if(isMaster){
           if(phase==='flying'){
-            publish({t:'st',ts:syncStartTime,ca:crashAt,rid:roundId,from:userId});
+            publish({t:'st',ts:syncStartTime,ca:crashAt,rid:roundId,now:Date.now(),from:userId});
           } else {
-            publish({t:'cd',sec:3,ca:crashAt,rid:roundId,from:userId});
+            publish({t:'cd',sec:3,ca:crashAt,rid:roundId,now:Date.now(),from:userId});
           }
         }
       }
     });
     ably.connection.on('connected',()=>{
       channel.presence.enter();
-      // Запитуємо стан у майстра
       setTimeout(()=>{
         channel.presence.get((err,members)=>{
-          // Майстер — той хто підключився першим (найменший clientId серед присутніх)
           const ids=(members||[]).map(m=>m.clientId).sort();
           isMaster = ids.length===0 || ids[0]===String(userId);
           if(isMaster){
-            // Ми майстер — перезапускаємо раунд синхронно
             clearInterval(cdTimer);cancelAnimationFrame(loopId);
             startCountdown();
           } else {
-            // Ми клієнт — запитуємо поточний стан у майстра
             clearInterval(cdTimer);cancelAnimationFrame(loopId);
             publish({t:'sync',from:userId});
-            // Якщо майстер не відповів за 3с — запускаємо самі
             setTimeout(()=>{
               if(phase==='waiting'&&points.length===0) startCountdown();
             },3000);
@@ -366,7 +365,7 @@ function initAbly(){
     });
   }catch(e){console.error('Ably error:',e);}
 }
-function publish(d){if(channel)try{channel.publish('g',d);}catch(e){}}
+function publish(d){if(channel)try{channel.publish('g',{...d,now:Date.now()});}catch(e){}}
 
 function rcvCountdown(d){
   clearInterval(cdTimer);cancelAnimationFrame(loopId);
@@ -384,9 +383,10 @@ function rcvCountdown(d){
 
 function rcvStart(d){
   clearInterval(cdTimer);cancelAnimationFrame(loopId);
-  // Використовуємо ТОЧНИЙ timestamp від майстра
   phase='flying';
-  syncStartTime=d.ts;
+  // Компенсуємо мережеву затримку: якщо повідомлення йшло 200мс — ракета вже летить 200мс
+  const msgLatency = d.now ? Math.max(0, Date.now() - d.now) : 0;
+  syncStartTime = d.ts - msgLatency; // корекція: ракета вже в польоті на latency мс
   if(d.ca) crashAt=d.ca;
   if(d.rid) roundId=d.rid;
   points=[{t:0,m:1}];
