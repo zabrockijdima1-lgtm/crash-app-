@@ -191,13 +191,13 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 // ╔══════════════════════════════════════════════════╗
 // ║  НАЛАШТУВАННЯ — змінити 2 рядки нижче           ║
 // ╚══════════════════════════════════════════════════╝
-const ABLY_KEY   = "1BF6Pw.W3mLxQ:WtwUu_bRf2yh0Ow8j7tH0a3kmQWE7p6CJzU9AZTJ0R0";
+const ABLY_KEY   = "ВСТАВИТИ_ABLY_KEY";
 // ably.com → Apps → API Keys → Root Key
-// Приклад: "xVLRjA.AbCdEf:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+// Приклад: "1BF6Pw.W3mLxQ:WtwUu_bRf2yh0Ow8j7tH0a3kmQWE7p6CJzU9AZTJ0R0"
 
-const TON_WALLET = "UQAfazCyjGjugOf73_LrxUuLvxSmExM_8loArhgATwKXU6yA";
+const TON_WALLET = "ВСТАВИТИ_TON_ГАМАНЕЦЬ";
 // Твій TON адрес для отримання платежів
-// Приклад: "UQBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+// Приклад: "UQAfazCyjGjugOf73_LrxUuLvxSmExM_8loArhgATwKXU6yA"
 // ════════════════════════════════════════════════════
 
 const MIN_BET = 0.1;
@@ -312,8 +312,8 @@ function genCrash(seed){
 let ably,channel;
 function initAbly(){
   if(ABLY_KEY==='ВСТАВИТИ_ABLY_KEY'||!ABLY_KEY){
-    showToast('⚠ Встав Ably Key — зараз локальний режим','info');
-    return; // гра вже запущена в boot
+    showToast('⚠ Ably Key не вставлено — локальний режим','info');
+    return;
   }
   try{
     ably=new Ably.Realtime({key:ABLY_KEY,clientId:String(userId)});
@@ -325,31 +325,51 @@ function initAbly(){
       else if(d.t==='st'){if(!isMaster)rcvStart(d);}
       else if(d.t==='cr'){if(!isMaster)rcvCrash(d);}
       else if(d.t==='bet'){addRP(d);renderPlayers();}
-      else if(d.t==='co'){if(roundPlayers[d.uid]){roundPlayers[d.uid].win=d.win;roundPlayers[d.uid].mult=d.mx;roundPlayers[d.uid].cashed=true;}renderPlayers();}
-      else if(d.t==='sync'&&isMaster){publish({t:'cd',sec:3,ca:crashAt,rid:roundId,from:userId});}
+      else if(d.t==='co'){
+        if(roundPlayers[d.uid]){roundPlayers[d.uid].win=d.win;roundPlayers[d.uid].mult=d.mx;roundPlayers[d.uid].cashed=true;}
+        renderPlayers();
+      }
+      else if(d.t==='sync'){
+        // Новий клієнт просить стан — майстер відповідає
+        if(isMaster){
+          if(phase==='flying'){
+            publish({t:'st',ts:syncStartTime,ca:crashAt,rid:roundId,from:userId});
+          } else {
+            publish({t:'cd',sec:3,ca:crashAt,rid:roundId,from:userId});
+          }
+        }
+      }
     });
     ably.connection.on('connected',()=>{
       channel.presence.enter();
+      // Запитуємо стан у майстра
       setTimeout(()=>{
         channel.presence.get((err,members)=>{
-          const wasAlreadyMaster=isMaster;
-          isMaster=!err&&members.length<=1;
-          if(!isMaster&&wasAlreadyMaster){
-            // Стали не-майстром — очікуємо синхронізацію
+          // Майстер — той хто підключився першим (найменший clientId серед присутніх)
+          const ids=(members||[]).map(m=>m.clientId).sort();
+          isMaster = ids.length===0 || ids[0]===String(userId);
+          if(isMaster){
+            // Ми майстер — перезапускаємо раунд синхронно
+            clearInterval(cdTimer);cancelAnimationFrame(loopId);
+            startCountdown();
+          } else {
+            // Ми клієнт — запитуємо поточний стан у майстра
             clearInterval(cdTimer);cancelAnimationFrame(loopId);
             publish({t:'sync',from:userId});
-          } else if(isMaster&&!wasAlreadyMaster){
-            startCountdown();
+            // Якщо майстер не відповів за 3с — запускаємо самі
+            setTimeout(()=>{
+              if(phase==='waiting'&&points.length===0) startCountdown();
+            },3000);
           }
         });
-      },800);
+      },1000);
     });
-  }catch(e){console.error(e);}
+  }catch(e){console.error('Ably error:',e);}
 }
-function publish(d){if(channel)channel.publish('g',d);}
+function publish(d){if(channel)try{channel.publish('g',d);}catch(e){}}
 
 function rcvCountdown(d){
-  clearInterval(cdTimer);
+  clearInterval(cdTimer);cancelAnimationFrame(loopId);
   phase='waiting';hasBet=false;mult=1.0;myWin=null;myLost=false;
   points=[];crashAt=d.ca;roundId=d.rid;roundPlayers={};
   document.getElementById('rid').textContent=roundId;
@@ -359,12 +379,17 @@ function rcvCountdown(d){
   BB().disabled=false;BB().className='';
   document.getElementById('l-bet-btn').textContent=L('betBtn');
   renderPlayers();
-  let cd=d.sec;
-  cdTimer=setInterval(()=>{cd--;if(cd<=0){clearInterval(cdTimer);rcvStart({ts:Date.now()});}else ME().textContent=`${L('start')} ${cd}...`;},1000);
+  // НЕ рахуємо самі — просто показуємо текст, чекаємо 'st' від майстра
 }
 
 function rcvStart(d){
-  phase='flying';syncStartTime=d.ts||Date.now();points=[{t:0,m:1}];
+  clearInterval(cdTimer);cancelAnimationFrame(loopId);
+  // Використовуємо ТОЧНИЙ timestamp від майстра
+  phase='flying';
+  syncStartTime=d.ts;
+  if(d.ca) crashAt=d.ca;
+  if(d.rid) roundId=d.rid;
+  points=[{t:0,m:1}];
   ME().className='';ME().textContent='1.00×';
   RKT().style.display='block';RKT().style.left='12px';RKT().style.bottom='22px';
   startSmoke();
@@ -404,8 +429,10 @@ function startCountdown(){
 }
 
 function doStartFlight(){
-  const ts=Date.now();publish({t:'st',ts,rid:roundId,from:userId});
-  syncStartTime=ts;phase='flying';points=[{t:0,m:1}];
+  const ts=Date.now();
+  syncStartTime=ts;
+  phase='flying';points=[{t:0,m:1}];
+  publish({t:'st',ts,ca:crashAt,rid:roundId,from:userId});
   ME().className='';ME().textContent='1.00×';
   RKT().style.display='block';RKT().style.left='12px';RKT().style.bottom='22px';
   startSmoke();
