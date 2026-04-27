@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -291,7 +292,15 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 <div id="mbg" onclick="if(event.target===this)closeTopup()">
   <div id="mod">
     <h3>⬦ Поповнення TON</h3>
-    <p>Мінімум 0.1 TON · Виграш ≥2.8 TON = NFT</p>
+
+    <!-- Статус гаманця -->
+    <div id="wallet-status" style="background:var(--bg3);border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:10px">
+      <div id="ws-dot" style="width:8px;height:8px;border-radius:50%;background:#333;flex-shrink:0"></div>
+      <div style="flex:1;font-size:12px;color:#666" id="ws-text">Гаманець не підключено</div>
+      <button id="ws-btn" onclick="toggleWallet()" style="background:var(--ton);border:none;border-radius:8px;color:#fff;font-size:11px;padding:5px 10px;cursor:pointer;font-family:Orbitron,monospace">Підключити</button>
+    </div>
+
+    <p style="font-size:12px;color:#333;margin-bottom:14px">Виграш ≥2.8 TON → NFT замість TON</p>
     <div class="sos">
       <div class="so" onclick="pickT(this,.5)"><div class="sa">⬦</div><div class="sl">0.5 TON</div></div>
       <div class="so sel" onclick="pickT(this,1)"><div class="sa">⬦⬦</div><div class="sl">1 TON</div></div>
@@ -301,8 +310,10 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
       <div class="so" onclick="pickT(this,100)"><div class="sa">💎💎💎</div><div class="sl">100 TON</div></div>
     </div>
     <input class="inp" id="cton" type="number" min="0.1" step="0.1" placeholder="Інша сума...">
-    <button id="pbtn" onclick="doTonPayment()">Поповнити через TON Connect</button>
-    <button id="mcl" onclick="closeTopup()">Скасувати</button>
+    <button id="pbtn" onclick="doTonPayment()" style="width:100%;background:var(--ton);border:none;border-radius:10px;color:#fff;font-family:Orbitron,monospace;font-size:13px;font-weight:700;padding:13px;cursor:pointer;margin-bottom:8px">Надіслати TON</button>
+    <!-- Кнопка після оплати -->
+    <button id="paid-btn" onclick="confirmPaid()" style="width:100%;background:#1a2a1a;border:0.5px solid var(--green);border-radius:10px;color:var(--green);font-family:Orbitron,monospace;font-size:12px;font-weight:700;padding:11px;cursor:pointer;margin-bottom:6px;display:none">✅ Я вже оплатив — зарахувати</button>
+    <button id="mcl" onclick="closeTopup()" style="width:100%;background:transparent;border:none;color:#333;font-size:12px;padding:10px;cursor:pointer">Скасувати</button>
   </div>
 </div>
 
@@ -618,27 +629,100 @@ function x2B(){const v=parseFloat(document.getElementById('bi').value)||0.1;docu
 function toggleAuto(){autoOn=!autoOn;document.getElementById('atog').className=autoOn?'tog on':'tog';}
 
 // TON CONNECT
-let tonUI=null,tonConnected=false;
+let tonUI=null,tonConnected=false,tonAddress='';
 function initTon(){
   try{
     tonUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://raw.githubusercontent.com/ton-connect/demo-dapp/master/public/tonconnect-manifest.json',buttonRootId:null});
-    tonUI.onStatusChange(w=>{tonConnected=!!w;if(w)showToast('Гаманець підключено ✓','win');});
-  }catch(e){}
+    tonUI.onStatusChange(w=>{
+      tonConnected=!!w;
+      tonAddress=w?.account?.address||'';
+      updateWalletUI();
+      if(w) showToast('Гаманець підключено ✓','win');
+    });
+  }catch(e){console.warn('TON:',e);}
 }
-function openTopup(){document.getElementById('mbg').className='open';}
+
+function updateWalletUI(){
+  const dot=document.getElementById('ws-dot');
+  const txt=document.getElementById('ws-text');
+  const btn=document.getElementById('ws-btn');
+  if(!dot)return;
+  if(tonConnected){
+    dot.style.background='var(--green)';
+    txt.textContent=tonAddress?tonAddress.slice(0,8)+'...'+tonAddress.slice(-6):'Підключено';
+    txt.style.color='#ccc';
+    btn.textContent='Відключити';
+    btn.style.background='#2a1a1a';
+    btn.style.border='0.5px solid var(--red)';
+    btn.style.color='var(--red)';
+  } else {
+    dot.style.background='#333';
+    txt.textContent='Гаманець не підключено';
+    txt.style.color='#666';
+    btn.textContent='Підключити';
+    btn.style.background='var(--ton)';
+    btn.style.border='none';
+    btn.style.color='#fff';
+  }
+}
+
+function toggleWallet(){
+  if(tonConnected){
+    tonUI?.disconnect();
+  } else {
+    if(tonUI) tonUI.openModal();
+    else showToast('TON Connect недоступний');
+  }
+}
+
+function openTopup(){
+  document.getElementById('mbg').className='open';
+  updateWalletUI();
+  document.getElementById('paid-btn').style.display='none';
+}
 function closeTopup(){document.getElementById('mbg').className='';}
 function pickT(el,n){selTon=n;document.querySelectorAll('.so').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');document.getElementById('cton').value=n;}
+
+let lastPayAmount=0;
 async function doTonPayment(){
   const amount=parseFloat(document.getElementById('cton').value)||selTon;
-  if(!amount||amount<0.1)return;
-  if(!tonConnected){if(tonUI)tonUI.openModal();else showToast('Підключи гаманець');return;}
-  closeTopup();
+  if(!amount||amount<0.1){showToast('Мін. 0.1 TON');return;}
+  lastPayAmount=amount;
+
+  if(!tonConnected){
+    showToast('Спочатку підключи гаманець','info');
+    if(tonUI) tonUI.openModal();
+    return;
+  }
+
   try{
-    await tonUI.sendTransaction({validUntil:Math.floor(Date.now()/1000)+600,messages:[{address:TON_WALLET,amount:Math.floor(amount*1e9).toString()}]});
-    showToast(`⬦ Транзакція відправлена!`,'win');
+    await tonUI.sendTransaction({
+      validUntil:Math.floor(Date.now()/1000)+600,
+      messages:[{address:TON_WALLET,amount:Math.floor(amount*1e9).toString()}]
+    });
+    // Показуємо кнопку підтвердження
+    document.getElementById('paid-btn').style.display='block';
+    showToast('Транзакція відправлена! Натисни "Я оплатив"','win');
   }catch(e){
     if(e?.message?.includes('reject')||e?.message?.includes('cancel'))showToast('Скасовано');
-    else showToast('Помилка: '+(e?.message||''));
+    else showToast('Помилка: '+(e?.message||'unknown'));
+  }
+}
+
+function confirmPaid(){
+  // Надсилаємо боту через tg.sendData — бот перевірить і зарахує
+  closeTopup();
+  if(tg?.sendData){
+    tg.sendData(JSON.stringify({action:'topup_request',amount:lastPayAmount,uid:userId}));
+    showToast('Бот зараховує баланс...','info');
+  } else {
+    // Fallback — прямий запит до сервера (для тесту)
+    fetch(SERVER+`/topup/${userId}/${lastPayAmount}`,{method:'POST'})
+      .then(r=>r.json())
+      .then(d=>{
+        if(d.ok){balance=d.balance;updBal();saveBal();showToast(`⬦ +${lastPayAmount} TON зараховано!`,'win');spawnGems(5);}
+      })
+      .catch(()=>showToast('Помилка зарахування'));
   }
 }
 
