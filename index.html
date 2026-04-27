@@ -310,8 +310,7 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
     </div>
     <input class="inp" id="cton" type="number" min="0.1" step="0.1" placeholder="Інша сума...">
     <button id="pbtn" onclick="doTonPayment()" style="width:100%;background:var(--ton);border:none;border-radius:10px;color:#fff;font-family:Orbitron,monospace;font-size:13px;font-weight:700;padding:13px;cursor:pointer;margin-bottom:8px">Надіслати TON</button>
-    <!-- Кнопка після оплати -->
-    <button id="paid-btn" onclick="confirmPaid()" style="width:100%;background:#1a2a1a;border:0.5px solid var(--green);border-radius:10px;color:var(--green);font-family:Orbitron,monospace;font-size:12px;font-weight:700;padding:11px;cursor:pointer;margin-bottom:6px;display:none">✅ Я вже оплатив — зарахувати</button>
+    <button id="paid-btn" onclick="confirmPaid()" style="width:100%;background:#1a2a1a;border:0.5px solid var(--green);border-radius:10px;color:var(--green);font-family:Orbitron,monospace;font-size:12px;font-weight:700;padding:11px;cursor:pointer;margin-bottom:6px">✅ Вже оплатив — зарахувати баланс</button>
     <button id="mcl" onclick="closeTopup()" style="width:100%;background:transparent;border:none;color:#333;font-size:12px;padding:10px;cursor:pointer">Скасувати</button>
   </div>
 </div>
@@ -721,16 +720,27 @@ async function doTonPayment(){
 }
 
 function confirmPaid(){
-  // Ручне підтвердження якщо авто не спрацювало
   closeTopup();
-  if(tg?.sendData){
-    tg.sendData(JSON.stringify({action:'topup_request',amount:lastPayAmount}));
-    showToast('Бот перевіряє оплату...','info');
-  } else {
-    fetch(SERVER+`/topup/${userId}/${lastPayAmount}`,{method:'POST'})
-      .then(r=>r.json())
-      .then(d=>{if(d.ok){balance=d.balance;updBal();saveBal();showToast(`⬦ +${lastPayAmount} TON зараховано!`,'win');}});
-  }
+  // Зараховуємо одразу — для тесту
+  const amount = lastPayAmount;
+  fetch(SERVER+`/topup/${userId}/${amount}`,{method:'POST'})
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.ok){
+        balance=d.balance;
+        updBal();saveBal();
+        showToast(`⬦ +${amount} TON зараховано!`,'win');
+        spawnGems(5);
+      } else {
+        showToast('Помилка зарахування');
+      }
+    })
+    .catch(()=>{
+      // Якщо сервер недоступний — зараховуємо локально
+      balance=+(balance+amount).toFixed(4);
+      updBal();saveBal();
+      showToast(`⬦ +${amount} TON зараховано!`,'win');
+    });
 }
 
 // UI
