@@ -197,7 +197,7 @@ const ABLY_KEY   = "1BF6Pw.W3mLxQ:WtwUu_bRf2yh0Ow8j7tH0a3kmQWE7p6CJzU9AZTJ0R0";
 
 const TON_WALLET = "UQAfazCyjGjugOf73_LrxUuLvxSmExM_8loArhgATwKXU6yA";
 // Твій TON адрес для отримання платежів
-// Приклад: "UQBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+// Приклад: ""
 // ════════════════════════════════════════════════════
 
 const MIN_BET = 0.1;
@@ -321,49 +321,57 @@ function initAbly(){
   try{
     ably=new Ably.Realtime({key:ABLY_KEY,clientId:String(userId)});
     channel=ably.channels.get('rocket-v1');
+
     channel.subscribe('g',(msg)=>{
       const d=msg.data;
       if(+d.from===userId)return;
-      // Рахуємо offset між нашим часом і часом повідомлення
-      if(d.now) timeOffset = d.now - Date.now();
-      if(d.t==='cd'){if(!isMaster)rcvCountdown(d);}
-      else if(d.t==='st'){if(!isMaster)rcvStart(d);}
-      else if(d.t==='cr'){if(!isMaster)rcvCrash(d);}
+      if(d.now) timeOffset=d.now-Date.now();
+      if(d.t==='cd'){rcvCountdown(d);}       // ← всі отримують countdown
+      else if(d.t==='st'){rcvStart(d);}       // ← всі отримують start
+      else if(d.t==='cr'){rcvCrash(d);}       // ← всі отримують crash
       else if(d.t==='bet'){addRP(d);renderPlayers();}
       else if(d.t==='co'){
         if(roundPlayers[d.uid]){roundPlayers[d.uid].win=d.win;roundPlayers[d.uid].mult=d.mx;roundPlayers[d.uid].cashed=true;}
         renderPlayers();
       }
       else if(d.t==='sync'){
+        // Тільки майстер відповідає на sync
         if(isMaster){
           if(phase==='flying'){
-            publish({t:'st',ts:syncStartTime,ca:crashAt,rid:roundId,now:Date.now(),from:userId});
+            publish({t:'st',ts:syncStartTime,ca:crashAt,rid:roundId,from:userId,now:Date.now()});
           } else {
-            publish({t:'cd',sec:3,ca:crashAt,rid:roundId,now:Date.now(),from:userId});
+            publish({t:'cd',sec:2,ca:crashAt,rid:roundId,from:userId,now:Date.now()});
           }
         }
       }
     });
+
     ably.connection.on('connected',()=>{
-      channel.presence.enter();
-      setTimeout(()=>{
-        channel.presence.get((err,members)=>{
-          const ids=(members||[]).map(m=>m.clientId).sort();
-          isMaster = ids.length===0 || ids[0]===String(userId);
-          if(isMaster){
-            clearInterval(cdTimer);cancelAnimationFrame(loopId);
-            startCountdown();
-          } else {
-            clearInterval(cdTimer);cancelAnimationFrame(loopId);
-            publish({t:'sync',from:userId});
-            setTimeout(()=>{
-              if(phase==='waiting'&&points.length===0) startCountdown();
-            },3000);
-          }
-        });
-      },1000);
+      // Перевіряємо чи є вже активна гра через останнє повідомлення в каналі
+      channel.history({limit:1},(err,page)=>{
+        const last=page?.items?.[0]?.data;
+        const isActive = last && (Date.now()-(last.now||0)) < 30000;
+
+        if(!isActive){
+          // Немає активної гри — стаємо майстром
+          isMaster=true;
+          clearInterval(cdTimer);cancelAnimationFrame(loopId);
+          startCountdown();
+        } else {
+          // Є активна гра — стаємо клієнтом
+          isMaster=false;
+          clearInterval(cdTimer);cancelAnimationFrame(loopId);
+          // Запитуємо поточний стан
+          setTimeout(()=>publish({t:'sync',from:userId,now:Date.now()}), 300);
+          // Запасний варіант якщо майстер мовчить
+          setTimeout(()=>{
+            if(phase==='waiting'&&points.length===0){isMaster=true;startCountdown();}
+          },4000);
+        }
+      });
     });
-  }catch(e){console.error('Ably error:',e);}
+
+  }catch(e){console.error('Ably error:',e);isMaster=true;startCountdown();}
 }
 function publish(d){if(channel)try{channel.publish('g',{...d,now:Date.now()});}catch(e){}}
 
@@ -407,6 +415,8 @@ function rcvCrash(d){
   BB().disabled=true;BB().className='';document.getElementById('l-bet-btn').textContent=L('betBtn');
   Object.values(roundPlayers).forEach(p=>{if(!p.cashed)p.lost=true;});
   renderPlayers();
+  // Після краша — тільки майстер запускає новий раунд
+  if(isMaster) setTimeout(()=>startCountdown(),3000);
 }
 
 // GAME LOOP (MASTER)
