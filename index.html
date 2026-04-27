@@ -359,34 +359,45 @@ function initAbly(){
     });
 
     ably.connection.on('connected',()=>{
-      // Дивимось останнє повідомлення в каналі
+      // Таймаут — якщо history не відповів за 2с, запускаємо як майстер
+      const fallback = setTimeout(()=>{
+        isMaster=true;
+        cancelAnimationFrame(loopId); loopId=null;
+        clearInterval(cdTimer); cdTimer=null;
+        startCountdown();
+      }, 2000);
+
       channel.history({limit:1},(err,page)=>{
+        clearTimeout(fallback);
         const last = page?.items?.[0]?.data;
-        const age  = last ? Date.now()-(last.now||0) : 99999;
-        const gameActive = !err && last && age < 20000; // повідомлення молодше 20с
+        const age  = last?.now ? Date.now()-last.now : 99999;
+        const gameActive = !err && last && age < 15000;
 
         if(gameActive){
-          // Хтось вже керує грою — ми клієнт
           isMaster=false;
           cancelAnimationFrame(loopId); loopId=null;
           clearInterval(cdTimer); cdTimer=null;
-          // Запитуємо поточний стан у майстра
-          setTimeout(()=>publish({t:'sync',from:userId,now:Date.now()}),500);
-          // Якщо за 5с не отримали відповідь — стаємо майстром самі
+          setTimeout(()=>publish({t:'sync',from:userId,now:Date.now()}),300);
           setTimeout(()=>{
-            if(!isMaster && phase==='waiting' && !loopId){
-              isMaster=true;
-              startCountdown();
+            if(phase==='waiting'&&!loopId){
+              isMaster=true;startCountdown();
             }
-          },5000);
+          },4000);
         } else {
-          // Немає активної гри — стаємо майстром
           isMaster=true;
           cancelAnimationFrame(loopId); loopId=null;
           clearInterval(cdTimer); cdTimer=null;
           startCountdown();
         }
       });
+    });
+
+    ably.connection.on('failed',()=>{
+      isMaster=true; startCountdown();
+    });
+    ably.connection.on('disconnected',()=>{
+      // При відключенні продовжуємо локально
+      if(phase==='waiting'&&!loopId){ isMaster=true; startCountdown(); }
     });
 
   }catch(e){
@@ -635,30 +646,34 @@ function spawnGems(n){const cnt=Math.min(12,Math.max(2,Math.floor(n*3)));for(let
 window.addEventListener('resize',resize);
 resize();updateBalUI();applyLang();
 
-// Показуємо "Підключення..."
 ME().className='waiting';
 ME().textContent='Підключення...';
 
-// Спочатку TON Connect
-setTimeout(()=>{
-  try{ initTonConnect(); }catch(e){ console.warn('TON:',e); }
-},300);
+setTimeout(()=>{ try{ initTonConnect(); }catch(e){} }, 200);
 
-// Потім Ably — він вирішить хто майстер і запустить гру
-setTimeout(()=>{
-  try{
-    initAbly();
-    // Якщо Ably key не вставлено — запускаємо локально
-    if(ABLY_KEY==='ВСТАВИТИ_ABLY_KEY'||!ABLY_KEY){
-      isMaster=true;
-      startCountdown();
-    }
-  }catch(e){
-    console.warn('Ably failed:',e);
+// Жорсткий таймаут — якщо за 3с Ably не запустив гру, запускаємо самі
+const bootFallback = setTimeout(()=>{
+  if(phase==='waiting' && !loopId && !cdTimer){
     isMaster=true;
     startCountdown();
   }
-},600);
+}, 3000);
+
+setTimeout(()=>{
+  try{
+    if(ABLY_KEY==='ВСТАВИТИ_ABLY_KEY'||!ABLY_KEY){
+      clearTimeout(bootFallback);
+      isMaster=true;
+      startCountdown();
+    } else {
+      initAbly();
+    }
+  }catch(e){
+    clearTimeout(bootFallback);
+    isMaster=true;
+    startCountdown();
+  }
+}, 400);
 </script>
 </body>
 </html>
