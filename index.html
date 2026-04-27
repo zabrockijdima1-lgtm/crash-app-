@@ -237,7 +237,7 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 
     <!-- NFT прев'ю під час польоту -->
     <div id="nft-preview">
-      <img id="np-img" src="" alt="">
+      <img id="np-img" src="" alt="" onerror="this.style.display='none'">
       <div class="nft-info">
         <div class="nft-name" id="np-name"></div>
         <span class="nft-rarity" id="np-rarity"></span>
@@ -421,12 +421,14 @@ function startSmoke(){
 function showNFTPreview(nft,potentialWin){
   if(!nft||!hasBet)return;
   const el=document.getElementById('nft-preview');
-  document.getElementById('np-img').src=nft.img||'';
-  document.getElementById('np-name').textContent=nft.name;
+  const img=document.getElementById('np-img');
+  img.src=nft.img||'';
+  img.style.display='block';
+  document.getElementById('np-name').textContent=nft.emoji+' '+nft.name;
   document.getElementById('np-rarity').textContent=nft.rarity;
   document.getElementById('np-rarity').className=`nft-rarity rare-${nft.rarity}`;
   document.getElementById('np-val').textContent=`≈${potentialWin.toFixed(2)} TON`;
-  document.getElementById('np-floor').textContent=`Флор: ${nft.floor} TON`;
+  document.getElementById('np-floor').textContent=`⭐ ${nft.stars||nft.floor+' TON'} на Fragment`;
   el.className='show';
 }
 function hideNFTPreview(){document.getElementById('nft-preview').className='';}
@@ -501,16 +503,16 @@ function showWinPopup(mx,win,nft){
     document.getElementById('wp-nft-section').style.display='block';
     document.getElementById('wp-ton-section').style.display='none';
     document.getElementById('wp-nft-img').src=nft.img||'';
-    document.getElementById('wp-nft-name').textContent=nft.name;
+    document.getElementById('wp-nft-name').textContent=nft.emoji+' '+nft.name;
     document.getElementById('wp-nft-rarity').textContent=nft.rarity;
     document.getElementById('wp-nft-rarity').className=`nft-rarity rare-${nft.rarity}`;
     document.getElementById('wp-mult').textContent=`${(+mx).toFixed(2)}×`;
     document.getElementById('wp-mult').style.cssText='font-family:Orbitron,monospace;font-size:28px;font-weight:900;color:#aa77ff';
-    document.getElementById('wp-val').textContent=`≈${(+win).toFixed(2)} TON → NFT`;
+    document.getElementById('wp-val').textContent=`≈${(+win).toFixed(2)} TON → Gift`;
     document.getElementById('wp-val').style.cssText='font-family:Orbitron,monospace;font-size:14px;color:#ffd700;margin-top:6px';
-    document.getElementById('wp-sub').textContent=`Флор: ${nft.floor} TON`;
+    document.getElementById('wp-sub').textContent=`⭐ ${nft.stars||''} на Fragment`;
     document.getElementById('wp-sub').style.cssText='font-size:11px;color:#666;margin-top:4px';
-    spawnGems(5,'🎨');
+    spawnGems(5,'🎁');
   } else {
     document.getElementById('wp-nft-section').style.display='none';
     document.getElementById('wp-ton-section').style.display='block';
