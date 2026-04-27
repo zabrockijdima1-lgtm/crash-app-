@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -605,6 +604,9 @@ function connect(){
       balance=d.bal;updBal();saveBal();
       showToast(`⬦ +${d.credited} TON зараховано!`,'win');spawnGems(5);
     }
+    else if(d.t==='topup_pending'){
+      showToast(`⬦ Чекаємо підтвердження ${d.amount} TON...`,'info');
+    }
     else if(d.t==='err'){showToast(d.msg);}
   };
   ws.onclose=()=>{wsReady=false;document.getElementById('conn').textContent='🔴';setTimeout(connect,2000);};
@@ -696,13 +698,20 @@ async function doTonPayment(){
   }
 
   try{
+    // 1. Повідомляємо сервер — починаємо оплату (фіксуємо час)
+    if(wsReady) ws.send(JSON.stringify({a:'topup_start',amount}));
+
+    // 2. Відправляємо транзакцію
     await tonUI.sendTransaction({
       validUntil:Math.floor(Date.now()/1000)+600,
       messages:[{address:TON_WALLET,amount:Math.floor(amount*1e9).toString()}]
     });
-    // Показуємо кнопку підтвердження
-    document.getElementById('paid-btn').style.display='block';
-    showToast('Транзакція відправлена! Натисни "Я оплатив"','win');
+
+    // 3. Транзакція відправлена — сервер сам перевіряє кожні 15с
+    closeTopup();
+    showToast('⬦ Транзакція відправлена! Баланс зарахується автоматично','win');
+    document.getElementById('paid-btn').style.display='none';
+
   }catch(e){
     if(e?.message?.includes('reject')||e?.message?.includes('cancel'))showToast('Скасовано');
     else showToast('Помилка: '+(e?.message||'unknown'));
@@ -710,19 +719,15 @@ async function doTonPayment(){
 }
 
 function confirmPaid(){
-  // Надсилаємо боту через tg.sendData — бот перевірить і зарахує
+  // Ручне підтвердження якщо авто не спрацювало
   closeTopup();
   if(tg?.sendData){
-    tg.sendData(JSON.stringify({action:'topup_request',amount:lastPayAmount,uid:userId}));
-    showToast('Бот зараховує баланс...','info');
+    tg.sendData(JSON.stringify({action:'topup_request',amount:lastPayAmount}));
+    showToast('Бот перевіряє оплату...','info');
   } else {
-    // Fallback — прямий запит до сервера (для тесту)
     fetch(SERVER+`/topup/${userId}/${lastPayAmount}`,{method:'POST'})
       .then(r=>r.json())
-      .then(d=>{
-        if(d.ok){balance=d.balance;updBal();saveBal();showToast(`⬦ +${lastPayAmount} TON зараховано!`,'win');spawnGems(5);}
-      })
-      .catch(()=>showToast('Помилка зарахування'));
+      .then(d=>{if(d.ok){balance=d.balance;updBal();saveBal();showToast(`⬦ +${lastPayAmount} TON зараховано!`,'win');}});
   }
 }
 
