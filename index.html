@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -380,27 +379,24 @@ const SERVER = "https://rocket-server-359o.onrender.com";
 const TON_WALLET = "UQAfazCyjGjugOf73_LrxUuLvxSmExM_8loArhgATwKXU6yA";
 // ════════════════════════════════════════
 
-// Проксуємо Lottie через наш сервер (щоб обійти CORS)
-function lottieUrl(name){ return `${SERVER}/lottie/${name}-1`; }
-
-// Реальні Telegram Gifts з Fragment
+// Реальні фото Telegram Gifts — статичні preview з CDN
 const NFT_CATALOG = [
-  {id:'lollipop', name:'Lollipop',      floor:3.0,  rarity:'Common',    stars:'300+',  color:'#0d2e1a'},
-  {id:'icecream', name:'Ice Cream',     floor:2.8,  rarity:'Common',    stars:'340+',  color:'#0d2e1a'},
-  {id:'cupcake',  name:'Cupcake',       floor:2.9,  rarity:'Common',    stars:'340+',  color:'#0d2e1a'},
-  {id:'torch',    name:'Torch',         floor:2.9,  rarity:'Common',    stars:'344+',  color:'#0d2e1a'},
-  {id:'popsicle', name:'Popsicle',      floor:2.8,  rarity:'Common',    stars:'350+',  color:'#0d2e1a'},
-  {id:'flamingo', name:'Flamingo Ring', floor:3.0,  rarity:'Common',    stars:'370+',  color:'#0d2e1a'},
-  {id:'spicynoodles', name:'Spicy Noodles', floor:3.05,rarity:'Common', stars:'377+',  color:'#0d2e1a'},
-  {id:'poop',     name:'Poop',          floor:3.33, rarity:'Rare',      stars:'479+',  color:'#0d1e3a'},
-  {id:'telegrambag', name:'Telegram Bag', floor:3.5,rarity:'Rare',      stars:'500+',  color:'#0d1e3a'},
-  {id:'luckyclover', name:'Lucky Clover', floor:4.7,rarity:'Rare',      stars:'554+',  color:'#0d1e3a'},
-  {id:'pumpkinseeds', name:'Pumpkin Seeds', floor:4.8,rarity:'Rare',    stars:'560+',  color:'#0d1e3a'},
-  {id:'cooldog',  name:'Cool Dog',      floor:3.8,  rarity:'Rare',      stars:'600+',  color:'#0d1e3a'},
-  {id:'diamondring', name:'Diamond Ring', floor:15.0,rarity:'Epic',     stars:'1800+', color:'#1e0d3a'},
-  {id:'trophy',   name:'Trophy',        floor:25.0, rarity:'Epic',      stars:'3000+', color:'#1e0d3a'},
-  {id:'rocket',   name:'Rocket',        floor:50.0, rarity:'Legendary', stars:'6000+', color:'#2e1e00'},
-  {id:'goldencrown', name:'Golden Crown', floor:100.0,rarity:'Legendary',stars:'12000+',color:'#2e1e00'},
+  {id:'icecream',     name:'Ice Cream',      photo:'https://nft.fragment.com/gift/icecream-1.large.jpg',     floor:2.8,  rarity:'Common',    stars:'340+',  color:'#1a2e1a'},
+  {id:'lollipop',     name:'Lollipop',       photo:'https://nft.fragment.com/gift/lollipop-1.large.jpg',     floor:3.0,  rarity:'Common',    stars:'300+',  color:'#2e1a1a'},
+  {id:'popsicle',     name:'Popsicle',       photo:'https://nft.fragment.com/gift/popsicle-1.large.jpg',     floor:2.8,  rarity:'Common',    stars:'350+',  color:'#1a1a2e'},
+  {id:'flamingo',     name:'Flamingo Ring',  photo:'https://nft.fragment.com/gift/flamingo-1.large.jpg',     floor:3.0,  rarity:'Common',    stars:'370+',  color:'#2e1a2e'},
+  {id:'torch',        name:'Torch',          photo:'https://nft.fragment.com/gift/torch-1.large.jpg',        floor:2.9,  rarity:'Common',    stars:'344+',  color:'#2e2a1a'},
+  {id:'spicynoodles', name:'Spicy Noodles',  photo:'https://nft.fragment.com/gift/spicynoodles-1.large.jpg', floor:3.05, rarity:'Common',    stars:'377+',  color:'#2e1a1a'},
+  {id:'cupcake',      name:'Cupcake',        photo:'https://nft.fragment.com/gift/cupcake-1.large.jpg',      floor:2.9,  rarity:'Common',    stars:'340+',  color:'#2e1a2a'},
+  {id:'poop',         name:'Poop',           photo:'https://nft.fragment.com/gift/poop-1.large.jpg',         floor:3.33, rarity:'Rare',      stars:'479+',  color:'#1a2e1a'},
+  {id:'telegrambag',  name:'Telegram Bag',   photo:'https://nft.fragment.com/gift/telegrambag-1.large.jpg',  floor:3.5,  rarity:'Rare',      stars:'500+',  color:'#1a1a2e'},
+  {id:'luckyclover',  name:'Lucky Clover',   photo:'https://nft.fragment.com/gift/luckyclover-1.large.jpg',  floor:4.7,  rarity:'Rare',      stars:'554+',  color:'#1a2e1a'},
+  {id:'pumpkinseeds', name:'Pumpkin Seeds',  photo:'https://nft.fragment.com/gift/pumpkinseeds-1.large.jpg', floor:4.8,  rarity:'Rare',      stars:'560+',  color:'#2e2a1a'},
+  {id:'cooldog',      name:'Cool Dog',       photo:'https://nft.fragment.com/gift/cooldog-1.large.jpg',      floor:3.8,  rarity:'Rare',      stars:'600+',  color:'#1a1a2e'},
+  {id:'diamondring',  name:'Diamond Ring',   photo:'https://nft.fragment.com/gift/diamondring-1.large.jpg',  floor:15.0, rarity:'Epic',      stars:'1800+', color:'#1e0d3a'},
+  {id:'trophy',       name:'Trophy',         photo:'https://nft.fragment.com/gift/trophy-1.large.jpg',       floor:25.0, rarity:'Epic',      stars:'3000+', color:'#2a1e0a'},
+  {id:'rocket',       name:'Rocket',         photo:'https://nft.fragment.com/gift/rocket-1.large.jpg',       floor:50.0, rarity:'Legendary', stars:'6000+', color:'#0a1a2e'},
+  {id:'goldencrown',  name:'Golden Crown',   photo:'https://nft.fragment.com/gift/goldencrown-1.large.jpg',  floor:100.0,rarity:'Legendary', stars:'12000+',color:'#2e2a00'},
 ];
 
 function getNFT(win){ 
@@ -533,15 +529,19 @@ function showNFTPreview(nft,win){
   const el=document.getElementById('nft-preview');
   const lc=document.getElementById('np-lottie');
   lc.style.background=nft.color||'#1a1a2e';
-  if(previewAnim){try{previewAnim.destroy();}catch(e){}}
-  try{
-    previewAnim=lottie.loadAnimation({container:lc,renderer:'svg',loop:true,autoplay:true,path:lottieUrl(nft.id)});
-  }catch(e){lc.innerHTML='🎁';}
+  lc.innerHTML='';
+  if(nft.photo){
+    lc.innerHTML=`<img src="${nft.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">`;
+  } else {
+    if(previewAnim){try{previewAnim.destroy();}catch(e){}}
+    try{previewAnim=lottie.loadAnimation({container:lc,renderer:'svg',loop:true,autoplay:true,path:lottieUrl(nft.id)});}
+    catch(e){lc.innerHTML='🎁';}
+  }
   document.getElementById('np-name').textContent=nft.name;
   document.getElementById('np-rarity').textContent=nft.rarity;
   document.getElementById('np-rarity').className=`nft-rarity rare-${nft.rarity}`;
   document.getElementById('np-val').textContent=`≈${win.toFixed(2)} TON`;
-  document.getElementById('np-floor').textContent=`⭐ ${nft.stars} · ${nft.floor} TON floor`;
+  document.getElementById('np-floor').textContent=`⭐ ${nft.stars} · floor ${nft.floor} TON`;
   el.className='show';
 }
 function hideNFTPreview(){
@@ -597,9 +597,14 @@ function showWinPopup(mx,win,nft){
     document.getElementById('wp-ton-section').style.display='none';
     const lc=document.getElementById('wp-lottie');
     lc.style.background=nft.color||'#0d0a22';
-    if(wpAnim){try{wpAnim.destroy();}catch(e){}}
-    try{wpAnim=lottie.loadAnimation({container:lc,renderer:'svg',loop:true,autoplay:true,path:lottieUrl(nft.id)});}
-    catch(e){lc.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:60px">🎁</div>';}
+    lc.innerHTML='';
+    if(nft.photo){
+      lc.innerHTML=`<img src="${nft.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:14px">`;
+    } else {
+      if(wpAnim){try{wpAnim.destroy();}catch(e){}}
+      try{wpAnim=lottie.loadAnimation({container:lc,renderer:'svg',loop:true,autoplay:true,path:lottieUrl(nft.id)});}
+      catch(e){lc.innerHTML='<div style="font-size:64px;display:flex;align-items:center;justify-content:center;height:100%">🎁</div>';}
+    }
     document.getElementById('wp-nft-name').textContent=nft.name;
     document.getElementById('wp-nft-rarity').textContent=nft.rarity;
     document.getElementById('wp-nft-rarity').className=`nft-rarity rare-${nft.rarity}`;
@@ -653,7 +658,13 @@ function renderInventory(){
   // Запускаємо анімації
   myNFTs.slice().reverse().forEach((nft,i)=>{
     const c=document.getElementById(`inv-lot-${i}`);
-    if(c)try{lottie.loadAnimation({container:c,renderer:'svg',loop:true,autoplay:true,path:lottieUrl(nft.id)});}catch(e){}
+    if(c){
+      if(nft.photo){
+        c.innerHTML=`<img src="${nft.photo}" style="width:100%;height:100%;object-fit:cover">`;
+      } else {
+        try{lottie.loadAnimation({container:c,renderer:'svg',loop:true,autoplay:true,path:lottieUrl(nft.id)});}catch(e){}
+      }
+    }
   });
 }
 function withdrawNFT(nftId){
