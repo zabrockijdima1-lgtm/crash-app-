@@ -510,14 +510,23 @@ function startClientAnim(){
 
 // ── NFT Preview ───────────────────────────────────────────────────
 let previewAnim=null;
+function getPhotoById(nft){
+  if(!nft) return '';
+  // Якщо фото вже є — повертаємо
+  if(nft.photo) return nft.photo;
+  // Шукаємо в локальному каталозі по id
+  const local = NFT_CATALOG.find(n=>n.id===nft.id);
+  return local?.photo || '';
+}
+
 function showNFTPreview(nft,win){
   if(!nft||!hasBet)return;
   const el=document.getElementById('nft-preview');
   const lc=document.getElementById('np-lottie');
   lc.style.background=nft.color||'#1a1a2e';
   lc.innerHTML='';
-  if(nft.photo){
-    lc.innerHTML=`<img src="${nft.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">`;
+  const _photo=getPhotoById(nft); if(_photo){
+    lc.innerHTML=`<img src="${_photo}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">`;
   } else {
     if(previewAnim){try{previewAnim.destroy();}catch(e){}}
     try{previewAnim=lottie.loadAnimation({container:lc,renderer:'svg',loop:true,autoplay:true,path:lottieUrl(nft.id)});}
@@ -584,8 +593,8 @@ function showWinPopup(mx,win,nft){
     const lc=document.getElementById('wp-lottie');
     lc.style.background=nft.color||'#0d0a22';
     lc.innerHTML='';
-    if(nft.photo){
-      lc.innerHTML=`<img src="${nft.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:14px">`;
+    const _photo=getPhotoById(nft); if(_photo){
+      lc.innerHTML=`<img src="${_photo}" style="width:100%;height:100%;object-fit:cover;border-radius:14px">`;
     } else {
       if(wpAnim){try{wpAnim.destroy();}catch(e){}}
       try{wpAnim=lottie.loadAnimation({container:lc,renderer:'svg',loop:true,autoplay:true,path:lottieUrl(nft.id)});}
@@ -645,8 +654,8 @@ function renderInventory(){
   myNFTs.slice().reverse().forEach((nft,i)=>{
     const c=document.getElementById(`inv-lot-${i}`);
     if(c){
-      if(nft.photo){
-        c.innerHTML=`<img src="${nft.photo}" style="width:100%;height:100%;object-fit:cover">`;
+      const _photo=getPhotoById(nft); if(_photo){
+        c.innerHTML=`<img src="${getPhotoById(nft)}" style="width:100%;height:100%;object-fit:cover">`;
       } else {
         try{lottie.loadAnimation({container:c,renderer:'svg',loop:true,autoplay:true,path:lottieUrl(nft.id)});}catch(e){}
       }
