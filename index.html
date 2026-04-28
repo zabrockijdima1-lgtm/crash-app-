@@ -654,8 +654,9 @@ function renderInventory(){
   myNFTs.slice().reverse().forEach((nft,i)=>{
     const c=document.getElementById(`inv-lot-${i}`);
     if(c){
-      const _photo=getPhotoById(nft); if(_photo){
-        c.innerHTML=`<img src="${getPhotoById(nft)}" style="width:100%;height:100%;object-fit:cover">`;
+      const photo=getPhotoById(nft);
+      if(photo){
+        c.innerHTML=`<img src="${photo}" style="width:100%;height:100%;object-fit:cover;border-radius:0">`;
       } else {
         try{lottie.loadAnimation({container:c,renderer:'svg',loop:true,autoplay:true,path:lottieUrl(nft.id)});}catch(e){}
       }
