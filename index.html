@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -28,18 +27,16 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 @keyframes shake{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(-52%,-50%)}75%{transform:translate(-48%,-50%)}}
 
 /* ROCKET */
-#rkt{position:absolute;pointer-events:none;z-index:6;display:none;width:90px;height:130px}
-.rb{position:relative;width:90px;height:130px;animation:rwob .4s ease-in-out infinite alternate}
-@keyframes rwob{0%{transform:rotate(-2deg)}100%{transform:rotate(2deg) scale(1.03)}}
-.rsv{width:90px;height:130px;display:block;object-fit:contain;filter:drop-shadow(0 0 15px rgba(255,100,200,0.7))}
-.fw{position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
-.fl{border-radius:50% 50% 30% 30%;animation:flk .08s ease-in-out infinite alternate;transform-origin:center top}
-.f1{width:24px;height:38px;background:linear-gradient(180deg,#fff,#ffe066 25%,#ff6d00 70%,transparent)}
-.f2{width:15px;height:28px;background:linear-gradient(180deg,#ffe066,#ff6d00 50%,transparent);margin-top:-20px;animation-delay:.03s}
-.f3{width:9px;height:19px;background:linear-gradient(180deg,#ff6d00,transparent);margin-top:-13px;animation-delay:.015s}
-@keyframes flk{0%{transform:scaleX(1)}100%{transform:scaleX(.75) scaleY(1.2)}}
-.smk{position:absolute;border-radius:50%;animation:smkr .7s ease-out forwards;pointer-events:none}
-@keyframes smkr{0%{opacity:.2;transform:scale(.4)}100%{opacity:0;transform:scale(2.5) translateY(20px)}}
+#rkt{position:absolute;pointer-events:none;z-index:6;display:none}
+.rb{position:relative;width:80px;height:110px;animation:rwob .45s ease-in-out infinite alternate;filter:drop-shadow(0 0 14px rgba(255,80,180,0.8))}
+@keyframes rwob{0%{transform:rotate(-3deg) scale(1)}100%{transform:rotate(3deg) scale(1.05)}}
+.rsv{width:80px;height:110px;display:block}
+.fw{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.fl{border-radius:50% 50% 30% 30%;animation:flk .07s ease-in-out infinite alternate;transform-origin:center top}
+.f1{width:22px;height:34px;background:linear-gradient(180deg,#fff,#ffe066 20%,#ff6d00 65%,transparent)}
+.f2{width:14px;height:25px;background:linear-gradient(180deg,#ffe066,#ff6d00 50%,transparent);margin-top:-22px;animation-delay:.03s}
+.f3{width:8px;height:17px;background:linear-gradient(180deg,#ff6d00,transparent);margin-top:-14px;animation-delay:.015s}
+@keyframes flk{0%{transform:scaleX(1)}100%{transform:scaleX(.72) scaleY(1.22)}}
 
 /* TOP BAR */
 #topbar{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:8px 10px}
@@ -196,53 +193,81 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
     <canvas id="gc"></canvas>
     <div id="mult" class="waiting">...</div>
 
-    <!-- ЧАСТКИ ЯК У ВІДЕО -->
+    <!-- ЧАСТКИ -->
     <div id="particles"></div>
 
-    <!-- РАКЕТА — велика рожева як на фото -->
+    <!-- РАКЕТА — рожева як на фото -->
     <div id="rkt">
       <div class="rb">
-        <!-- Використовуємо реальне зображення рожевої ракети -->
-        <img class="rsv" src="https://i.imgur.com/JKpQYmF.png" alt="rocket"
-          onerror="this.style.display='none';document.getElementById('rkt-svg').style.display='block'">
-        <!-- Запасний SVG якщо фото не завантажиться -->
-        <svg id="rkt-svg" style="display:none" class="rsv" viewBox="0 0 100 140" fill="none">
+        <svg class="rsv" viewBox="0 0 80 110" fill="none" xmlns="http://www.w3.org/2000/svg">
           <!-- Тіло -->
-          <ellipse cx="50" cy="55" rx="32" ry="48" fill="url(#pb1)"/>
-          <ellipse cx="50" cy="55" rx="32" ry="48" fill="url(#pb2)" opacity=".5"/>
-          <!-- Блиск -->
-          <ellipse cx="38" cy="35" rx="12" ry="20" fill="white" opacity=".25" transform="rotate(-15,38,35)"/>
+          <path d="M40 6 C26 6 16 26 16 54 L64 54 C64 26 54 6 40 6Z" fill="url(#b1)"/>
+          <!-- Блиск зліва -->
+          <path d="M40 6 C32 6 24 18 22 34 L40 34Z" fill="url(#bl)" opacity=".5"/>
           <!-- Ніс -->
-          <path d="M50 5 C38 5 30 20 28 35 L72 35 C70 20 62 5 50 5Z" fill="url(#pn1)"/>
-          <ellipse cx="42" cy="22" rx="5" ry="8" fill="white" opacity=".2" transform="rotate(-20,42,22)"/>
-          <!-- Вікно -->
-          <circle cx="50" cy="58" r="18" fill="url(#pw1)" stroke="#ff88dd" stroke-width="2"/>
-          <circle cx="50" cy="58" r="13" fill="url(#pw2)"/>
-          <ellipse cx="44" cy="52" rx="4" ry="6" fill="white" opacity=".4"/>
-          <!-- Боки -->
-          <ellipse cx="50" cy="80" rx="28" ry="12" fill="url(#pside)"/>
+          <path d="M30 10 Q40 2 50 10" stroke="#ffaadd" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <!-- Вікно велике -->
+          <circle cx="40" cy="34" r="13" fill="url(#w1)" stroke="#ff77cc" stroke-width="1.5"/>
+          <circle cx="40" cy="34" r="9.5" fill="url(#w2)"/>
+          <!-- Відблиск у вікні -->
+          <ellipse cx="35" cy="29" rx="3.5" ry="5.5" fill="white" opacity=".45" transform="rotate(-20,35,29)"/>
+          <!-- Смужки на тілі -->
+          <path d="M20 42 Q40 40 60 42" stroke="#ff88cc" stroke-width="1.2" fill="none" opacity=".6"/>
+          <path d="M18 48 Q40 46 62 48" stroke="#ee77bb" stroke-width="1" fill="none" opacity=".4"/>
+          <!-- Бокові накладки -->
+          <ellipse cx="40" cy="50" rx="24" ry="7" fill="url(#side)"/>
           <!-- Крила -->
-          <path d="M18 85 L2 115 L22 100 L26 80Z" fill="url(#pfin)"/>
-          <path d="M82 85 L98 115 L78 100 L74 80Z" fill="url(#pfin)"/>
-          <!-- Деталі -->
-          <circle cx="42" cy="75" r="3" fill="#ff44aa" opacity=".7"/>
-          <circle cx="58" cy="75" r="3" fill="#ff44aa" opacity=".7"/>
-          <rect x="22" y="95" width="56" height="10" rx="5" fill="url(#peng)"/>
+          <path d="M16 54 L4 76 L18 66 L20 54Z" fill="url(#fin)"/>
+          <path d="M64 54 L76 76 L62 66 L60 54Z" fill="url(#fin)"/>
+          <!-- Декор крил -->
+          <path d="M16 54 L8 70 L18 63Z" fill="white" opacity=".15"/>
+          <path d="M64 54 L72 70 L62 63Z" fill="white" opacity=".15"/>
+          <!-- Двигун -->
+          <rect x="18" y="52" width="44" height="7" rx="3.5" fill="url(#eng)"/>
+          <!-- Кружечки деталі -->
+          <circle cx="33" cy="47" r="2.5" fill="#ff44aa" opacity=".7"/>
+          <circle cx="47" cy="47" r="2.5" fill="#ff44aa" opacity=".7"/>
           <!-- Зірочки -->
-          <text x="10" y="45" font-size="10" fill="#ffe066" opacity=".8">✦</text>
-          <text x="78" y="55" font-size="7" fill="#ffe066" opacity=".6">✦</text>
+          <text x="5" y="28" font-size="9" fill="#ffe066" opacity=".85">✦</text>
+          <text x="64" y="36" font-size="6" fill="#ffe066" opacity=".65">✦</text>
+          <text x="10" y="44" font-size="5" fill="#ffccee" opacity=".5">✦</text>
           <defs>
-            <radialGradient id="pb1" cx="35%" cy="30%"><stop offset="0%" stop-color="#ff99dd"/><stop offset="100%" stop-color="#cc2288"/></radialGradient>
-            <radialGradient id="pb2" cx="65%" cy="70%"><stop offset="0%" stop-color="#ff44aa" stop-opacity=".3"/><stop offset="100%" stop-color="transparent"/></radialGradient>
-            <linearGradient id="pn1" x1="50" y1="5" x2="50" y2="35" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#ffccee"/><stop offset="100%" stop-color="#ee55aa"/></linearGradient>
-            <radialGradient id="pw1" cx="40%" cy="35%"><stop offset="0%" stop-color="#ffe8f8"/><stop offset="100%" stop-color="#ff88cc"/></radialGradient>
-            <radialGradient id="pw2" cx="40%" cy="35%"><stop offset="0%" stop-color="#fff0fb"/><stop offset="100%" stop-color="#ffbbee"/></radialGradient>
-            <linearGradient id="pside" x1="22" y1="80" x2="78" y2="90" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#dd44aa"/><stop offset="100%" stop-color="#aa1177"/></linearGradient>
-            <linearGradient id="pfin" x1="0" y1="80" x2="20" y2="115" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#ff55bb"/><stop offset="100%" stop-color="#881155"/></linearGradient>
-            <linearGradient id="peng" x1="22" y1="95" x2="78" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#ee44bb"/><stop offset="100%" stop-color="#992299"/></linearGradient>
+            <radialGradient id="b1" cx="32%" cy="25%">
+              <stop offset="0%" stop-color="#ffb3e0"/>
+              <stop offset="50%" stop-color="#ff66bb"/>
+              <stop offset="100%" stop-color="#cc2288"/>
+            </radialGradient>
+            <linearGradient id="bl" x1="22" y1="6" x2="40" y2="34" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#fff" stop-opacity=".7"/>
+              <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+            </linearGradient>
+            <radialGradient id="w1" cx="38%" cy="35%">
+              <stop offset="0%" stop-color="#ffe0f5"/>
+              <stop offset="100%" stop-color="#ff88cc"/>
+            </radialGradient>
+            <radialGradient id="w2" cx="38%" cy="35%">
+              <stop offset="0%" stop-color="#fff5fb"/>
+              <stop offset="100%" stop-color="#ffccee"/>
+            </radialGradient>
+            <linearGradient id="side" x1="16" y1="50" x2="64" y2="56" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#dd44aa"/>
+              <stop offset="100%" stop-color="#aa1177"/>
+            </linearGradient>
+            <linearGradient id="fin" x1="10" y1="54" x2="20" y2="76" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ff66bb"/>
+              <stop offset="100%" stop-color="#881155"/>
+            </linearGradient>
+            <linearGradient id="eng" x1="18" y1="52" x2="62" y2="59" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ff44bb"/>
+              <stop offset="100%" stop-color="#991188"/>
+            </linearGradient>
           </defs>
         </svg>
-        <div class="fw"><div class="fl f1"></div><div class="fl f2"></div><div class="fl f3"></div></div>
+        <div class="fw">
+          <div class="fl f1"></div>
+          <div class="fl f2"></div>
+          <div class="fl f3"></div>
+        </div>
       </div>
     </div>
 
@@ -373,7 +398,7 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 
 <script>
 // ════════════════════════════════════════════════
-const SERVER = "https://rocket-server-359o.onrender.com";
+const SERVER = "https://rocket-server-359o.onrender.com"; 
 const TON_WALLET = "UQAfazCyjGjugOf73_LrxUuLvxSmExM_8loArhgATwKXU6yA";
 // ════════════════════════════════════════════════
 
@@ -470,9 +495,9 @@ function drawGraph(crashed){
     const rk=RKT();rk.style.display='block';
     const prev=points.length>3?px(points[points.length-3]):p0;
     const ang=Math.atan2(last.y-prev.y,last.x-prev.x)*180/Math.PI;
-    rk.style.left=(last.x-45)+'px';
-    rk.style.bottom=(H-last.y-20)+'px';
-    rk.style.transform=`rotate(${Math.max(-75,Math.min(-10,ang-45))}deg)`;
+    rk.style.left=(last.x-40)+'px';
+    rk.style.bottom=(H-last.y-15)+'px';
+    rk.style.transform=`rotate(${Math.max(-70,Math.min(-5,ang-45))}deg)`;
   }
 }
 
