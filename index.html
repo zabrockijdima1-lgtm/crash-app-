@@ -512,10 +512,8 @@ function startClientAnim(){
 let previewAnim=null;
 function getPhotoById(nft){
   if(!nft) return '';
-  // Якщо фото вже є — повертаємо
-  if(nft.photo) return nft.photo;
-  // Шукаємо в локальному каталозі по id
-  const local = NFT_CATALOG.find(n=>n.id===nft.id);
+  if(nft.photo && nft.photo.startsWith('data:')) return nft.photo;
+  const local = NFT_CATALOG.find(n => n.id === nft.id || n.name === nft.name);
   return local?.photo || '';
 }
 
@@ -628,7 +626,9 @@ function switchTab(tab){
   if(!isGame)renderInventory();
 }
 function addNFTToInventory(nft,winTon,mx){
-  myNFTs.push({...nft,winTon,mult:mx,ts:Date.now()});
+  // Знаходимо фото з локального каталогу і зберігаємо разом з NFT
+  const photo = getPhotoById(nft);
+  myNFTs.push({...nft, photo, winTon, mult:mx, ts:Date.now()});
   const cnt=myNFTs.length;
   document.getElementById('inv-tab-lbl').textContent=cnt?`Інвентар (${cnt})`:'Інвентар';
   saveNFTs();
