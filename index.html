@@ -14,29 +14,47 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 #app{display:flex;flex-direction:column;height:100vh;max-height:100vh}
 
 /* SKY */
-#sky{position:relative;flex:0 0 220px;overflow:hidden;background:#04040c}
+#sky{position:relative;flex:0 0 260px;overflow:hidden;background:linear-gradient(180deg,#0a1628 0%,#0d1f3c 60%,#0a1628 100%)}
+/* Зірки */
 #sky::before{content:'';position:absolute;inset:0;background-image:
-  radial-gradient(1px 1px at 8% 14%,#fff8,transparent),radial-gradient(1px 1px at 22% 67%,#fff5,transparent),
-  radial-gradient(1px 1px at 37% 11%,#fff7,transparent),radial-gradient(1px 1px at 54% 79%,#fff4,transparent),
-  radial-gradient(1px 1px at 70% 28%,#fff6,transparent),radial-gradient(1.5px 1.5px at 75% 71%,#fffc,transparent),
-  radial-gradient(1px 1px at 92% 7%,#fff9,transparent),radial-gradient(1px 1px at 14% 89%,#fff6,transparent)}
+  radial-gradient(1px 1px at 8% 14%,#fff9,transparent),radial-gradient(1px 1px at 22% 67%,#fff6,transparent),
+  radial-gradient(1px 1px at 37% 11%,#fff8,transparent),radial-gradient(1px 1px at 54% 79%,#fff5,transparent),
+  radial-gradient(1px 1px at 70% 28%,#fff7,transparent),radial-gradient(1.5px 1.5px at 75% 71%,#fffc,transparent),
+  radial-gradient(1px 1px at 92% 7%,#fffa,transparent),radial-gradient(1px 1px at 14% 89%,#fff7,transparent),
+  radial-gradient(1px 1px at 45% 55%,#fff5,transparent),radial-gradient(1px 1px at 82% 33%,#fff6,transparent),
+  radial-gradient(1px 1px at 30% 80%,#fff5,transparent),radial-gradient(1px 1px at 60% 20%,#fff7,transparent)}
 #gc{position:absolute;inset:0;width:100%;height:100%}
-#mult{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);font-family:'Orbitron',monospace;font-size:44px;font-weight:900;color:#fff;letter-spacing:3px;pointer-events:none;z-index:5;text-align:center;text-shadow:0 0 40px #6c4fff44}
-#mult.crashed{color:var(--red);text-shadow:0 0 40px #ff174455;animation:shake .3s}
-#mult.waiting{font-size:18px;color:#444;text-shadow:none;letter-spacing:1px}
-@keyframes shake{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(-52%,-50%)}75%{transform:translate(-48%,-50%)}}
 
-/* ROCKET */
-#rkt{position:absolute;pointer-events:none;z-index:6;display:none}
-.rb{position:relative;width:80px;height:110px;animation:rwob .45s ease-in-out infinite alternate;filter:drop-shadow(0 0 14px rgba(255,80,180,0.8))}
-@keyframes rwob{0%{transform:rotate(-3deg) scale(1)}100%{transform:rotate(3deg) scale(1.05)}}
-.rsv{width:80px;height:110px;display:block}
-.fw{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+/* Множник знизу по центру під ракетою */
+#mult{
+  position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+  font-family:'Orbitron',monospace;font-size:38px;font-weight:900;
+  color:#fff;letter-spacing:3px;pointer-events:none;z-index:5;text-align:center;
+  text-shadow:0 0 20px rgba(255,255,255,0.3);
+  white-space:nowrap;
+}
+#mult.crashed{color:var(--red);text-shadow:0 0 30px #ff174466;animation:shake .3s}
+#mult.waiting{font-size:16px;color:#aaa;text-shadow:none;letter-spacing:1px;bottom:18px}
+@keyframes shake{0%,100%{transform:translateX(-50%)}25%{transform:translateX(-52%)}75%{transform:translateX(-48%)}}
+
+/* ROCKET — стоїть по центру, анімується вгору-вниз */
+#rkt{
+  position:absolute;pointer-events:none;z-index:6;display:none;
+  left:50%;top:30%;transform:translate(-50%,-50%);
+  animation:rocket-hover 1.8s ease-in-out infinite alternate;
+}
+@keyframes rocket-hover{
+  0%{transform:translate(-50%,-50%) rotate(-4deg) translateY(0)}
+  100%{transform:translate(-50%,-50%) rotate(4deg) translateY(-12px)}
+}
+.rb{position:relative;width:130px;height:130px;filter:drop-shadow(0 0 20px rgba(255,100,180,0.6))}
+.rsv{width:130px;height:130px;display:block}
+.fw{position:absolute;bottom:-26px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
 .fl{border-radius:50% 50% 30% 30%;animation:flk .07s ease-in-out infinite alternate;transform-origin:center top}
-.f1{width:22px;height:34px;background:linear-gradient(180deg,#fff,#ffe066 20%,#ff6d00 65%,transparent)}
-.f2{width:14px;height:25px;background:linear-gradient(180deg,#ffe066,#ff6d00 50%,transparent);margin-top:-22px;animation-delay:.03s}
-.f3{width:8px;height:17px;background:linear-gradient(180deg,#ff6d00,transparent);margin-top:-14px;animation-delay:.015s}
-@keyframes flk{0%{transform:scaleX(1)}100%{transform:scaleX(.72) scaleY(1.22)}}
+.f1{width:28px;height:42px;background:linear-gradient(180deg,#fff,#ffe066 20%,#ff6d00 65%,transparent)}
+.f2{width:18px;height:30px;background:linear-gradient(180deg,#ffe066,#ff6d00 50%,transparent);margin-top:-28px;animation-delay:.03s}
+.f3{width:10px;height:20px;background:linear-gradient(180deg,#ff6d00,transparent);margin-top:-16px;animation-delay:.015s}
+@keyframes flk{0%{transform:scaleX(1)}100%{transform:scaleX(.7) scaleY(1.25)}}
 
 /* TOP BAR */
 #topbar{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:8px 10px}
@@ -199,67 +217,71 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
     <!-- РАКЕТА — рожева як на фото -->
     <div id="rkt">
       <div class="rb">
-        <svg class="rsv" viewBox="0 0 80 110" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Тіло -->
-          <path d="M40 6 C26 6 16 26 16 54 L64 54 C64 26 54 6 40 6Z" fill="url(#b1)"/>
+        <svg class="rsv" viewBox="0 0 130 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Двигун знизу -->
+          <ellipse cx="65" cy="108" rx="22" ry="10" fill="url(#eng)"/>
+          <ellipse cx="65" cy="105" rx="18" ry="7" fill="#cc3300" opacity=".8"/>
+          <!-- Тіло — кругле як у відео -->
+          <ellipse cx="65" cy="62" rx="42" ry="52" fill="url(#body)"/>
           <!-- Блиск зліва -->
-          <path d="M40 6 C32 6 24 18 22 34 L40 34Z" fill="url(#bl)" opacity=".5"/>
-          <!-- Ніс -->
-          <path d="M30 10 Q40 2 50 10" stroke="#ffaadd" stroke-width="2" fill="none" stroke-linecap="round"/>
-          <!-- Вікно велике -->
-          <circle cx="40" cy="34" r="13" fill="url(#w1)" stroke="#ff77cc" stroke-width="1.5"/>
-          <circle cx="40" cy="34" r="9.5" fill="url(#w2)"/>
+          <ellipse cx="48" cy="40" rx="14" ry="22" fill="white" opacity=".2" transform="rotate(-15,48,40)"/>
+          <!-- Смуга з написом -->
+          <rect x="24" y="55" width="82" height="22" rx="4" fill="url(#stripe)"/>
+          <rect x="24" y="55" width="82" height="22" rx="4" fill="url(#stripe2)" opacity=".4"/>
+          <!-- Вікно — велике кругле -->
+          <circle cx="65" cy="42" r="20" fill="url(#win1)" stroke="#fff" stroke-width="2.5" stroke-opacity=".5"/>
+          <circle cx="65" cy="42" r="15" fill="url(#win2)"/>
           <!-- Відблиск у вікні -->
-          <ellipse cx="35" cy="29" rx="3.5" ry="5.5" fill="white" opacity=".45" transform="rotate(-20,35,29)"/>
-          <!-- Смужки на тілі -->
-          <path d="M20 42 Q40 40 60 42" stroke="#ff88cc" stroke-width="1.2" fill="none" opacity=".6"/>
-          <path d="M18 48 Q40 46 62 48" stroke="#ee77bb" stroke-width="1" fill="none" opacity=".4"/>
-          <!-- Бокові накладки -->
-          <ellipse cx="40" cy="50" rx="24" ry="7" fill="url(#side)"/>
+          <ellipse cx="57" cy="34" rx="5" ry="8" fill="white" opacity=".5" transform="rotate(-20,57,34)"/>
+          <!-- Ніс ракети -->
+          <path d="M42 24 Q65 4 88 24" fill="url(#nose)" stroke="none"/>
+          <path d="M52 18 Q65 8 78 18" fill="white" opacity=".25"/>
           <!-- Крила -->
-          <path d="M16 54 L4 76 L18 66 L20 54Z" fill="url(#fin)"/>
-          <path d="M64 54 L76 76 L62 66 L60 54Z" fill="url(#fin)"/>
+          <path d="M24 85 L8 112 L28 100 L30 82Z" fill="url(#fin)"/>
+          <path d="M106 85 L122 112 L102 100 L100 82Z" fill="url(#fin)"/>
           <!-- Декор крил -->
-          <path d="M16 54 L8 70 L18 63Z" fill="white" opacity=".15"/>
-          <path d="M64 54 L72 70 L62 63Z" fill="white" opacity=".15"/>
-          <!-- Двигун -->
-          <rect x="18" y="52" width="44" height="7" rx="3.5" fill="url(#eng)"/>
+          <path d="M24 85 L12 108 L28 98Z" fill="white" opacity=".12"/>
           <!-- Кружечки деталі -->
-          <circle cx="33" cy="47" r="2.5" fill="#ff44aa" opacity=".7"/>
-          <circle cx="47" cy="47" r="2.5" fill="#ff44aa" opacity=".7"/>
-          <!-- Зірочки -->
-          <text x="5" y="28" font-size="9" fill="#ffe066" opacity=".85">✦</text>
-          <text x="64" y="36" font-size="6" fill="#ffe066" opacity=".65">✦</text>
-          <text x="10" y="44" font-size="5" fill="#ffccee" opacity=".5">✦</text>
+          <circle cx="50" cy="72" r="4" fill="white" opacity=".25"/>
+          <circle cx="80" cy="72" r="4" fill="white" opacity=".25"/>
+          <!-- Частки-іскри навколо -->
+          <circle cx="108" cy="48" r="3" fill="#ffcc00" opacity=".7"/>
+          <circle cx="112" cy="62" r="2" fill="#ff8800" opacity=".5"/>
+          <circle cx="18" cy="58" r="2.5" fill="#ffcc00" opacity=".5"/>
           <defs>
-            <radialGradient id="b1" cx="32%" cy="25%">
-              <stop offset="0%" stop-color="#ffb3e0"/>
-              <stop offset="50%" stop-color="#ff66bb"/>
-              <stop offset="100%" stop-color="#cc2288"/>
+            <radialGradient id="body" cx="38%" cy="30%">
+              <stop offset="0%" stop-color="#f0f0f0"/>
+              <stop offset="40%" stop-color="#e0e0e0"/>
+              <stop offset="100%" stop-color="#aaaaaa"/>
             </radialGradient>
-            <linearGradient id="bl" x1="22" y1="6" x2="40" y2="34" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#fff" stop-opacity=".7"/>
-              <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+            <linearGradient id="stripe" x1="24" y1="55" x2="106" y2="77" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#cc2200"/>
+              <stop offset="100%" stop-color="#aa1100"/>
             </linearGradient>
-            <radialGradient id="w1" cx="38%" cy="35%">
-              <stop offset="0%" stop-color="#ffe0f5"/>
-              <stop offset="100%" stop-color="#ff88cc"/>
+            <linearGradient id="stripe2" x1="24" y1="55" x2="106" y2="55" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ff4400"/>
+              <stop offset="50%" stop-color="#ff6600" stop-opacity=".0"/>
+              <stop offset="100%" stop-color="#ff4400"/>
+            </linearGradient>
+            <radialGradient id="win1" cx="40%" cy="35%">
+              <stop offset="0%" stop-color="#cceeff"/>
+              <stop offset="100%" stop-color="#4488cc"/>
             </radialGradient>
-            <radialGradient id="w2" cx="38%" cy="35%">
-              <stop offset="0%" stop-color="#fff5fb"/>
-              <stop offset="100%" stop-color="#ffccee"/>
+            <radialGradient id="win2" cx="35%" cy="30%">
+              <stop offset="0%" stop-color="#eef8ff"/>
+              <stop offset="100%" stop-color="#88bbee"/>
             </radialGradient>
-            <linearGradient id="side" x1="16" y1="50" x2="64" y2="56" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#dd44aa"/>
-              <stop offset="100%" stop-color="#aa1177"/>
+            <linearGradient id="nose" x1="42" y1="24" x2="88" y2="4" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#dddddd"/>
+              <stop offset="100%" stop-color="#ffffff"/>
             </linearGradient>
-            <linearGradient id="fin" x1="10" y1="54" x2="20" y2="76" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#ff66bb"/>
-              <stop offset="100%" stop-color="#881155"/>
+            <linearGradient id="fin" x1="15" y1="82" x2="28" y2="112" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#cc2200"/>
+              <stop offset="100%" stop-color="#881100"/>
             </linearGradient>
-            <linearGradient id="eng" x1="18" y1="52" x2="62" y2="59" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#ff44bb"/>
-              <stop offset="100%" stop-color="#991188"/>
+            <linearGradient id="eng" x1="43" y1="105" x2="87" y2="118" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#888888"/>
+              <stop offset="100%" stop-color="#444444"/>
             </linearGradient>
           </defs>
         </svg>
@@ -398,7 +420,7 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 
 <script>
 // ════════════════════════════════════════════════
-const SERVER = "https://rocket-server-359o.onrender.com"; 
+const SERVER = "https://rocket-server-359o.onrender.com";
 const TON_WALLET = "UQAfazCyjGjugOf73_LrxUuLvxSmExM_8loArhgATwKXU6yA";
 // ════════════════════════════════════════════════
 
@@ -439,66 +461,39 @@ function drawGraph(crashed){
   const W=canvas.width,H=canvas.height;
   const maxM=Math.max(mult,1.3);
   const dur=points[points.length-1].t-points[0].t;if(dur<=0)return;
-
-  // Масштаб — ракета займає весь скай
   const sx=(W-30)/Math.max(dur,5);
   const sy=(H-50)/(maxM-1);
   const px=p=>({x:15+(p.t-points[0].t)*sx, y:H-25-(p.m-1)*sy});
-
   ctx.clearRect(0,0,W,H);
-
+  if(points.length<2)return;
   const p0=px(points[0]);
   const last=px(points[points.length-1]);
-
-  // Жовтий градієнт під кривою як у відео
-  const col = crashed ? '#ff1744' : '#f5c500';
+  const col=crashed?'#ff1744':'#f5c500';
+  // Градієнт під кривою
   const grad=ctx.createLinearGradient(0,H,0,0);
-  if(crashed){
-    grad.addColorStop(0,'rgba(255,23,68,0)');
-    grad.addColorStop(1,'rgba(255,23,68,0.15)');
-  } else {
-    grad.addColorStop(0,'rgba(245,197,0,0)');
-    grad.addColorStop(1,'rgba(245,197,0,0.12)');
-  }
-
-  // Fill під кривою
+  grad.addColorStop(0,crashed?'rgba(255,23,68,0)':'rgba(245,197,0,0)');
+  grad.addColorStop(1,crashed?'rgba(255,23,68,0.12)':'rgba(245,197,0,0.1)');
   ctx.beginPath();ctx.moveTo(p0.x,p0.y);
   for(let i=1;i<points.length;i++){const p=px(points[i]);ctx.lineTo(p.x,p.y)}
   ctx.lineTo(last.x,H-25);ctx.lineTo(p0.x,H-25);ctx.closePath();
   ctx.fillStyle=grad;ctx.fill();
-
-  // Glow ефект — товста лінія
-  ctx.shadowColor = crashed ? '#ff1744' : '#f5c500';
-  ctx.shadowBlur  = crashed ? 8 : 15;
-
-  // Основна крива — жовта товста
+  // Жовта лінія з glow
+  ctx.shadowColor=col;ctx.shadowBlur=crashed?8:18;
   ctx.beginPath();ctx.moveTo(p0.x,p0.y);
   for(let i=1;i<points.length;i++){const p=px(points[i]);ctx.lineTo(p.x,p.y)}
-  ctx.strokeStyle=col;ctx.lineWidth=crashed?3:4;
-  ctx.lineCap='round';ctx.lineJoin='round';
-  ctx.stroke();
-
-  // Скидаємо тінь
+  ctx.strokeStyle=col;ctx.lineWidth=crashed?3:4.5;
+  ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();
   ctx.shadowBlur=0;ctx.shadowColor='transparent';
-
-  // Точка на кінці кривої
+  // Точка на кінці
   if(!crashed){
-    // Glow dot
-    ctx.beginPath();ctx.arc(last.x,last.y,7,0,Math.PI*2);
-    ctx.fillStyle='rgba(245,197,0,0.3)';ctx.fill();
+    ctx.beginPath();ctx.arc(last.x,last.y,8,0,Math.PI*2);
+    ctx.fillStyle='rgba(245,197,0,0.25)';ctx.fill();
     ctx.beginPath();ctx.arc(last.x,last.y,4,0,Math.PI*2);
     ctx.fillStyle='#f5c500';ctx.fill();
     ctx.beginPath();ctx.arc(last.x,last.y,2,0,Math.PI*2);
     ctx.fillStyle='#fff';ctx.fill();
-
-    // Ракета
-    const rk=RKT();rk.style.display='block';
-    const prev=points.length>3?px(points[points.length-3]):p0;
-    const ang=Math.atan2(last.y-prev.y,last.x-prev.x)*180/Math.PI;
-    rk.style.left=(last.x-40)+'px';
-    rk.style.bottom=(H-last.y-15)+'px';
-    rk.style.transform=`rotate(${Math.max(-70,Math.min(-5,ang-45))}deg)`;
   }
+  // Ракета ЗАВЖДИ по центру — не переміщуємо її!
 }
 
 function startSmoke(){
@@ -638,7 +633,7 @@ function connect(){
         phase='flying';startTs=d.ts;crashAt=d.ca;
         document.getElementById('rid').textContent=d.rid;
         ME().className='';ME().textContent=(d.mult||1).toFixed(2)+'×';
-        RKT().style.display='block';RKT().style.left='12px';RKT().style.bottom='22px';
+        RKT().style.display='block';
         startSmoke();startClientAnim();
       } else {
         phase='waiting';ME().className='waiting';ME().textContent='Очікування...';
@@ -665,7 +660,7 @@ function connect(){
       phase='flying';startTs=d.ts;crashAt=d.ca;
       document.getElementById('rid').textContent=d.rid;
       ME().className='';ME().textContent='1.00×';
-      RKT().style.display='block';RKT().style.left='12px';RKT().style.bottom='22px';
+      RKT().style.display='block';
       points=[];startSmoke();startClientAnim();
       if(hasBet){
         BB().disabled=false;BB().className='co';BB().innerHTML=`💰 ВИВЕСТИ ${betAmt.toFixed(2)} TON`;
