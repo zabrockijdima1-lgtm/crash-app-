@@ -148,8 +148,11 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
   scrollbar-width:none;padding-bottom:6px}
 #pl::-webkit-scrollbar{display:none}
 .pr{display:flex;align-items:center;gap:8px;background:var(--bg2);
-  border:0.5px solid #ffffff06;border-radius:10px;padding:8px 12px;flex-shrink:0}
+  border:0.5px solid #ffffff06;border-radius:10px;padding:8px 12px;flex-shrink:0;transition:background .3s,border-color .3s}
 .pr.me{border-color:#6c4fff44;background:#0d1028}
+.pr.won{background:#0a1f0a;border-color:#00e67630}
+.pr.lost{background:#1f0a0a;border-color:#ff174430}
+.pr-nft{width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid #ffffff15}
 .pav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
   justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;overflow:hidden}
 .pav img{width:100%;height:100%;border-radius:50%;object-fit:cover}
@@ -566,17 +569,39 @@ function renderPlayers(list){
     const isMe=p.uid===userId;
     const col=isMe?'#6c4fff':strColor(p.name);
     const ava=p.photo?`<img src="${p.photo}">`:`<span>${(p.name||'?').slice(0,2).toUpperCase()}</span>`;
+
+    // Визначаємо стан рядка
+    let rowClass='pr';
+    if(isMe) rowClass+=' me';
+    if(p.cashed) rowClass+=' won';
+    else if(p.lost) rowClass+=' lost';
+
+    // Підпис ставки під іменем
+    let betTag='';
+    if(p.bet) betTag=`<span style="font-size:10px;color:#556">◈${(+p.bet).toFixed(2)} ×${(+p.mult||0).toFixed(2)}</span>`;
+
+    // Права частина — сума або NFT
     let right='';
-    if(p.cashed&&p.nft)right=`<span class="pa" style="color:#aa77ff;font-size:10px">${(+p.mult).toFixed(2)}× 🎁</span>`;
-    else if(p.cashed&&p.win)right=`<span class="pa" style="color:var(--green)">+${(+p.win).toFixed(2)}◈</span>`;
-    else if(p.lost)right=`<span class="pa" style="color:var(--red)">-${(+p.bet).toFixed(2)}◈</span>`;
-    else if(p.bet)right=`<span class="pa" style="color:#223">◈${(+p.bet).toFixed(2)}</span>`;
+    if(p.cashed&&p.nft){
+      const nftPhoto=getPhotoById(p.nft);
+      const nftImg=nftPhoto?`<img class="pr-nft" src="${nftPhoto}">`:`<span style="font-size:20px">${p.nft.emoji||'🎁'}</span>`;
+      right=`<span class="pa" style="color:var(--green);margin-right:6px">◈${(+p.win).toFixed(2)}</span>${nftImg}`;
+    } else if(p.cashed&&p.win){
+      right=`<span class="pa" style="color:var(--green)">◈${(+p.win).toFixed(2)}</span>`;
+    } else if(p.lost){
+      right=`<span class="pa" style="color:var(--red)">-${(+p.bet).toFixed(2)}◈</span>`;
+    } else if(p.bet){
+      right=`<span class="pa" style="color:#334">◈${(+p.bet).toFixed(2)}</span>`;
+    }
+
     const badge=isMe?`<span style="font-size:7px;background:#6c4fff22;color:#aa77ff;padding:1px 4px;border-radius:4px;margin-left:4px">ти</span>`:'';
-    const nick=p.nick?`<span class="pu">@${p.nick}</span>`:'';
-    return `<div class="pr${isMe?' me':''}">
+    return `<div class="${rowClass}">
       <div class="pav" style="background:${col}18;color:${col}">${ava}</div>
-      <div class="pi"><span class="pn${isMe?' m':''}">${p.name}${badge}</span>${nick}</div>
-      <div style="display:flex;align-items:center;gap:2px;flex-shrink:0">${right}</div>
+      <div class="pi">
+        <span class="pn${isMe?' m':''}">${p.name}${badge}</span>
+        ${betTag}
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">${right}</div>
     </div>`;
   }).join('');
 }
