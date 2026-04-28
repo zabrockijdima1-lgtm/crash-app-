@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -6,317 +7,277 @@
 <title>🚀 Rocket</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--bg:#07070f;--bg2:#0e0e1c;--bg3:#151528;--acc:#6c4fff;--acc2:#4a2fcc;--green:#00e676;--red:#ff1744;--orange:#ff6d00;--gold:#ffd600;--ton:#0098ea}
+:root{--bg:#0a0e1a;--bg2:#111827;--bg3:#1a2236;--acc:#6c4fff;--green:#00e676;--red:#ff1744;--orange:#ff6d00;--gold:#ffd600;--ton:#0098ea}
 html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-serif;overflow:hidden}
 #app{display:flex;flex-direction:column;height:100vh;max-height:100vh}
 
 /* SKY */
-#sky{position:relative;flex:0 0 260px;overflow:hidden;background:linear-gradient(180deg,#0a1628 0%,#0d1f3c 60%,#0a1628 100%)}
-/* Зірки */
+#sky{position:relative;flex:0 0 250px;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 0%, #0d1f3c 0%, #060b14 70%)}
 #sky::before{content:'';position:absolute;inset:0;background-image:
-  radial-gradient(1px 1px at 8% 14%,#fff9,transparent),radial-gradient(1px 1px at 22% 67%,#fff6,transparent),
-  radial-gradient(1px 1px at 37% 11%,#fff8,transparent),radial-gradient(1px 1px at 54% 79%,#fff5,transparent),
+  radial-gradient(1px 1px at 8% 14%,#fff9,transparent),radial-gradient(1px 1px at 22% 67%,#fff5,transparent),
+  radial-gradient(1px 1px at 37% 11%,#fff8,transparent),radial-gradient(1px 1px at 54% 79%,#fff4,transparent),
   radial-gradient(1px 1px at 70% 28%,#fff7,transparent),radial-gradient(1.5px 1.5px at 75% 71%,#fffc,transparent),
   radial-gradient(1px 1px at 92% 7%,#fffa,transparent),radial-gradient(1px 1px at 14% 89%,#fff7,transparent),
-  radial-gradient(1px 1px at 45% 55%,#fff5,transparent),radial-gradient(1px 1px at 82% 33%,#fff6,transparent),
-  radial-gradient(1px 1px at 30% 80%,#fff5,transparent),radial-gradient(1px 1px at 60% 20%,#fff7,transparent)}
+  radial-gradient(1px 1px at 45% 55%,#fff4,transparent),radial-gradient(1px 1px at 82% 33%,#fff6,transparent)}
 #gc{position:absolute;inset:0;width:100%;height:100%}
 
-/* Множник знизу по центру під ракетою */
+/* Множник */
 #mult{
-  position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
-  font-family:'Orbitron',monospace;font-size:38px;font-weight:900;
-  color:#fff;letter-spacing:3px;pointer-events:none;z-index:5;text-align:center;
-  text-shadow:0 0 20px rgba(255,255,255,0.3);
-  white-space:nowrap;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Orbitron',monospace;font-size:52px;font-weight:900;
+  color:#fff;letter-spacing:2px;pointer-events:none;z-index:5;text-align:center;
+  text-shadow:0 2px 20px rgba(255,255,255,0.15);
 }
-#mult.crashed{color:var(--red);text-shadow:0 0 30px #ff174466;animation:shake .3s}
-#mult.waiting{font-size:16px;color:#aaa;text-shadow:none;letter-spacing:1px;bottom:18px}
-@keyframes shake{0%,100%{transform:translateX(-50%)}25%{transform:translateX(-52%)}75%{transform:translateX(-48%)}}
+#mult.crashed{color:var(--red);text-shadow:0 0 30px #ff174455;animation:shake .3s}
+#mult.waiting{font-size:16px;color:#666;text-shadow:none;letter-spacing:1px}
+@keyframes shake{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(-52%,-50%)}75%{transform:translate(-48%,-50%)}}
 
-/* ROCKET — стоїть по центру, анімується вгору-вниз */
-#rkt{
-  position:absolute;pointer-events:none;z-index:6;display:none;
-  left:50%;top:30%;transform:translate(-50%,-50%);
-  animation:rocket-hover 1.8s ease-in-out infinite alternate;
+/* 3D РАКЕТА — Sketchfab iframe */
+#rkt-wrap{
+  display:none;position:absolute;z-index:6;pointer-events:none;
+  width:140px;height:140px;
+  border-radius:50%;overflow:hidden;
+  /* Прозорий фон через css filter */
 }
-@keyframes rocket-hover{
-  0%{transform:translate(-50%,-50%) rotate(-4deg) translateY(0)}
-  100%{transform:translate(-50%,-50%) rotate(4deg) translateY(-12px)}
-}
-.rb{position:relative;width:130px;height:130px;filter:drop-shadow(0 0 20px rgba(255,100,180,0.6))}
-.rsv{width:130px;height:130px;display:block}
-.fw{position:absolute;bottom:-26px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
-.fl{border-radius:50% 50% 30% 30%;animation:flk .07s ease-in-out infinite alternate;transform-origin:center top}
-.f1{width:28px;height:42px;background:linear-gradient(180deg,#fff,#ffe066 20%,#ff6d00 65%,transparent)}
-.f2{width:18px;height:30px;background:linear-gradient(180deg,#ffe066,#ff6d00 50%,transparent);margin-top:-28px;animation-delay:.03s}
-.f3{width:10px;height:20px;background:linear-gradient(180deg,#ff6d00,transparent);margin-top:-16px;animation-delay:.015s}
-@keyframes flk{0%{transform:scaleX(1)}100%{transform:scaleX(.7) scaleY(1.25)}}
-
-/* TOP BAR */
-#topbar{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:8px 10px}
-#rlbl{font-size:9px;color:#252535;background:#00000066;padding:4px 8px;border-radius:10px}
-/* Кнопка депозиту зверху справа як на фото */
-#deposit-btn{
-  display:flex;align-items:center;gap:6px;
-  background:#00000088;border:0.5px solid var(--ton);border-radius:20px;
-  padding:5px 12px 5px 8px;cursor:pointer;
-  font-family:'Orbitron',monospace;font-size:11px;color:var(--ton);
-  backdrop-filter:blur(8px);
-}
-#deposit-btn .dep-bal{color:var(--gold);margin-right:2px}
-#deposit-btn .dep-plus{
-  width:20px;height:20px;background:var(--ton);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:700;color:#fff;flex-shrink:0;margin-left:4px;
+#rkt-wrap iframe{
+  width:300%;height:300%;
+  margin-left:-100%;margin-top:-100%;
+  border:none;pointer-events:none;
+  opacity:0.95;
 }
 
-/* NFT PREVIEW CARD (під час польоту) */
+/* ЧАСТКИ */
+#particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:3}
+.part{position:absolute;background:rgba(255,255,255,0.12);border-radius:50%;
+  animation:pfly linear infinite}
+@keyframes pfly{0%{opacity:.5;transform:translateY(0) rotate(0deg)}
+  100%{opacity:0;transform:translateY(-100px) rotate(30deg)}}
+
+/* TOPBAR */
+#topbar{position:absolute;top:0;left:0;right:0;z-index:10;
+  display:flex;justify-content:space-between;align-items:center;padding:8px 12px}
+#rlbl{font-size:9px;color:#334;background:#00000066;padding:4px 8px;border-radius:10px}
+#deposit-btn{display:flex;align-items:center;gap:6px;
+  background:#00000099;border:0.5px solid #0098ea44;border-radius:20px;
+  padding:5px 10px 5px 8px;cursor:pointer;backdrop-filter:blur(8px)}
+#deposit-btn .dep-bal{font-family:'Orbitron',monospace;font-size:11px;color:var(--gold)}
+#deposit-btn .dep-plus{width:20px;height:20px;background:var(--ton);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+
+/* NFT PREVIEW */
 #nft-preview{
-  display:none;position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
-  background:linear-gradient(135deg,#1a0a2e,#0d0820);
-  border:1px solid #aa77ff55;border-radius:14px;padding:8px 12px;
-  z-index:20;flex-direction:row;align-items:center;gap:10px;
-  min-width:200px;backdrop-filter:blur(10px);
-  box-shadow:0 4px 20px #aa77ff22;
+  display:none;position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+  background:rgba(10,8,20,0.92);border:1px solid #6c4fff55;border-radius:14px;
+  padding:8px 12px;z-index:20;flex-direction:row;align-items:center;gap:10px;
+  min-width:220px;backdrop-filter:blur(12px);box-shadow:0 4px 24px #6c4fff22;
 }
-#nft-preview.show{display:flex;animation:slidein .3s ease}
-@keyframes slidein{0%{transform:translateX(-50%) translateY(20px);opacity:0}100%{transform:translateX(-50%) translateY(0);opacity:1}}
-#nft-preview img{width:44px;height:44px;border-radius:10px;object-fit:cover;border:1px solid #aa77ff44}
-#nft-preview .nft-info{flex:1}
-#nft-preview .nft-name{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px}
-#nft-preview .nft-rarity{font-size:9px;padding:1px 6px;border-radius:6px;display:inline-block;margin-bottom:4px}
-#nft-preview .nft-val{font-family:'Orbitron',monospace;font-size:11px;color:var(--green)}
-#nft-preview .nft-floor{font-size:9px;color:#666;margin-top:1px}
-.rare-Common{background:#1a3a1a;color:#3ddc84}
-.rare-Rare{background:#1a2a4a;color:#44aaff}
-.rare-Epic{background:#2a1a4a;color:#aa77ff}
-.rare-Legendary{background:#3a2a0a;color:#ffd700}
+#nft-preview.show{display:flex;animation:slidein .25s ease}
+@keyframes slidein{0%{transform:translateX(-50%) translateY(16px);opacity:0}100%{transform:translateX(-50%) translateY(0);opacity:1}}
+#np-lottie{width:50px;height:50px;flex-shrink:0;border-radius:10px;overflow:hidden;background:#1a1a2e}
+.nft-name{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px}
+.nft-rarity{font-size:9px;padding:1px 6px;border-radius:5px;display:inline-block;margin-bottom:3px}
+.nft-val{font-family:'Orbitron',monospace;font-size:11px;color:var(--green)}
+.nft-floor{font-size:9px;color:#555;margin-top:1px}
+.rare-Common{background:#0d2e1a;color:#3ddc84}
+.rare-Rare{background:#0d1e3a;color:#44aaff}
+.rare-Epic{background:#1e0d3a;color:#aa77ff}
+.rare-Legendary{background:#2e1e00;color:#ffd700}
 
-/* HISTORY */
-#hist{display:flex;gap:5px;padding:6px 10px;overflow-x:auto;background:#060610;border-bottom:0.5px solid #ffffff06;scrollbar-width:none;flex-shrink:0}
+/* HIST */
+#hist{display:flex;gap:5px;padding:5px 10px;overflow-x:auto;
+  background:#080c16;border-bottom:0.5px solid #ffffff06;scrollbar-width:none;flex-shrink:0}
 #hist::-webkit-scrollbar{display:none}
-.hc{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
-.hl{background:#111122;color:#333355;border:0.5px solid #ffffff07}
-.hm{background:#0a1a10;color:var(--green);border:0.5px solid #00e67615}
-.hh{background:#1a0e06;color:var(--orange);border:0.5px solid #ff6d0015}
-.hmoon{background:#120c30;color:#aa77ff;border:0.5px solid #aa77ff25}
+.hc{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;
+  padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.hl{background:#0d1020;color:#223;border:0.5px solid #ffffff07}
+.hm{background:#091a0e;color:var(--green);border:0.5px solid #00e67618}
+.hh{background:#1a0e06;color:var(--orange);border:0.5px solid #ff6d0018}
+.hmoon{background:#100830;color:#aa77ff;border:0.5px solid #aa77ff25}
 
 /* CONTROLS */
 #ctrls{padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-shrink:0}
-.card{background:var(--bg2);border:0.5px solid #ffffff09;border-radius:12px;padding:10px 12px}
-.cl{font-size:9px;color:#303050;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
-.inp{width:100%;background:var(--bg);border:0.5px solid #ffffff10;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:15px;font-weight:700;padding:7px 10px;outline:none}
+.card{background:var(--bg2);border:0.5px solid #ffffff08;border-radius:12px;padding:10px 12px}
+.cl{font-size:9px;color:#334;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.inp{width:100%;background:var(--bg);border:0.5px solid #ffffff10;border-radius:8px;
+  color:#fff;font-family:'Orbitron',monospace;font-size:15px;font-weight:700;padding:7px 10px;outline:none}
 .inp:focus{border-color:#6c4fff44}
 .qbtns{display:flex;gap:3px;margin-top:6px}
-.qb{background:#111125;border:0.5px solid #ffffff08;border-radius:6px;color:#444;font-size:10px;padding:3px 0;cursor:pointer;flex:1;text-align:center}
-.qb:active{background:#1a1a35;color:#ccc}
+.qb{background:#0d1428;border:0.5px solid #ffffff08;border-radius:6px;
+  color:#445;font-size:10px;padding:3px 0;cursor:pointer;flex:1;text-align:center}
+.qb:active{color:#ccc;background:#1a2040}
 .ar{display:flex;align-items:center;gap:6px}
-.tl{font-size:12px;color:#333;flex:1}
-.tog{width:36px;height:20px;background:#111125;border-radius:10px;border:0.5px solid #ffffff0c;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.tl{font-size:12px;color:#334;flex:1}
+.tog{width:36px;height:20px;background:#0d1428;border-radius:10px;
+  border:0.5px solid #ffffff0c;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
 .tog.on{background:var(--acc)}
-.tog::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .2s}
+.tog::after{content:'';position:absolute;width:14px;height:14px;background:#fff;
+  border-radius:50%;top:3px;left:3px;transition:left .2s}
 .tog.on::after{left:19px}
-.ai{background:var(--bg);border:0.5px solid #ffffff10;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:12px;padding:5px 8px;width:70px;outline:none;margin-top:8px}
-
-/* BET BTN */
-#bb{grid-column:1/-1;background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;border-radius:12px;color:#fff;font-family:'Orbitron',monospace;font-size:14px;font-weight:700;padding:14px;cursor:pointer;letter-spacing:1px;transition:opacity .15s,transform .1s}
+.ai{background:var(--bg);border:0.5px solid #ffffff10;border-radius:8px;
+  color:#fff;font-family:'Orbitron',monospace;font-size:12px;padding:5px 8px;width:70px;
+  outline:none;margin-top:8px}
+#bb{grid-column:1/-1;background:linear-gradient(135deg,#1a47cc,#0d2e99);
+  border:none;border-radius:14px;color:#fff;font-family:'Orbitron',monospace;
+  font-size:15px;font-weight:700;padding:15px;cursor:pointer;letter-spacing:1px;
+  transition:opacity .15s,transform .1s;box-shadow:0 4px 20px #1a47cc44}
 #bb:active{transform:scale(.98)}
-#bb.co{background:linear-gradient(135deg,var(--orange),#cc4400)}
+#bb.co{background:linear-gradient(135deg,#2a8a3a,#1a6228);box-shadow:0 4px 20px #2a8a3a44}
 #bb:disabled{opacity:.2;cursor:not-allowed}
 
-/* NFT HINT під кнопкою */
-#nft-hint{font-size:10px;color:#444;text-align:center;padding:3px 0;flex-shrink:0}
-#nft-hint span{color:#aa77ff}
+/* NFT HINT */
+#nft-hint{font-size:10px;color:#334;text-align:center;padding:3px 0 2px;flex-shrink:0}
+#nft-hint span{color:#7766ff}
+
+/* BOTTOM NAV */
+#bottomnav{display:flex;flex-shrink:0;background:var(--bg2);border-top:0.5px solid #ffffff08}
+.tabn{flex:1;background:none;border:none;color:#334;font-size:10px;padding:8px 4px;
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .2s}
+.tabn.active{color:#7766ff}
+.tabn span:first-child{font-size:20px}
 
 /* PLAYERS */
-#pw{flex:1;overflow:hidden;padding:0 12px;min-height:0;display:flex;flex-direction:column}
-.st{font-size:9px;color:#1e1e30;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;flex-shrink:0;display:flex;align-items:center;gap:6px}
-.pc{background:var(--bg3);border-radius:8px;padding:1px 6px;font-size:9px;color:#333}
-#pl{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:3px;scrollbar-width:none;padding-bottom:6px}
+#tab-game-content{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 12px}
+.st{font-size:9px;color:#223;letter-spacing:1.5px;text-transform:uppercase;
+  margin-bottom:5px;flex-shrink:0;display:flex;align-items:center;gap:6px}
+.pc{background:var(--bg3);border-radius:8px;padding:1px 6px;font-size:9px;color:#334}
+#pl{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:3px;
+  scrollbar-width:none;padding-bottom:6px}
 #pl::-webkit-scrollbar{display:none}
-.pr{display:flex;align-items:center;gap:8px;background:var(--bg2);border:0.5px solid #ffffff05;border-radius:8px;padding:7px 10px;flex-shrink:0}
-.pr.me{border-color:#6c4fff44}
-.pav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;overflow:hidden}
+.pr{display:flex;align-items:center;gap:8px;background:var(--bg2);
+  border:0.5px solid #ffffff06;border-radius:10px;padding:8px 12px;flex-shrink:0}
+.pr.me{border-color:#6c4fff44;background:#0d1028}
+.pav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;overflow:hidden}
 .pav img{width:100%;height:100%;border-radius:50%;object-fit:cover}
 .pi{display:flex;flex-direction:column;flex:1;overflow:hidden;min-width:0}
-.pn{font-size:12px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pn{font-size:12px;color:#778;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pn.m{color:#fff;font-weight:600}
-.pu{font-size:9px;color:#1e1e30;margin-top:1px}
-.pa{font-family:'Orbitron',monospace;font-size:11px;font-weight:700}
-.pmx{font-size:9px;padding:2px 5px;border-radius:5px;font-family:'Orbitron',monospace;margin-right:2px}
+.pu{font-size:9px;color:#223;margin-top:1px}
+.pa{font-family:'Orbitron',monospace;font-size:12px;font-weight:700}
+
+/* INVENTORY */
+#tab-inv-content{display:none;flex:1;overflow-y:auto;padding:12px;scrollbar-width:none}
+#tab-inv-content::-webkit-scrollbar{display:none}
+#inv-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-bottom:10px}
+.inv-card{background:var(--bg2);border:0.5px solid #ffffff08;border-radius:14px;overflow:hidden}
+.inv-lottie{width:100%;aspect-ratio:1;background:var(--bg3)}
+.inv-body{padding:8px}
+.inv-name{font-size:11px;font-weight:700;color:#ccc;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inv-r{font-size:8px;padding:2px 6px;border-radius:5px;display:inline-block;margin-bottom:4px}
+.inv-price{font-size:9px;color:#556;margin-bottom:6px}
+.inv-mult{font-family:'Orbitron',monospace;font-size:10px;color:var(--acc);margin-bottom:6px}
+.inv-btn{width:100%;background:linear-gradient(135deg,var(--ton),#006db3);border:none;
+  border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:10px;
+  font-weight:700;padding:7px;cursor:pointer}
 
 /* MODALS */
-#mbg{display:none;position:fixed;inset:0;background:#000000bb;z-index:100;align-items:flex-end;justify-content:center}
+#mbg{display:none;position:fixed;inset:0;background:#000000cc;z-index:100;
+  align-items:flex-end;justify-content:center;backdrop-filter:blur(6px)}
 #mbg.open{display:flex}
-#mod{background:var(--bg2);border-radius:20px 20px 0 0;border:0.5px solid #ffffff10;padding:20px;width:100%;max-width:480px}
-#mod h3{font-family:'Orbitron',monospace;font-size:15px;margin-bottom:3px}
-#mod p{font-size:12px;color:#333;margin-bottom:14px}
+#mod{background:var(--bg2);border-radius:20px 20px 0 0;border:0.5px solid #ffffff0c;
+  padding:20px;width:100%;max-width:480px}
+#mod h3{font-family:'Orbitron',monospace;font-size:15px;margin-bottom:4px}
 .sos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
-.so{background:var(--bg3);border:0.5px solid #ffffff0c;border-radius:10px;padding:10px 4px;text-align:center;cursor:pointer;transition:border-color .15s}
+.so{background:var(--bg3);border:0.5px solid #ffffff0c;border-radius:10px;
+  padding:10px 4px;text-align:center;cursor:pointer;transition:border-color .15s}
 .so.sel,.so:active{border-color:var(--ton)}
-.so .sa{font-size:16px}
+.so .sa{font-size:20px}
 .so .sl{font-family:'Orbitron',monospace;font-size:10px;margin-top:4px;color:#aaa}
-#cton{width:100%;background:var(--bg);border:0.5px solid #ffffff10;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:14px;padding:9px 12px;outline:none;margin-bottom:10px}
-#pbtn{width:100%;background:var(--ton);border:none;border-radius:10px;color:#fff;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;padding:13px;cursor:pointer}
-#pbtn:active{opacity:.85}
-#mcl{width:100%;background:transparent;border:none;color:#333;font-size:12px;padding:10px;cursor:pointer;margin-top:2px}
+.wallet-row{background:var(--bg3);border-radius:10px;padding:10px 12px;
+  margin-bottom:12px;display:flex;align-items:center;gap:10px}
+#ws-dot{width:8px;height:8px;border-radius:50%;background:#333;flex-shrink:0}
+#ws-text{flex:1;font-size:12px;color:#556}
+#ws-btn{background:var(--ton);border:none;border-radius:8px;color:#fff;
+  font-size:11px;padding:5px 10px;cursor:pointer;font-family:Orbitron,monospace}
+#cton{width:100%;background:var(--bg);border:0.5px solid #ffffff10;border-radius:8px;
+  color:#fff;font-family:'Orbitron',monospace;font-size:14px;padding:9px 12px;
+  outline:none;margin-bottom:8px}
+#pbtn{width:100%;background:var(--ton);border:none;border-radius:10px;color:#fff;
+  font-family:'Orbitron',monospace;font-size:13px;font-weight:700;padding:13px;
+  cursor:pointer;margin-bottom:6px}
+#paid-btn{width:100%;background:#0d2a0d;border:0.5px solid var(--green);
+  border-radius:10px;color:var(--green);font-family:'Orbitron',monospace;
+  font-size:12px;font-weight:700;padding:11px;cursor:pointer;margin-bottom:6px}
+#mcl{width:100%;background:transparent;border:none;color:#334;
+  font-size:12px;padding:10px;cursor:pointer}
 
-/* WIN POPUP з NFT */
+/* WIN POPUP */
 #wp{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-  background:linear-gradient(135deg,#12082a,#080512);
-  border:1px solid #aa77ff;border-radius:18px;padding:20px 24px;
-  text-align:center;z-index:250;box-shadow:0 0 40px #aa77ff22;min-width:240px}
-#wp.show{display:block;animation:popin .35s cubic-bezier(.34,1.56,.64,1)}
-@keyframes popin{0%{transform:translate(-50%,-50%) scale(.4);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
-#wp-nft-img{width:80px;height:80px;border-radius:14px;object-fit:cover;border:2px solid #aa77ff;margin:0 auto 10px;display:block}
+  background:linear-gradient(135deg,#0d0a22,#070512);
+  border:1px solid #6c4fff66;border-radius:20px;padding:24px;
+  text-align:center;z-index:250;box-shadow:0 0 50px #6c4fff22;min-width:260px;max-width:320px}
+#wp.show{display:block;animation:popin .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popin{0%{transform:translate(-50%,-50%) scale(.4);opacity:0}
+  100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+#wp-lottie{width:120px;height:120px;margin:0 auto 10px;border-radius:16px;
+  overflow:hidden;background:#0d0a22;border:1px solid #6c4fff33}
 #wp-nft-name{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;color:#fff;margin-bottom:4px}
-#wp-nft-rarity{font-size:10px;padding:2px 10px;border-radius:8px;display:inline-block;margin-bottom:8px}
-#wp-mult{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:#aa77ff}
-#wp-val{font-family:'Orbitron',monospace;font-size:16px;color:#ffd700;margin-top:4px}
-#wp-sub{font-size:11px;color:#555;margin-top:6px}
-#wp-ton-val{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:var(--green)}
-#wp-close{width:100%;background:transparent;border:none;color:#444;font-size:12px;padding:10px;cursor:pointer;margin-top:4px}
+#wp-nft-rarity{font-size:10px;padding:2px 10px;border-radius:8px;display:inline-block;margin-bottom:10px}
+#wp-mult{font-family:'Orbitron',monospace;font-size:30px;font-weight:900;color:#aa77ff}
+#wp-val{font-family:'Orbitron',monospace;font-size:15px;color:#ffd700;margin-top:5px}
+#wp-sub{font-size:10px;color:#445;margin-top:5px}
+#wp-close{width:100%;background:transparent;border:none;color:#334;font-size:12px;padding:10px;cursor:pointer;margin-top:6px}
+#wp-ton-mult{font-family:'Orbitron',monospace;font-size:44px;font-weight:900;color:var(--green);margin-bottom:6px}
+#wp-ton-val{font-family:'Orbitron',monospace;font-size:22px;color:#ffd700}
+#wp-ton-sub{font-size:11px;color:#445;margin-top:6px}
 
 /* TOAST */
-#toast{position:fixed;top:50px;left:50%;transform:translateX(-50%);background:var(--red);color:#fff;font-family:'Orbitron',monospace;font-size:11px;padding:8px 18px;border-radius:12px;z-index:300;pointer-events:none;opacity:0;transition:opacity .25s;white-space:nowrap}
+#toast{position:fixed;top:50px;left:50%;transform:translateX(-50%);
+  background:var(--red);color:#fff;font-family:'Orbitron',monospace;font-size:11px;
+  padding:8px 18px;border-radius:12px;z-index:300;pointer-events:none;
+  opacity:0;transition:opacity .25s;white-space:nowrap;max-width:90vw;text-align:center}
 #toast.win{background:var(--green);color:#000}
 #toast.info{background:var(--ton)}
 #toast.show{opacity:1}
-.sp{position:fixed;pointer-events:none;z-index:200;font-size:16px;animation:spf 1s ease-out forwards}
+.sp{position:fixed;pointer-events:none;z-index:200;font-size:18px;
+  animation:spf 1s ease-out forwards}
 @keyframes spf{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-80px) scale(.3)}}
-/* PARTICLES */
-#particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
-@keyframes particle-fly{0%{opacity:.5;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(-90px) rotate(25deg)}}
-/* INVENTORY */
-.inv-card{background:var(--bg2);border:0.5px solid #ffffff0a;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-.inv-card img{width:100%;aspect-ratio:1;object-fit:cover;background:#0a0a1a}
-.inv-card-body{padding:8px}
-.inv-card-name{font-size:11px;font-weight:700;color:#ccc;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.inv-card-floor{font-size:10px;color:#555;margin-bottom:6px}
-.inv-card-rarity{font-size:8px;padding:2px 6px;border-radius:5px;display:inline-block;margin-bottom:6px}
-.inv-withdraw{width:100%;background:linear-gradient(135deg,var(--ton),#006db3);border:none;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;padding:7px;cursor:pointer}
-.inv-withdraw:active{opacity:.85}
-#tab-game-content{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 12px}
-#tab-inv-content{flex:1;overflow-y:auto;padding:12px;scrollbar-width:none}
-#tab-inv-content::-webkit-scrollbar{display:none}
+#conn{position:fixed;bottom:6px;right:8px;font-size:8px;color:#223;z-index:50}
 </style>
 </head>
 <body>
 <div id="app">
+  <!-- SKY -->
   <div id="sky">
     <canvas id="gc"></canvas>
-    <div id="mult" class="waiting">...</div>
 
     <!-- ЧАСТКИ -->
     <div id="particles"></div>
 
-    <!-- РАКЕТА — рожева як на фото -->
-    <div id="rkt">
-      <div class="rb">
-        <svg class="rsv" viewBox="0 0 130 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Двигун знизу -->
-          <ellipse cx="65" cy="108" rx="22" ry="10" fill="url(#eng)"/>
-          <ellipse cx="65" cy="105" rx="18" ry="7" fill="#cc3300" opacity=".8"/>
-          <!-- Тіло — кругле як у відео -->
-          <ellipse cx="65" cy="62" rx="42" ry="52" fill="url(#body)"/>
-          <!-- Блиск зліва -->
-          <ellipse cx="48" cy="40" rx="14" ry="22" fill="white" opacity=".2" transform="rotate(-15,48,40)"/>
-          <!-- Смуга з написом -->
-          <rect x="24" y="55" width="82" height="22" rx="4" fill="url(#stripe)"/>
-          <rect x="24" y="55" width="82" height="22" rx="4" fill="url(#stripe2)" opacity=".4"/>
-          <!-- Вікно — велике кругле -->
-          <circle cx="65" cy="42" r="20" fill="url(#win1)" stroke="#fff" stroke-width="2.5" stroke-opacity=".5"/>
-          <circle cx="65" cy="42" r="15" fill="url(#win2)"/>
-          <!-- Відблиск у вікні -->
-          <ellipse cx="57" cy="34" rx="5" ry="8" fill="white" opacity=".5" transform="rotate(-20,57,34)"/>
-          <!-- Ніс ракети -->
-          <path d="M42 24 Q65 4 88 24" fill="url(#nose)" stroke="none"/>
-          <path d="M52 18 Q65 8 78 18" fill="white" opacity=".25"/>
-          <!-- Крила -->
-          <path d="M24 85 L8 112 L28 100 L30 82Z" fill="url(#fin)"/>
-          <path d="M106 85 L122 112 L102 100 L100 82Z" fill="url(#fin)"/>
-          <!-- Декор крил -->
-          <path d="M24 85 L12 108 L28 98Z" fill="white" opacity=".12"/>
-          <!-- Кружечки деталі -->
-          <circle cx="50" cy="72" r="4" fill="white" opacity=".25"/>
-          <circle cx="80" cy="72" r="4" fill="white" opacity=".25"/>
-          <!-- Частки-іскри навколо -->
-          <circle cx="108" cy="48" r="3" fill="#ffcc00" opacity=".7"/>
-          <circle cx="112" cy="62" r="2" fill="#ff8800" opacity=".5"/>
-          <circle cx="18" cy="58" r="2.5" fill="#ffcc00" opacity=".5"/>
-          <defs>
-            <radialGradient id="body" cx="38%" cy="30%">
-              <stop offset="0%" stop-color="#f0f0f0"/>
-              <stop offset="40%" stop-color="#e0e0e0"/>
-              <stop offset="100%" stop-color="#aaaaaa"/>
-            </radialGradient>
-            <linearGradient id="stripe" x1="24" y1="55" x2="106" y2="77" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#cc2200"/>
-              <stop offset="100%" stop-color="#aa1100"/>
-            </linearGradient>
-            <linearGradient id="stripe2" x1="24" y1="55" x2="106" y2="55" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#ff4400"/>
-              <stop offset="50%" stop-color="#ff6600" stop-opacity=".0"/>
-              <stop offset="100%" stop-color="#ff4400"/>
-            </linearGradient>
-            <radialGradient id="win1" cx="40%" cy="35%">
-              <stop offset="0%" stop-color="#cceeff"/>
-              <stop offset="100%" stop-color="#4488cc"/>
-            </radialGradient>
-            <radialGradient id="win2" cx="35%" cy="30%">
-              <stop offset="0%" stop-color="#eef8ff"/>
-              <stop offset="100%" stop-color="#88bbee"/>
-            </radialGradient>
-            <linearGradient id="nose" x1="42" y1="24" x2="88" y2="4" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#dddddd"/>
-              <stop offset="100%" stop-color="#ffffff"/>
-            </linearGradient>
-            <linearGradient id="fin" x1="15" y1="82" x2="28" y2="112" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#cc2200"/>
-              <stop offset="100%" stop-color="#881100"/>
-            </linearGradient>
-            <linearGradient id="eng" x1="43" y1="105" x2="87" y2="118" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#888888"/>
-              <stop offset="100%" stop-color="#444444"/>
-            </linearGradient>
-          </defs>
-        </svg>
-        <div class="fw">
-          <div class="fl f1"></div>
-          <div class="fl f2"></div>
-          <div class="fl f3"></div>
-        </div>
-      </div>
+    <!-- МНОЖНИК -->
+    <div id="mult" class="waiting">...</div>
+
+    <!-- TOPBAR -->
+    <div id="topbar">
+      <div id="rlbl">Round #<span id="rid">1</span></div>
+      <button id="deposit-btn" onclick="openTopup()">
+        <span style="font-size:14px">◈</span>
+        <span class="dep-bal"><span id="bal">1.00</span> TON</span>
+        <span class="dep-plus">+</span>
+      </button>
     </div>
 
     <!-- NFT прев'ю під час польоту -->
     <div id="nft-preview">
-      <img id="np-img" src="" alt="" onerror="this.style.display='none'">
-      <div class="nft-info">
+      <div id="np-lottie"></div>
+      <div>
         <div class="nft-name" id="np-name"></div>
         <span class="nft-rarity" id="np-rarity"></span>
         <div class="nft-val" id="np-val"></div>
         <div class="nft-floor" id="np-floor"></div>
       </div>
     </div>
-
-    <!-- Топ бар -->
-    <div id="topbar">
-      <div id="rlbl">Round #<span id="rid">1</span></div>
-      <button id="deposit-btn" onclick="openTopup()">
-        <span>⬦</span>
-        <span class="dep-bal"><span id="bal">1.00</span> TON</span>
-        <span class="dep-plus">+</span>
-      </button>
-    </div>
   </div>
 
+  <!-- HISTORY -->
   <div id="hist"></div>
 
+  <!-- CONTROLS -->
   <div id="ctrls">
     <div class="card">
       <div class="cl">СТАВКА TON</div>
@@ -331,38 +292,38 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
     </div>
     <div class="card">
       <div class="cl">АВТО-ВИВІД</div>
-      <div class="ar"><span class="tl">Авто</span><div class="tog" id="atog" onclick="toggleAuto()"></div></div>
+      <div class="ar"><span class="tl">Авто</span>
+        <div class="tog" id="atog" onclick="toggleAuto()"></div></div>
       <input class="ai" id="av" type="number" value="2.0" min="1.1" step="0.1">
     </div>
     <button id="bb" onclick="handleBet()">🚀 ПОСТАВИТИ</button>
   </div>
 
-  <div id="nft-hint">Виграш ≥2.8 TON → отримаєш <span>NFT Gift</span> замість TON</div>
+  <div id="nft-hint">Виграш ≥2.8 TON → отримаєш <span>Telegram Gift NFT</span></div>
 
-  <!-- НИЖНЯ НАВІГАЦІЯ -->
-  <div id="bottomnav" style="display:flex;flex-shrink:0;background:var(--bg2);border-top:0.5px solid #ffffff0a">
-    <button onclick="switchTab('game')" id="tab-game" style="flex:1;background:none;border:none;color:var(--acc);font-size:10px;padding:8px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px">
-      <span style="font-size:18px">🚀</span><span>Гра</span>
+  <!-- BOTTOM NAV -->
+  <div id="bottomnav">
+    <button class="tabn active" id="tab-game" onclick="switchTab('game')">
+      <span>🚀</span><span>Гра</span>
     </button>
-    <button onclick="switchTab('inv')" id="tab-inv" style="flex:1;background:none;border:none;color:#444;font-size:10px;padding:8px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px">
-      <span style="font-size:18px">🎁</span><span>Інвентар</span>
+    <button class="tabn" id="tab-inv" onclick="switchTab('inv')">
+      <span>🎁</span><span id="inv-tab-lbl">Інвентар</span>
     </button>
   </div>
 
-  <!-- ВКЛАДКА ГРА -->
+  <!-- ГРА -->
   <div id="tab-game-content">
-    <div id="pw">
-      <div class="st">ГРАВЦІ <span class="pc" id="pcnt">0</span></div>
-      <div id="pl"></div>
-    </div>
+    <div class="st">ГРАВЦІ <span class="pc" id="pcnt">0</span></div>
+    <div id="pl"></div>
   </div>
 
-  <!-- ВКЛАДКА ІНВЕНТАР -->
-  <div id="tab-inv-content" style="display:none;flex:1;overflow-y:auto;padding:12px">
-    <div style="font-size:10px;color:#333;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">МОЇ NFT GIFTS</div>
-    <div id="inv-list" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-bottom:10px"></div>
-    <div id="inv-empty" style="text-align:center;color:#2a2a3a;font-size:13px;padding:30px 0">
-      Тут будуть твої NFT<br><span style="font-size:11px;color:#1a1a2a">Виграй ≥2.8 TON щоб отримати</span>
+  <!-- ІНВЕНТАР -->
+  <div id="tab-inv-content">
+    <div style="font-size:9px;color:#223;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">МОЇ TELEGRAM GIFTS</div>
+    <div id="inv-list"></div>
+    <div id="inv-empty" style="text-align:center;color:#223;font-size:13px;padding:30px 0">
+      Тут будуть твої NFT Gifts<br>
+      <span style="font-size:11px;color:#1a1a30">Виграй ≥2.8 TON щоб отримати</span>
     </div>
   </div>
 </div>
@@ -370,47 +331,42 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 <!-- DEPOSIT MODAL -->
 <div id="mbg" onclick="if(event.target===this)closeTopup()">
   <div id="mod">
-    <h3>⬦ Поповнення TON</h3>
-
-    <!-- Статус гаманця -->
-    <div id="wallet-status" style="background:var(--bg3);border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:10px">
-      <div id="ws-dot" style="width:8px;height:8px;border-radius:50%;background:#333;flex-shrink:0"></div>
-      <div style="flex:1;font-size:12px;color:#666" id="ws-text">Гаманець не підключено</div>
-      <button id="ws-btn" onclick="toggleWallet()" style="background:var(--ton);border:none;border-radius:8px;color:#fff;font-size:11px;padding:5px 10px;cursor:pointer;font-family:Orbitron,monospace">Підключити</button>
+    <h3>◈ Поповнення TON</h3>
+    <p style="font-size:12px;color:#334;margin-bottom:12px">Виграш ≥2.8 TON = Telegram Gift NFT</p>
+    <div class="wallet-row">
+      <div id="ws-dot"></div>
+      <div id="ws-text">Гаманець не підключено</div>
+      <button id="ws-btn" onclick="toggleWallet()">Підключити</button>
     </div>
-
-    <p style="font-size:12px;color:#333;margin-bottom:14px">Виграш ≥2.8 TON → NFT замість TON</p>
     <div class="sos">
-      <div class="so" onclick="pickT(this,.5)"><div class="sa">⬦</div><div class="sl">0.5 TON</div></div>
-      <div class="so sel" onclick="pickT(this,1)"><div class="sa">⬦⬦</div><div class="sl">1 TON</div></div>
-      <div class="so" onclick="pickT(this,5)"><div class="sa">⬦⬦⬦</div><div class="sl">5 TON</div></div>
+      <div class="so" onclick="pickT(this,.5)"><div class="sa">◈</div><div class="sl">0.5 TON</div></div>
+      <div class="so sel" onclick="pickT(this,1)"><div class="sa">◈◈</div><div class="sl">1 TON</div></div>
+      <div class="so" onclick="pickT(this,5)"><div class="sa">◈◈◈</div><div class="sl">5 TON</div></div>
       <div class="so" onclick="pickT(this,10)"><div class="sa">💎</div><div class="sl">10 TON</div></div>
       <div class="so" onclick="pickT(this,50)"><div class="sa">💎💎</div><div class="sl">50 TON</div></div>
       <div class="so" onclick="pickT(this,100)"><div class="sa">💎💎💎</div><div class="sl">100 TON</div></div>
     </div>
     <input class="inp" id="cton" type="number" min="0.1" step="0.1" placeholder="Інша сума...">
-    <button id="pbtn" onclick="doTonPayment()" style="width:100%;background:var(--ton);border:none;border-radius:10px;color:#fff;font-family:Orbitron,monospace;font-size:13px;font-weight:700;padding:13px;cursor:pointer;margin-bottom:8px">Надіслати TON</button>
-    <button id="paid-btn" onclick="confirmPaid()" style="width:100%;background:#1a2a1a;border:0.5px solid var(--green);border-radius:10px;color:var(--green);font-family:Orbitron,monospace;font-size:12px;font-weight:700;padding:11px;cursor:pointer;margin-bottom:6px">✅ Вже оплатив — зарахувати баланс</button>
-    <button id="mcl" onclick="closeTopup()" style="width:100%;background:transparent;border:none;color:#333;font-size:12px;padding:10px;cursor:pointer">Скасувати</button>
+    <button id="pbtn" onclick="doTonPayment()">Надіслати TON</button>
+    <button id="paid-btn" onclick="confirmPaid()">✅ Вже оплатив — зарахувати</button>
+    <button id="mcl" onclick="closeTopup()">Скасувати</button>
   </div>
 </div>
 
 <!-- WIN POPUP -->
 <div id="wp">
-  <!-- NFT виграш -->
   <div id="wp-nft-section">
-    <img id="wp-nft-img" src="" alt="">
+    <div id="wp-lottie"></div>
     <div id="wp-nft-name"></div>
     <span id="wp-nft-rarity"></span>
     <div id="wp-mult"></div>
     <div id="wp-val"></div>
     <div id="wp-sub"></div>
   </div>
-  <!-- TON виграш (< 2.8) -->
   <div id="wp-ton-section" style="display:none">
-    <div id="wp-ton-mult" style="font-family:Orbitron,monospace;font-size:36px;font-weight:900;color:var(--green)"></div>
-    <div id="wp-ton-val" style="font-family:Orbitron,monospace;font-size:20px;color:#ffd700;margin-top:6px"></div>
-    <div style="font-size:11px;color:#555;margin-top:6px">Виведено TON на баланс</div>
+    <div id="wp-ton-mult"></div>
+    <div id="wp-ton-val"></div>
+    <div id="wp-ton-sub">Виведено TON на баланс</div>
   </div>
   <button id="wp-close" onclick="document.getElementById('wp').className=''">Закрити</button>
 </div>
@@ -419,136 +375,180 @@ html,body{height:100%;background:var(--bg);color:#fff;font-family:'Inter',sans-s
 <div id="conn">⚡</div>
 
 <script>
-// ════════════════════════════════════════════════
-const SERVER = "https://rocket-server-359o.onrender.com";
+// ════════════════════════════════════════
+const SERVER = "https://rocket-server-359o.onrender.com"; 
 const TON_WALLET = "UQAfazCyjGjugOf73_LrxUuLvxSmExM_8loArhgATwKXU6yA";
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════
 
+// Реальні Lottie анімації Telegram Gifts з Fragment
+const NFT_CATALOG = [
+  {id:'lollipop', name:'Lollipop',      lottie:'https://nft.fragment.com/gift/lollipop-1.lottie.json',      floor:3.0,  rarity:'Common',    stars:'300+',  color:'#0d2e1a'},
+  {id:'icecream', name:'Ice Cream',     lottie:'https://nft.fragment.com/gift/icecream-1.lottie.json',      floor:2.8,  rarity:'Common',    stars:'340+',  color:'#0d2e1a'},
+  {id:'cupcake',  name:'Cupcake',       lottie:'https://nft.fragment.com/gift/cupcake-1.lottie.json',       floor:2.9,  rarity:'Common',    stars:'340+',  color:'#0d2e1a'},
+  {id:'torch',    name:'Torch',         lottie:'https://nft.fragment.com/gift/torch-1.lottie.json',         floor:2.9,  rarity:'Common',    stars:'344+',  color:'#0d2e1a'},
+  {id:'popsicle', name:'Popsicle',      lottie:'https://nft.fragment.com/gift/popsicle-1.lottie.json',      floor:2.8,  rarity:'Common',    stars:'350+',  color:'#0d2e1a'},
+  {id:'flamingo', name:'Flamingo Ring', lottie:'https://nft.fragment.com/gift/flamingo-1.lottie.json',      floor:3.0,  rarity:'Common',    stars:'370+',  color:'#0d2e1a'},
+  {id:'noodles',  name:'Spicy Noodles', lottie:'https://nft.fragment.com/gift/spicynoodles-1.lottie.json',  floor:3.05, rarity:'Common',    stars:'377+',  color:'#0d2e1a'},
+  {id:'poop',     name:'Poop',          lottie:'https://nft.fragment.com/gift/poop-1.lottie.json',          floor:3.33, rarity:'Rare',      stars:'479+',  color:'#0d1e3a'},
+  {id:'tgbag',    name:'Telegram Bag',  lottie:'https://nft.fragment.com/gift/telegrambag-1.lottie.json',   floor:3.5,  rarity:'Rare',      stars:'500+',  color:'#0d1e3a'},
+  {id:'clover',   name:'Lucky Clover',  lottie:'https://nft.fragment.com/gift/luckyclover-1.lottie.json',   floor:4.7,  rarity:'Rare',      stars:'554+',  color:'#0d1e3a'},
+  {id:'seeds',    name:'Pumpkin Seeds', lottie:'https://nft.fragment.com/gift/pumpkinseeds-1.lottie.json',  floor:4.8,  rarity:'Rare',      stars:'560+',  color:'#0d1e3a'},
+  {id:'cooldog',  name:'Cool Dog',      lottie:'https://nft.fragment.com/gift/cooldog-1.lottie.json',       floor:3.8,  rarity:'Rare',      stars:'600+',  color:'#0d1e3a'},
+  {id:'diamond',  name:'Diamond Ring',  lottie:'https://nft.fragment.com/gift/diamondring-1.lottie.json',   floor:15.0, rarity:'Epic',      stars:'1800+', color:'#1e0d3a'},
+  {id:'trophy',   name:'Trophy',        lottie:'https://nft.fragment.com/gift/trophy-1.lottie.json',        floor:25.0, rarity:'Epic',      stars:'3000+', color:'#1e0d3a'},
+  {id:'rocket',   name:'Rocket',        lottie:'https://nft.fragment.com/gift/rocket-1.lottie.json',        floor:50.0, rarity:'Legendary', stars:'6000+', color:'#2e1e00'},
+  {id:'crown',    name:'Golden Crown',  lottie:'https://nft.fragment.com/gift/goldencrown-1.lottie.json',   floor:100.0,rarity:'Legendary', stars:'12000+',color:'#2e1e00'},
+];
+
+function getNFT(win){ 
+  if(win<2.8)return null;
+  const ok=NFT_CATALOG.filter(n=>n.floor<=win);
+  return ok.length?ok.reduce((a,b)=>a.floor>b.floor?a:b):NFT_CATALOG[0];
+}
+function getNFTPreview(bet,mult){ return getNFT(bet*mult); }
+
+// Lottie анімація в контейнер
+const lottieCache = {};
+function playLottie(container, nft, loop=true){
+  if(!container||!nft) return;
+  container.innerHTML='';
+  const key = nft.id;
+  try{
+    lottie.loadAnimation({
+      container, renderer:'svg', loop, autoplay:true,
+      path: nft.lottie,
+    });
+  }catch(e){
+    container.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:36px">🎁</div>`;
+  }
+}
+
+// ── Telegram ─────────────────────────────────────────────────────
 const tg=window.Telegram?.WebApp;
 tg?.ready();tg?.expand();
-tg?.setHeaderColor?.('#07070f');tg?.setBackgroundColor?.('#07070f');
+tg?.setHeaderColor?.('#0a0e1a');tg?.setBackgroundColor?.('#0a0e1a');
 const tgUser=tg?.initDataUnsafe?.user;
 const userId  =tgUser?.id||Math.floor(Math.random()*999999);
 const userName=tgUser?.first_name||'Player';
 const userNick=tgUser?.username||'';
 const userPhoto=tgUser?.photo_url||'';
 
+// ── State ─────────────────────────────────────────────────────────
 let balance=parseFloat(localStorage.getItem('rkt_bal_'+userId)||'1.0');
 let phase='waiting',mult=1.0,crashAt=1.0,startTs=0;
 let hasBet=false,betAmt=0,myWin=null,myLost=false;
-let autoOn=false,selTon=1;
+let autoOn=false,selTon=1,lastPayAmount=0;
 let points=[],loopId=null,smokeT=null;
 let ws=null,wsReady=false;
+let myNFTs=[];
+try{const s=localStorage.getItem('rkt_nfts_'+userId);if(s)myNFTs=JSON.parse(s);}catch(e){}
 function saveBal(){localStorage.setItem('rkt_bal_'+userId,balance.toFixed(4));}
 function updBal(){document.getElementById('bal').textContent=balance.toFixed(2);}
+function saveNFTs(){localStorage.setItem('rkt_nfts_'+userId,JSON.stringify(myNFTs));}
 
-// CANVAS
+// ── Canvas ────────────────────────────────────────────────────────
 const canvas=document.getElementById('gc');
 const ctx=canvas.getContext('2d');
 const ME=()=>document.getElementById('mult');
-const RKT=()=>document.getElementById('rkt');
 const BB=()=>document.getElementById('bb');
 function resize(){canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;}
 
-// Швидкість як у відео — дуже повільно на початку
 function calcMult(el){
-  // 1x→2x за ~15с, 1x→10x за ~35с — як у відео
-  return Math.round(Math.pow(Math.E, el * 0.07) * 100) / 100;
+  return Math.round(Math.pow(Math.E,el*0.07)*100)/100;
 }
 
 function drawGraph(crashed){
   resize();if(points.length<2)return;
-  const W=canvas.width,H=canvas.height;
-  const maxM=Math.max(mult,1.3);
+  const W=canvas.width,H=canvas.height,maxM=Math.max(mult,1.3);
   const dur=points[points.length-1].t-points[0].t;if(dur<=0)return;
-  const sx=(W-30)/Math.max(dur,5);
-  const sy=(H-50)/(maxM-1);
-  const px=p=>({x:15+(p.t-points[0].t)*sx, y:H-25-(p.m-1)*sy});
-  ctx.clearRect(0,0,W,H);
-  if(points.length<2)return;
-  const p0=px(points[0]);
-  const last=px(points[points.length-1]);
+  const sx=(W-30)/Math.max(dur,5),sy=(H-50)/(maxM-1);
+  const px=p=>({x:15+(p.t-points[0].t)*sx,y:H-25-(p.m-1)*sy});
   const col=crashed?'#ff1744':'#f5c500';
-  // Градієнт під кривою
-  const grad=ctx.createLinearGradient(0,H,0,0);
-  grad.addColorStop(0,crashed?'rgba(255,23,68,0)':'rgba(245,197,0,0)');
-  grad.addColorStop(1,crashed?'rgba(255,23,68,0.12)':'rgba(245,197,0,0.1)');
+  ctx.clearRect(0,0,W,H);
+  const p0=px(points[0]),last=px(points[points.length-1]);
+  const g=ctx.createLinearGradient(0,H,0,0);
+  g.addColorStop(0,crashed?'rgba(255,23,68,0)':'rgba(245,197,0,0)');
+  g.addColorStop(1,crashed?'rgba(255,23,68,0.1)':'rgba(245,197,0,0.08)');
   ctx.beginPath();ctx.moveTo(p0.x,p0.y);
   for(let i=1;i<points.length;i++){const p=px(points[i]);ctx.lineTo(p.x,p.y)}
   ctx.lineTo(last.x,H-25);ctx.lineTo(p0.x,H-25);ctx.closePath();
-  ctx.fillStyle=grad;ctx.fill();
-  // Жовта лінія з glow
-  ctx.shadowColor=col;ctx.shadowBlur=crashed?8:18;
+  ctx.fillStyle=g;ctx.fill();
+  ctx.shadowColor=col;ctx.shadowBlur=crashed?8:20;
   ctx.beginPath();ctx.moveTo(p0.x,p0.y);
   for(let i=1;i<points.length;i++){const p=px(points[i]);ctx.lineTo(p.x,p.y)}
-  ctx.strokeStyle=col;ctx.lineWidth=crashed?3:4.5;
+  ctx.strokeStyle=col;ctx.lineWidth=crashed?3:5;
   ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();
-  ctx.shadowBlur=0;ctx.shadowColor='transparent';
-  // Точка на кінці
+  ctx.shadowBlur=0;
   if(!crashed){
-    ctx.beginPath();ctx.arc(last.x,last.y,8,0,Math.PI*2);
-    ctx.fillStyle='rgba(245,197,0,0.25)';ctx.fill();
-    ctx.beginPath();ctx.arc(last.x,last.y,4,0,Math.PI*2);
+    ctx.beginPath();ctx.arc(last.x,last.y,9,0,Math.PI*2);
+    ctx.fillStyle='rgba(245,197,0,0.2)';ctx.fill();
+    ctx.beginPath();ctx.arc(last.x,last.y,5,0,Math.PI*2);
     ctx.fillStyle='#f5c500';ctx.fill();
-    ctx.beginPath();ctx.arc(last.x,last.y,2,0,Math.PI*2);
+    ctx.beginPath();ctx.arc(last.x,last.y,2.5,0,Math.PI*2);
     ctx.fillStyle='#fff';ctx.fill();
   }
-  // Ракета ЗАВЖДИ по центру — не переміщуємо її!
 }
 
-function startSmoke(){
-  if(smokeT)return;
-  smokeT=setInterval(()=>{
-    if(phase!=='flying'){clearInterval(smokeT);smokeT=null;return;}
-    const sky=document.getElementById('sky');
-    const rk=RKT(),rr=rk.getBoundingClientRect(),sr=sky.getBoundingClientRect();
-    const s=document.createElement('div');const sz=4+Math.random()*6;
-    s.className='smk';s.style.cssText=`width:${sz}px;height:${sz}px;background:rgba(255,150,220,.12);left:${rr.left-sr.left+20+Math.random()*6-3}px;top:${rr.top-sr.top+76}px`;
-    sky.appendChild(s);setTimeout(()=>s.remove(),700);
-  },100);
+// ── Particles ─────────────────────────────────────────────────────
+function spawnParticles(){
+  const c=document.getElementById('particles');
+  c.innerHTML='';
+  for(let i=0;i<14;i++){
+    const el=document.createElement('div');
+    el.className='part';
+    const w=3+Math.random()*5,h=w*2.2;
+    el.style.cssText=`width:${w}px;height:${h}px;left:${Math.random()*100}%;
+      top:${10+Math.random()*75}%;animation-duration:${3+Math.random()*5}s;
+      animation-delay:${Math.random()*4}s;transform:rotate(${Math.random()*30-15}deg)`;
+    c.appendChild(el);
+  }
 }
+function clearParticles(){ document.getElementById('particles').innerHTML=''; }
 
-// NFT PREVIEW
-function showNFTPreview(nft,potentialWin){
-  if(!nft||!hasBet)return;
-  const el=document.getElementById('nft-preview');
-  const img=document.getElementById('np-img');
-  img.src=nft.img||'';
-  img.style.display='block';
-  document.getElementById('np-name').textContent=nft.emoji+' '+nft.name;
-  document.getElementById('np-rarity').textContent=nft.rarity;
-  document.getElementById('np-rarity').className=`nft-rarity rare-${nft.rarity}`;
-  document.getElementById('np-val').textContent=`≈${potentialWin.toFixed(2)} TON`;
-  document.getElementById('np-floor').textContent=`⭐ ${nft.stars||nft.floor+' TON'} на Fragment`;
-  el.className='show';
-}
-function hideNFTPreview(){document.getElementById('nft-preview').className='';}
-
-// ANIMATION
+// ── Client animation ──────────────────────────────────────────────
 function startClientAnim(){
   cancelAnimationFrame(loopId);loopId=null;
   points=[];
-  spawnParticles(); // запускаємо частки
-  const t0=startTs*1000; // Unix секунди → мс
-
+  spawnParticles();
+  const t0=startTs*1000;
   function tick(){
     if(phase!=='flying'){loopId=null;return;}
     const el=Math.max(0,(Date.now()-t0)/1000);
     const m=calcMult(el);
-    mult=m;
-    points.push({t:el,m});
+    mult=m;points.push({t:el,m});
     ME().textContent=m.toFixed(2)+'×';
-    if(hasBet){
-      BB().disabled=false;BB().className='co';
-      BB().innerHTML=`💰 ВИВЕСТИ ${(betAmt*m).toFixed(3)} TON`;
-    }
+    if(hasBet){BB().disabled=false;BB().className='co';BB().innerHTML=`💰 ВИВЕСТИ ${(betAmt*m).toFixed(3)} TON`;}
     drawGraph(false);
     loopId=requestAnimationFrame(tick);
   }
   loopId=requestAnimationFrame(tick);
 }
 
-// HISTORY
+// ── NFT Preview ───────────────────────────────────────────────────
+let previewAnim=null;
+function showNFTPreview(nft,win){
+  if(!nft||!hasBet)return;
+  const el=document.getElementById('nft-preview');
+  const lc=document.getElementById('np-lottie');
+  lc.style.background=nft.color||'#1a1a2e';
+  if(previewAnim){try{previewAnim.destroy();}catch(e){}}
+  try{
+    previewAnim=lottie.loadAnimation({container:lc,renderer:'svg',loop:true,autoplay:true,path:nft.lottie});
+  }catch(e){lc.innerHTML='🎁';}
+  document.getElementById('np-name').textContent=nft.name;
+  document.getElementById('np-rarity').textContent=nft.rarity;
+  document.getElementById('np-rarity').className=`nft-rarity rare-${nft.rarity}`;
+  document.getElementById('np-val').textContent=`≈${win.toFixed(2)} TON`;
+  document.getElementById('np-floor').textContent=`⭐ ${nft.stars} · ${nft.floor} TON floor`;
+  el.className='show';
+}
+function hideNFTPreview(){
+  document.getElementById('nft-preview').className='';
+  if(previewAnim){try{previewAnim.destroy();}catch(e){}}
+  previewAnim=null;
+}
+
+// ── History ───────────────────────────────────────────────────────
 function addH(v){
   const cls=v>=10?'hmoon':v>=3?'hh':v>=1.5?'hm':'hl';
   const c=document.createElement('div');c.className=`hc ${cls}`;c.textContent=v.toFixed(2)+'×';
@@ -557,28 +557,26 @@ function addH(v){
 }
 [6.70,1.00,1.62,5.77,18.8,133.1,3.51,1.50].forEach(v=>addH(v));
 
-// PLAYERS
-function strColor(s){const C=['#ff6d00','#00e676','#ff1744','#40c4ff','#ffd700','#aa77ff','#44ccff','#ff4081'];let h=0;for(let i=0;i<(s||'').length;i++)h=(h*31+s.charCodeAt(i))>>>0;return C[h%C.length];}
+// ── Players ───────────────────────────────────────────────────────
+function strColor(s){
+  const C=['#ff6d00','#00e676','#ff1744','#40c4ff','#ffd700','#aa77ff','#44ccff','#ff4081'];
+  let h=0;for(let i=0;i<(s||'').length;i++)h=(h*31+s.charCodeAt(i))>>>0;return C[h%C.length];
+}
 function renderPlayers(list){
   if(!list)return;
   const pl=document.getElementById('pl');
   document.getElementById('pcnt').textContent=list.length;
-  if(!list.length){pl.innerHTML='<div style="color:#1a1a2a;font-size:12px;padding:6px 0">Немає ставок</div>';return;}
+  if(!list.length){pl.innerHTML='<div style="color:#1a1a2a;font-size:12px;padding:8px 0">Немає ставок</div>';return;}
   pl.innerHTML=list.map(p=>{
     const isMe=p.uid===userId;
     const col=isMe?'#6c4fff':strColor(p.name);
     const ava=p.photo?`<img src="${p.photo}">`:`<span>${(p.name||'?').slice(0,2).toUpperCase()}</span>`;
     let right='';
-    if(p.cashed&&p.nft){
-      right=`<span class="pmx" style="background:${col}18;color:${col}">${(+p.mult||0).toFixed(2)}×</span><span class="pa" style="color:#aa77ff">NFT 🎨</span>`;
-    } else if(p.cashed&&p.win!=null){
-      right=`<span class="pmx" style="background:${col}18;color:${col}">${(+p.mult||0).toFixed(2)}×</span><span class="pa" style="color:var(--green)">+${(+p.win).toFixed(2)}⬦</span>`;
-    } else if(p.lost){
-      right=`<span class="pa" style="color:var(--red)">-${(+p.bet).toFixed(2)}⬦</span>`;
-    } else if(p.bet){
-      right=`<span class="pa" style="color:#2a2a4a">⬦${(+p.bet).toFixed(2)}</span>`;
-    }
-    const badge=isMe?` <span style="font-size:7px;background:#6c4fff22;color:var(--acc);padding:1px 4px;border-radius:4px;vertical-align:middle">ти</span>`:'';
+    if(p.cashed&&p.nft)right=`<span class="pa" style="color:#aa77ff;font-size:10px">${(+p.mult).toFixed(2)}× 🎁</span>`;
+    else if(p.cashed&&p.win)right=`<span class="pa" style="color:var(--green)">+${(+p.win).toFixed(2)}◈</span>`;
+    else if(p.lost)right=`<span class="pa" style="color:var(--red)">-${(+p.bet).toFixed(2)}◈</span>`;
+    else if(p.bet)right=`<span class="pa" style="color:#223">◈${(+p.bet).toFixed(2)}</span>`;
+    const badge=isMe?`<span style="font-size:7px;background:#6c4fff22;color:#aa77ff;padding:1px 4px;border-radius:4px;margin-left:4px">ти</span>`:'';
     const nick=p.nick?`<span class="pu">@${p.nick}</span>`:'';
     return `<div class="pr${isMe?' me':''}">
       <div class="pav" style="background:${col}18;color:${col}">${ava}</div>
@@ -588,24 +586,26 @@ function renderPlayers(list){
   }).join('');
 }
 
-// WIN POPUP
+// ── Win Popup ─────────────────────────────────────────────────────
+let wpAnim=null;
 function showWinPopup(mx,win,nft){
   const wp=document.getElementById('wp');
   if(nft){
     document.getElementById('wp-nft-section').style.display='block';
     document.getElementById('wp-ton-section').style.display='none';
-    document.getElementById('wp-nft-img').src=nft.img||'';
-    document.getElementById('wp-nft-name').textContent=nft.emoji+' '+nft.name;
+    const lc=document.getElementById('wp-lottie');
+    lc.style.background=nft.color||'#0d0a22';
+    if(wpAnim){try{wpAnim.destroy();}catch(e){}}
+    try{wpAnim=lottie.loadAnimation({container:lc,renderer:'svg',loop:true,autoplay:true,path:nft.lottie});}
+    catch(e){lc.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:60px">🎁</div>';}
+    document.getElementById('wp-nft-name').textContent=nft.name;
     document.getElementById('wp-nft-rarity').textContent=nft.rarity;
     document.getElementById('wp-nft-rarity').className=`nft-rarity rare-${nft.rarity}`;
     document.getElementById('wp-mult').textContent=`${(+mx).toFixed(2)}×`;
-    document.getElementById('wp-mult').style.cssText='font-family:Orbitron,monospace;font-size:28px;font-weight:900;color:#aa77ff';
     document.getElementById('wp-val').textContent=`≈${(+win).toFixed(2)} TON → Gift`;
-    document.getElementById('wp-val').style.cssText='font-family:Orbitron,monospace;font-size:14px;color:#ffd700;margin-top:6px';
-    document.getElementById('wp-sub').textContent=`⭐ ${nft.stars||''} на Fragment`;
-    document.getElementById('wp-sub').style.cssText='font-size:11px;color:#666;margin-top:4px';
+    document.getElementById('wp-sub').textContent=`⭐ ${nft.stars} на Fragment · floor ${nft.floor} TON`;
     spawnGems(5,'🎁');
-  } else {
+  }else{
     document.getElementById('wp-nft-section').style.display='none';
     document.getElementById('wp-ton-section').style.display='block';
     document.getElementById('wp-ton-mult').textContent=`${(+mx).toFixed(2)}×`;
@@ -613,9 +613,53 @@ function showWinPopup(mx,win,nft){
     spawnGems(Math.min(10,Math.floor(win*3)));
   }
   wp.className='show';
+  setTimeout(()=>wp.className='',4000);
 }
 
-// WEBSOCKET
+// ── Inventory ─────────────────────────────────────────────────────
+function switchTab(tab){
+  const isGame=tab==='game';
+  document.getElementById('tab-game-content').style.display=isGame?'flex':'none';
+  document.getElementById('tab-inv-content').style.display=isGame?'none':'block';
+  document.getElementById('tab-game').classList.toggle('active',isGame);
+  document.getElementById('tab-inv').classList.toggle('active',!isGame);
+  if(!isGame)renderInventory();
+}
+function addNFTToInventory(nft,winTon,mx){
+  myNFTs.push({...nft,winTon,mult:mx,ts:Date.now()});
+  const cnt=myNFTs.length;
+  document.getElementById('inv-tab-lbl').textContent=cnt?`Інвентар (${cnt})`:'Інвентар';
+  saveNFTs();
+}
+function renderInventory(){
+  const list=document.getElementById('inv-list');
+  const empty=document.getElementById('inv-empty');
+  if(!myNFTs.length){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  list.innerHTML=myNFTs.slice().reverse().map((nft,i)=>`
+    <div class="inv-card">
+      <div class="inv-lottie" id="inv-lot-${i}" style="background:${nft.color||'#1a1a2e'}"></div>
+      <div class="inv-body">
+        <div class="inv-name">${nft.name}</div>
+        <span class="inv-r rare-${nft.rarity}">${nft.rarity}</span>
+        <div class="inv-price">floor: ${nft.floor} TON · ⭐ ${nft.stars}</div>
+        <div class="inv-mult">×${(+nft.mult).toFixed(2)} +${(+nft.winTon).toFixed(2)} TON</div>
+        <button class="inv-btn" onclick="withdrawNFT('${nft.id}')">Вивести → Fragment</button>
+      </div>
+    </div>
+  `).join('');
+  // Запускаємо анімації
+  myNFTs.slice().reverse().forEach((nft,i)=>{
+    const c=document.getElementById(`inv-lot-${i}`);
+    if(c)try{lottie.loadAnimation({container:c,renderer:'svg',loop:true,autoplay:true,path:nft.lottie});}catch(e){}
+  });
+}
+function withdrawNFT(nftId){
+  const url=`https://fragment.com/gifts`;
+  if(tg?.openLink)tg.openLink(url);else window.open(url,'_blank');
+}
+
+// ── WebSocket ─────────────────────────────────────────────────────
 function connect(){
   const url=SERVER.replace(/^http/,'ws')+`/ws/${userId}`;
   ws=new WebSocket(url);
@@ -633,11 +677,8 @@ function connect(){
         phase='flying';startTs=d.ts;crashAt=d.ca;
         document.getElementById('rid').textContent=d.rid;
         ME().className='';ME().textContent=(d.mult||1).toFixed(2)+'×';
-        RKT().style.display='block';
-        startSmoke();startClientAnim();
-      } else {
-        phase='waiting';ME().className='waiting';ME().textContent='Очікування...';
-      }
+        startClientAnim();
+      }else{phase='waiting';ME().className='waiting';ME().textContent='Очікування...';}
     }
     else if(d.t==='cd'){
       cancelAnimationFrame(loopId);loopId=null;
@@ -646,37 +687,28 @@ function connect(){
       phase='waiting';crashAt=d.ca;
       document.getElementById('rid').textContent=d.rid;
       ME().className='waiting';ME().textContent=`Старт через ${d.sec}...`;
-      RKT().style.display='none';hideNFTPreview();
+      clearParticles();hideNFTPreview();
       resize();ctx.clearRect(0,0,canvas.width,canvas.height);
-      if(newRound){
-        BB().disabled=false;BB().className='';BB().innerHTML='🚀 ПОСТАВИТИ';
-      } else if(hasBet){
-        BB().disabled=true;BB().innerHTML='✅ Ставка прийнята';
-      } else {
-        BB().disabled=false;BB().className='';BB().innerHTML='🚀 ПОСТАВИТИ';
-      }
+      if(newRound||!hasBet){BB().disabled=false;BB().className='';BB().innerHTML='🚀 ПОСТАВИТИ';}
+      else{BB().disabled=true;BB().innerHTML='✅ Ставка прийнята';}
     }
     else if(d.t==='st'){
       phase='flying';startTs=d.ts;crashAt=d.ca;
       document.getElementById('rid').textContent=d.rid;
       ME().className='';ME().textContent='1.00×';
-      RKT().style.display='block';
-      points=[];startSmoke();startClientAnim();
-      if(hasBet){
-        BB().disabled=false;BB().className='co';BB().innerHTML=`💰 ВИВЕСТИ ${betAmt.toFixed(2)} TON`;
-      } else {
-        BB().disabled=true;BB().className='';BB().innerHTML='🚀 ПОСТАВИТИ';
-      }
+      points=[];startClientAnim();
+      if(hasBet){BB().disabled=false;BB().className='co';BB().innerHTML=`💰 ВИВЕСТИ ${betAmt.toFixed(2)} TON`;}
+      else{BB().disabled=true;BB().innerHTML='🚀 ПОСТАВИТИ';}
     }
     else if(d.t==='tick'){renderPlayers(d.pl);}
     else if(d.t==='nft_preview'){
-      if(hasBet&&d.nft) showNFTPreview(d.nft,d.potential_win);
+      if(hasBet&&d.nft)showNFTPreview(d.nft,d.potential_win);
     }
     else if(d.t==='cr'){
       cancelAnimationFrame(loopId);loopId=null;
       phase='crashed';mult=d.ca;
       ME().textContent=d.ca.toFixed(2)+'×';ME().className='crashed';
-      RKT().style.display='none';hideNFTPreview();
+      clearParticles();hideNFTPreview();
       if(points.length>1)drawGraph(true);
       addH(d.ca);
       if(hasBet){showToast(`💥 CRASH ${d.ca.toFixed(2)}×`);myLost=true;hasBet=false;}
@@ -691,16 +723,13 @@ function connect(){
     else if(d.t==='your_co'){
       myWin=d.win;hasBet=false;balance=d.bal;updBal();saveBal();
       hideNFTPreview();
-      if(d.nft) addNFTToInventory(d.nft, d.win, d.mx);
+      if(d.nft)addNFTToInventory(d.nft,d.win,d.mx);
       showWinPopup(d.mx,d.win,d.nft);
       BB().className='';BB().innerHTML='🚀 ПОСТАВИТИ';
     }
-    else if(d.t==='topup'){
-      balance=d.bal;updBal();saveBal();
-      showToast(`⬦ +${d.credited} TON зараховано!`,'win');spawnGems(5);
-    }
-    else if(d.t==='topup_pending'){
-      showToast(`⬦ Чекаємо підтвердження ${d.amount} TON...`,'info');
+    else if(d.t==='topup'||d.t==='topup_ok'){
+      balance=d.bal||d.balance;updBal();saveBal();
+      showToast(`◈ +${d.credited} TON зараховано!`,'win');spawnGems(5);
     }
     else if(d.t==='err'){showToast(d.msg);}
   };
@@ -708,7 +737,7 @@ function connect(){
   ws.onerror=()=>ws.close();
 }
 
-// BET
+// ── Bet ───────────────────────────────────────────────────────────
 function handleBet(){
   if(phase==='flying'&&hasBet){if(wsReady)ws.send(JSON.stringify({a:'cashout'}));return;}
   if(phase!=='waiting')return;
@@ -725,221 +754,87 @@ function hB(){const v=parseFloat(document.getElementById('bi').value)||0.1;docum
 function x2B(){const v=parseFloat(document.getElementById('bi').value)||0.1;document.getElementById('bi').value=(v*2).toFixed(2);}
 function toggleAuto(){autoOn=!autoOn;document.getElementById('atog').className=autoOn?'tog on':'tog';}
 
-// TON CONNECT
-let tonUI=null,tonConnected=false,tonAddress='';
+// ── TON Connect ───────────────────────────────────────────────────
+let tonUI=null,tonConnected=false;
 function initTon(){
   try{
-    tonUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:'https://raw.githubusercontent.com/ton-connect/demo-dapp/master/public/tonconnect-manifest.json',buttonRootId:null});
+    tonUI=new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl:'https://raw.githubusercontent.com/ton-connect/demo-dapp/master/public/tonconnect-manifest.json',
+      buttonRootId:null
+    });
     tonUI.onStatusChange(w=>{
       tonConnected=!!w;
-      tonAddress=w?.account?.address||'';
       updateWalletUI();
-      if(w) showToast('Гаманець підключено ✓','win');
+      if(w)showToast('Гаманець підключено ✓','win');
     });
-  }catch(e){console.warn('TON:',e);}
+  }catch(e){}
 }
-
 function updateWalletUI(){
   const dot=document.getElementById('ws-dot');
   const txt=document.getElementById('ws-text');
   const btn=document.getElementById('ws-btn');
   if(!dot)return;
   if(tonConnected){
-    dot.style.background='var(--green)';
-    txt.textContent=tonAddress?tonAddress.slice(0,8)+'...'+tonAddress.slice(-6):'Підключено';
-    txt.style.color='#ccc';
-    btn.textContent='Відключити';
-    btn.style.background='#2a1a1a';
-    btn.style.border='0.5px solid var(--red)';
-    btn.style.color='var(--red)';
-  } else {
-    dot.style.background='#333';
-    txt.textContent='Гаманець не підключено';
-    txt.style.color='#666';
-    btn.textContent='Підключити';
-    btn.style.background='var(--ton)';
-    btn.style.border='none';
-    btn.style.color='#fff';
+    dot.style.background='var(--green)';txt.textContent='Підключено ✓';txt.style.color='#aaa';
+    btn.textContent='Відключити';btn.style.background='#2a0d0d';btn.style.color='var(--red)';
+  }else{
+    dot.style.background='#333';txt.textContent='Гаманець не підключено';txt.style.color='#556';
+    btn.textContent='Підключити';btn.style.background='var(--ton)';btn.style.color='#fff';
   }
 }
-
-function toggleWallet(){
-  if(tonConnected){
-    tonUI?.disconnect();
-  } else {
-    if(tonUI) tonUI.openModal();
-    else showToast('TON Connect недоступний');
-  }
-}
-
-function openTopup(){
-  document.getElementById('mbg').className='open';
-  updateWalletUI();
-  document.getElementById('paid-btn').style.display='none';
-}
+function toggleWallet(){if(tonConnected)tonUI?.disconnect();else{if(tonUI)tonUI.openModal();}}
+function openTopup(){document.getElementById('mbg').className='open';updateWalletUI();}
 function closeTopup(){document.getElementById('mbg').className='';}
 function pickT(el,n){selTon=n;document.querySelectorAll('.so').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');document.getElementById('cton').value=n;}
 
-let lastPayAmount=0;
 async function doTonPayment(){
   const amount=parseFloat(document.getElementById('cton').value)||selTon;
   if(!amount||amount<0.1){showToast('Мін. 0.1 TON');return;}
   lastPayAmount=amount;
-
-  if(!tonConnected){
-    showToast('Спочатку підключи гаманець','info');
-    if(tonUI) tonUI.openModal();
-    return;
-  }
-
+  if(!tonConnected){if(tonUI)tonUI.openModal();else showToast('Підключи гаманець');return;}
   try{
-    // 1. Повідомляємо сервер — починаємо оплату (фіксуємо час)
-    if(wsReady) ws.send(JSON.stringify({a:'topup_start',amount}));
-
-    // 2. Відправляємо транзакцію
+    if(wsReady)ws.send(JSON.stringify({a:'topup_start',amount}));
     await tonUI.sendTransaction({
       validUntil:Math.floor(Date.now()/1000)+600,
       messages:[{address:TON_WALLET,amount:Math.floor(amount*1e9).toString()}]
     });
-
-    // 3. Транзакція відправлена — сервер сам перевіряє кожні 15с
     closeTopup();
-    showToast('⬦ Транзакція відправлена! Баланс зарахується автоматично','win');
-    document.getElementById('paid-btn').style.display='none';
-
+    showToast('◈ Транзакція відправлена! Чекаємо підтвердження...','info');
   }catch(e){
     if(e?.message?.includes('reject')||e?.message?.includes('cancel'))showToast('Скасовано');
-    else showToast('Помилка: '+(e?.message||'unknown'));
+    else showToast('Помилка: '+(e?.message||''));
   }
 }
-
 function confirmPaid(){
   closeTopup();
-  // Зараховуємо одразу — для тесту
-  const amount = lastPayAmount;
+  const amount=lastPayAmount||parseFloat(document.getElementById('cton').value)||selTon;
   fetch(SERVER+`/topup/${userId}/${amount}`,{method:'POST'})
     .then(r=>r.json())
-    .then(d=>{
-      if(d.ok){
-        balance=d.balance;
-        updBal();saveBal();
-        showToast(`⬦ +${amount} TON зараховано!`,'win');
-        spawnGems(5);
-      } else {
-        showToast('Помилка зарахування');
-      }
-    })
-    .catch(()=>{
-      // Якщо сервер недоступний — зараховуємо локально
-      balance=+(balance+amount).toFixed(4);
-      updBal();saveBal();
-      showToast(`⬦ +${amount} TON зараховано!`,'win');
-    });
+    .then(d=>{if(d.ok||d.balance){balance=d.balance||d.bal;updBal();saveBal();showToast(`◈ +${amount} TON зараховано!`,'win');spawnGems(5);}})
+    .catch(()=>{balance=+(balance+amount).toFixed(4);updBal();saveBal();showToast(`◈ +${amount} TON зараховано!`,'win');});
 }
 
-// ЧАСТКИ ЯК У ВІДЕО — білі овали що летять
-function spawnParticles(){
-  const container = document.getElementById('particles');
-  if(!container) return;
-  container.innerHTML='';
-  for(let i=0;i<12;i++){
-    const p=document.createElement('div');
-    const w=3+Math.random()*5;
-    const h=w*2.5;
-    const dur=3+Math.random()*5;
-    const delay=Math.random()*4;
-    p.style.cssText=`
-      position:absolute;
-      width:${w}px;height:${h}px;
-      background:rgba(255,255,255,${0.08+Math.random()*0.1});
-      border-radius:50%;
-      left:${Math.random()*100}%;
-      top:${20+Math.random()*70}%;
-      animation:particle-fly ${dur}s ${delay}s linear infinite;
-      transform:rotate(${Math.random()*30-15}deg);
-    `;
-    container.appendChild(p);
+// ── UI helpers ────────────────────────────────────────────────────
+let tT=null;
+function showToast(msg,type='crash'){
+  const el=document.getElementById('toast');el.textContent=msg;
+  el.className=[type==='win'?'win':type==='info'?'info':'','show'].join(' ');
+  clearTimeout(tT);tT=setTimeout(()=>el.className=type==='win'?'win':type==='info'?'info':'',2800);
+}
+function spawnGems(n,emoji='◈'){
+  const cnt=Math.min(12,Math.max(2,n));
+  for(let i=0;i<cnt;i++){
+    const s=document.createElement('div');s.className='sp';s.textContent=emoji;
+    s.style.left=15+Math.random()*70+'vw';s.style.top=30+Math.random()*30+'vh';
+    s.style.animationDelay=Math.random()*0.3+'s';document.body.appendChild(s);
+    setTimeout(()=>s.remove(),1200);
   }
 }
 
-// NFT зображення — виправлені URL з Telegram CDN
-const NFT_IMGS = {
-  'icecream': 'https://telegra.ph/file/icecream.jpg',
-  'torch':    'https://telegra.ph/file/torch.jpg',
-  'flamingo': 'https://telegra.ph/file/flamingo.jpg',
-  'noodles':  'https://telegra.ph/file/noodles.jpg',
-  'cooldog':  'https://telegra.ph/file/cooldog.jpg',
-  'tgbag':    'https://telegra.ph/file/tgbag.jpg',
-  'popsicle': 'https://telegra.ph/file/popsicle.jpg',
-  'lollipop': 'https://telegra.ph/file/lollipop.jpg',
-  'poop':     'https://telegra.ph/file/poop.jpg',
-};
-
-function switchTab(tab){
-  const isGame = tab==='game';
-  document.getElementById('tab-game-content').style.display=isGame?'flex':'none';
-  document.getElementById('tab-inv-content').style.display=isGame?'none':'block';
-  document.getElementById('tab-game').style.color=isGame?'var(--acc)':'#444';
-  document.getElementById('tab-inv').style.color=isGame?'#444':'var(--acc)';
-  if(!isGame) renderInventory();
-}
-
-function addNFTToInventory(nft, winTon, mult){
-  myNFTs.push({...nft, winTon, mult, ts: Date.now()});
-  // Оновлюємо лічильник
-  const cnt = myNFTs.length;
-  document.getElementById('tab-inv').querySelector('span:last-child').textContent=
-    cnt > 0 ? `Інвентар (${cnt})` : 'Інвентар';
-  localStorage.setItem('rkt_nfts_'+userId, JSON.stringify(myNFTs));
-}
-
-function renderInventory(){
-  const list = document.getElementById('inv-list');
-  const empty = document.getElementById('inv-empty');
-  // Завантажуємо з localStorage
-  try{
-    const saved = localStorage.getItem('rkt_nfts_'+userId);
-    if(saved) myNFTs = JSON.parse(saved);
-  }catch(e){}
-
-  if(!myNFTs.length){
-    list.innerHTML=''; empty.style.display='block'; return;
-  }
-  empty.style.display='none';
-  list.innerHTML = myNFTs.slice().reverse().map((nft,i)=>`
-    <div class="inv-card">
-      <img src="${nft.img}" alt="${nft.name}" onerror="this.src=''">
-      <div class="inv-card-body">
-        <div class="inv-card-name">${nft.emoji} ${nft.name}</div>
-        <span class="inv-card-rarity rare-${nft.rarity}">${nft.rarity}</span>
-        <div class="inv-card-floor">⭐ ${nft.stars} · ${nft.floor} TON</div>
-        <div class="inv-card-floor" style="color:#6c4fff;font-size:9px">×${(+nft.mult).toFixed(2)} · +${(+nft.winTon).toFixed(2)} TON</div>
-        <button class="inv-withdraw" onclick="withdrawNFT(${myNFTs.length-1-i})">
-          Вивести на Fragment
-        </button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function withdrawNFT(idx){
-  const nft = myNFTs[idx];
-  if(!nft) return;
-  // Відкриваємо Fragment для продажу
-  const fragUrl = `https://fragment.com/gifts`;
-  if(tg?.openLink) tg.openLink(fragUrl);
-  else window.open(fragUrl, '_blank');
-  showToast(`Відкриваємо Fragment для виводу ${nft.name}`, 'info');
-}
-function showToast(msg,type='crash'){const el=document.getElementById('toast');el.textContent=msg;el.className=[type==='win'?'win':type==='info'?'info':'','show'].join(' ');clearTimeout(tT);tT=setTimeout(()=>el.className=type==='win'?'win':type==='info'?'info':'',2800);}
-function spawnGems(n,emoji='⬦'){const cnt=Math.min(12,Math.max(2,n));for(let i=0;i<cnt;i++){const s=document.createElement('div');s.className='sp';s.textContent=emoji;s.style.left=15+Math.random()*70+'vw';s.style.top=30+Math.random()*30+'vh';s.style.animationDelay=Math.random()*0.3+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),1200);}}
-
-// BOOT
+// ── Boot ──────────────────────────────────────────────────────────
 window.addEventListener('resize',resize);
 resize();updBal();
-// Завантажуємо збережені NFT
-try{const s=localStorage.getItem('rkt_nfts_'+userId);if(s)myNFTs=JSON.parse(s);}catch(e){}
-if(myNFTs.length) document.getElementById('tab-inv').querySelector('span:last-child').textContent=`Інвентар (${myNFTs.length})`;
+if(myNFTs.length)document.getElementById('inv-tab-lbl').textContent=`Інвентар (${myNFTs.length})`;
 setTimeout(()=>{try{initTon();}catch(e){}},300);
 connect();
 </script>
