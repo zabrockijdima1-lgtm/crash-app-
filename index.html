@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>🚀 Rocket</title>
-<script src="https://telegram.org/js/telegram-web-app.js" defer></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600&display=swap');
@@ -506,13 +506,9 @@ const NFT_CATALOG=[
 function getPhotoById(nft){
   if(!nft)return'';
   if(nft.photo&&nft.photo.startsWith('data:'))return nft.photo;
-  // Шукаємо в окремому файлі NFT_PHOTOS
   const photos=window.NFT_PHOTOS||{};
-  if(photos[nft.id])return photos[nft.id];
-  // Шукаємо по імені
-  const l=NFT_CATALOG.find(n=>n.id===nft.id||n.name===nft.name);
-  if(l&&photos[l.id])return photos[l.id];
-  return '';
+  const id=nft.id||(NFT_CATALOG.find(n=>n.name===nft.name)||{}).id;
+  return photos[id]||'';
 }
 function getNFT(win){
   if(!win||win<2.72)return null;
